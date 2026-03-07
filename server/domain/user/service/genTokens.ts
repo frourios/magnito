@@ -20,7 +20,7 @@ export const genTokens = (params: {
     header: { kid: params.jwks.keys[0].kid, alg: params.jwks.keys[0].alg },
   });
   const now = Math.floor(Date.now() / 1000);
-  const comomn = {
+  const common = {
     sub: params.user.id,
     iss: `http://localhost:${PORT}/${params.user.userPoolId}`,
     origin_jti: ulid(),
@@ -32,14 +32,14 @@ export const genTokens = (params: {
   };
 
   const accessToken: AccessTokenJwt = {
-    ...comomn,
+    ...common,
     client_id: params.userPoolClientId,
     token_use: 'access',
     scope: 'aws.cognito.signin.user.admin',
     username: params.user.name,
   };
   const idToken: IdTokenJwt = {
-    ...comomn,
+    ...common,
     email_verified: params.user.kind === 'cognito' && isEmailVerified(params.user),
     'cognito:username': params.user.name,
     aud: params.userPoolClientId,
