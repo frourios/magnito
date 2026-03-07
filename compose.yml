@@ -1,4 +1,19 @@
 services:
+  # magnito:
+  #   build:
+  #     context: .
+  #     args:
+  #       - VERSION=0.0.0
+  #   ports:
+  #     - 5050:5050
+  #     - 5051:5051
+  #     - 5052:5052
+  #   volumes:
+  #     - magnito-data:/usr/src/app/data
+  #   depends_on:
+  #     inbucket:
+  #       condition: service_started
+
   inbucket:
     image: inbucket/inbucket:3.0.3
     ports:
@@ -9,5 +24,7 @@ services:
       - inbucket:/storage
 
 volumes:
+  # magnito-data:
+  #   driver: local
   inbucket:
     driver: local
