@@ -1,9 +1,9 @@
 # Magnito
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://frouriojs.github.io/magnito/logos/icon-text-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://frouriojs.github.io/magnito/logos/icon-text-light.svg">
-  <img alt="Magnito logo image" src="https://frouriojs.github.io/magnito/logos/icon-text-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://frourios.github.io/magnito/logos/icon-text-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://frourios.github.io/magnito/logos/icon-text-light.svg">
+  <img alt="Magnito logo image" src="https://frourios.github.io/magnito/logos/icon-text-light.svg">
 </picture>
 
 ![Docker Pulls](https://img.shields.io/docker/pulls/frourio/magnito)
@@ -76,11 +76,11 @@ You can check the emails sent by Magnito with Inbucket.
 
 | Sign Up                                                                                 | Sign In                                                                                 |
 | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| ![Sign Up](https://frouriojs.github.io/magnito/screenshots/sign-up.png)                 | ![Sign In](https://frouriojs.github.io/magnito/screenshots/sign-in.png)                 |
+| ![Sign Up](https://frourios.github.io/magnito/screenshots/sign-up.png)                 | ![Sign In](https://frourios.github.io/magnito/screenshots/sign-in.png)                 |
 | Forgot Password                                                                         | Admin                                                                                   |
-| ![Forgot Password](https://frouriojs.github.io/magnito/screenshots/forgot-password.png) | ![Admin](https://frouriojs.github.io/magnito/screenshots/admin.png)                     |
+| ![Forgot Password](https://frourios.github.io/magnito/screenshots/forgot-password.png) | ![Admin](https://frourios.github.io/magnito/screenshots/admin.png)                     |
 | Profile                                                                                 | Change Password                                                                         |
-| ![Profile](https://frouriojs.github.io/magnito/screenshots/profile.png)                 | ![Change Password](https://frouriojs.github.io/magnito/screenshots/change-password.png) |
+| ![Profile](https://frourios.github.io/magnito/screenshots/profile.png)                 | ![Change Password](https://frourios.github.io/magnito/screenshots/change-password.png) |
 
 ## Features
 

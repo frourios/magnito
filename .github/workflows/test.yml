@@ -7,22 +7,22 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - name: setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
           node-version: 20
-      - uses: actions/cache@v2
+      - uses: actions/cache@v5
         id: root-npm-cache
         with:
           path: 'node_modules'
           key: root-npm-${{ hashFiles('package-lock.json') }}
-      - uses: actions/cache@v2
+      - uses: actions/cache@v5
         id: client-npm-cache
         with:
           path: 'client/node_modules'
           key: client-npm-${{ hashFiles('client/package-lock.json') }}
-      - uses: actions/cache@v2
+      - uses: actions/cache@v5
         id: server-npm-cache
         with:
           path: 'server/node_modules'
