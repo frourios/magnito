@@ -1,22 +1,29 @@
-import { Authenticator, translations } from '@aws-amplify/ui-react';
+'use client';
+
+import { translations } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { Amplify } from 'aws-amplify';
 import { I18n } from 'aws-amplify/utils';
-import { AuthLoader } from 'components/Auth/AuthLoader';
+import { APP_NAME } from 'common/constants';
 import { useCognitoClient } from 'hooks/useCognitoClient';
-import type { AppProps } from 'next/app';
-import dynamic from 'next/dynamic';
+import { RootLayoutContent } from 'layouts/RootLayoutContent';
+import type { PropsWithChildren } from 'react';
 import { useEffect, useMemo } from 'react';
+import { staticPath } from 'utils/$path';
 import { apiClient } from 'utils/apiClient';
 import { catchApiErr } from 'utils/catchApiErr';
 import { NEXT_PUBLIC_API_ORIGIN } from 'utils/envValues';
 import '../styles/globals.css';
 
-I18n.putVocabularies(translations);
-I18n.setLanguage('ja');
+if (typeof window !== 'undefined') {
+  I18n.putVocabularies(translations);
 
-function MyApp({ Component, pageProps }: AppProps) {
-  const SafeHydrate = dynamic(() => import('../components/SafeHydrate'), { ssr: false });
+  const lang = navigator.language.split('-')[0];
+
+  if (lang) I18n.setLanguage(lang);
+}
+
+export default function RootLayout({ children }: PropsWithChildren): React.ReactElement {
   const { defaults, setDefaults } = useCognitoClient();
 
   useMemo(() => {
@@ -47,15 +54,14 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <SafeHydrate>
-      {defaults.userPoolId && (
-        <Authenticator.Provider>
-          <AuthLoader />
-          <Component {...pageProps} />
-        </Authenticator.Provider>
-      )}
-    </SafeHydrate>
+    <html lang="ja">
+      <head>
+        <title>{APP_NAME}</title>
+        <meta name="robots" content="noindex,nofollow" />
+        <meta name="description" content={APP_NAME} />
+        <link rel="icon" href={staticPath.images.favicon_png} />
+      </head>
+      <body>{defaults.userPoolId && <RootLayoutContent>{children}</RootLayoutContent>}</body>
+    </html>
   );
 }
-
-export default MyApp;

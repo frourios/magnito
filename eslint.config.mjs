@@ -31,6 +31,7 @@ export default tseslint.config(
       'no-param-reassign': 'error',
       'object-shorthand': ['error', 'always'],
       'prefer-template': 'error',
+      '@typescript-eslint/triple-slash-reference': 'off',
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-non-null-assertion': 'error',
@@ -73,5 +74,6 @@ export default tseslint.config(
     rules: { '@typescript-eslint/no-require-imports': ['off'] },
   },
   { files: ['server/tests/**/*.ts'], rules: { 'max-lines': 'off' } },
+  { files: ['client/next.config.ts'], rules: { '@typescript-eslint/no-require-imports': 'off' } },
   prettierConfig,
 );

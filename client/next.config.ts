@@ -1,9 +1,7 @@
-/** @type {import('next').NextConfig} */
-module.exports = {
+import type { NextConfig } from 'next';
+
+const nextConfig: NextConfig = {
   reactStrictMode: true,
-  pageExtensions: ['page.tsx'],
-  output: 'export',
-  trailingSlash: true,
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
   env: { APP_VERSION: `v${require('../package.json').version}` },
@@ -13,3 +11,5 @@ module.exports = {
     return config;
   },
 };
+
+export default nextConfig;

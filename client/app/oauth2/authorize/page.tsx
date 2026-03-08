@@ -1,3 +1,5 @@
+'use client';
+
 import useAspidaSWR from '@aspida/swr';
 import type { OAuthConfig } from '@aws-amplify/core';
 import word from '@fakerjs/word';
@@ -9,7 +11,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { apiClient } from 'utils/apiClient';
 import { z } from 'zod';
-import styles from './authorize.module.css';
+import styles from './page.module.css';
 
 export type Query = {
   redirect_uri: string;

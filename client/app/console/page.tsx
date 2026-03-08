@@ -1,3 +1,5 @@
+'use client';
+
 import type { ListUsersResponse } from '@aws-sdk/client-cognito-identity-provider';
 import { ListUsersCommand } from '@aws-sdk/client-cognito-identity-provider';
 import type { UserEntity } from 'common/types/user';
@@ -5,7 +7,7 @@ import { useCognitoClient } from 'hooks/useCognitoClient';
 import { Layout } from 'layouts/Layout';
 import { useEffect, useState } from 'react';
 import { catchApiErr } from 'utils/catchApiErr';
-import styles from './index.module.css';
+import styles from './page.module.css';
 
 const Main = (_: { user: UserEntity }) => {
   const { defaults, cognitoClient } = useCognitoClient();

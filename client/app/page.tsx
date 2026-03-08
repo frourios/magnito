@@ -1,22 +1,24 @@
+'use client';
+
 import { Authenticator } from '@aws-amplify/ui-react';
 import { signUp } from 'aws-amplify/auth';
 import { APP_NAME } from 'common/constants';
 import { useUser } from 'components/Auth/useUser';
 import { Loading } from 'components/Loading/Loading';
 import { Spacer } from 'components/Spacer';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { pagesPath } from 'utils/$path';
-import styles from './index.module.css';
+import styles from './page.module.css';
 
 export type OptionalQuery = { code: string; state: string };
 
-const Home = () => {
+export default function Home(): React.ReactElement {
   const { user } = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    if (user.data !== null) router.replace(pagesPath.console.$url());
+    if (user.data !== null) router.replace(pagesPath.console.$url().path);
   }, [user, router]);
 
   return user.inited && user.data === null ? (
@@ -45,6 +47,4 @@ const Home = () => {
   ) : (
     <Loading visible />
   );
-};
-
-export default Home;
+}

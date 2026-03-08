@@ -5,7 +5,7 @@ import { useConfirm } from 'components/Confirm/useConfirm';
 import { Loading } from 'components/Loading/Loading';
 import { useLoading } from 'components/Loading/useLoading';
 import { BasicHeader } from 'layouts/BasicHeader/BasicHeader';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { pagesPath } from 'utils/$path';
 
@@ -19,7 +19,7 @@ export const Layout = (props: { render: (user: UserEntity) => React.ReactNode })
   if (!user.inited) {
     return <Loading visible />;
   } else if (user.data === null) {
-    void router.replace(pagesPath.$url());
+    void router.replace(pagesPath.$url().path);
 
     return <Loading visible />;
   }
