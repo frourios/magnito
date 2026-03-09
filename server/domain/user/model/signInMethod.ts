@@ -1,8 +1,8 @@
 import assert from 'assert';
+import crypto from 'crypto';
 import type { UserSrpAuthTarget } from 'common/types/signIn';
 import type { ChallengeVal, CognitoUserEntity } from 'common/types/user';
 import type { Jwks, UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
-import crypto from 'crypto';
 import { genTokens } from 'domain/user/service/genTokens';
 import {
   calculateScramblingParameter,

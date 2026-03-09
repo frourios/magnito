@@ -2,6 +2,6 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   test: {
-    exclude: ['node_modules', 'out', 'api'],
+    exclude: ['node_modules', 'api'],
   },
 });

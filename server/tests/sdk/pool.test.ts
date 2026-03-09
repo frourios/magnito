@@ -44,7 +44,7 @@ test(DeleteUserPoolCommand.name, async () => {
   expect(res2.UserPools).toHaveLength(1);
 });
 
-// eslint-disable-next-line complexity
+// oxlint-disable-next-line complexity
 test(DeleteUserPoolClientCommand.name, async () => {
   const pool = await cognitoClient.send(new CreateUserPoolCommand({ PoolName: 'testPool' }));
   const client = await cognitoClient.send(

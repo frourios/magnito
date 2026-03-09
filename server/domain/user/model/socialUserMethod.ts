@@ -1,4 +1,5 @@
 import assert from 'assert';
+import { createHash } from 'crypto';
 import type { EntityId } from 'common/types/brandedId';
 import type {
   SocialUserCreateVal,
@@ -7,7 +8,6 @@ import type {
   UserEntity,
 } from 'common/types/user';
 import type { Jwks, UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
-import { createHash } from 'crypto';
 import { brandedId } from 'service/brandedId';
 import { cognitoAssert } from 'service/cognitoAssert';
 import { ulid } from 'ulid';

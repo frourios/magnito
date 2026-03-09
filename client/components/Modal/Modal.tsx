@@ -13,7 +13,7 @@ export const ModalBody = (props: { children: React.ReactNode }) => {
   return <div className={styles.body}>{props.children}</div>;
 };
 
-// eslint-disable-next-line complexity
+// oxlint-disable-next-line complexity
 export const ModalFooter = (
   props: { headerText?: string } & (
     | { okText?: undefined }

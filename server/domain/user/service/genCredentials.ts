@@ -1,5 +1,5 @@
-import type { EntityId } from 'common/types/brandedId';
 import crypto from 'crypto';
+import type { EntityId } from 'common/types/brandedId';
 import { g, N, Nbytes } from './srp/constants';
 import { calculatePrivateKey, getPoolName, toBufferWithLength } from './srp/util';
 

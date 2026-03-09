@@ -30,7 +30,7 @@ export const AuthLoader = () => {
   }, [setUser, updateCookie]);
 
   useEffect(() => {
-    // eslint-disable-next-line complexity
+    // oxlint-disable-next-line complexity
     const useId = apiAxios.interceptors.response.use(undefined, async (err) => {
       if (user.data && isAxiosError(err) && err.response?.status === 401 && err.config) {
         const { config } = err;
@@ -48,7 +48,7 @@ export const AuthLoader = () => {
   useEffect(() => {
     return Hub.listen(
       'auth',
-      // eslint-disable-next-line complexity
+      // oxlint-disable-next-line complexity
       async (data) => {
         switch (data.payload.event) {
           case 'customOAuthState':

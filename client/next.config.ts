@@ -1,10 +1,10 @@
+import fs from 'fs';
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
-  env: { APP_VERSION: `v${require('../package.json').version}` },
+  env: { APP_VERSION: `v${JSON.parse(fs.readFileSync('../package.json', 'utf8')).version}` },
   webpack: (config) => {
     config.resolve.symlinks = false;
 

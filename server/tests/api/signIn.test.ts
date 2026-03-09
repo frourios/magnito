@@ -1,8 +1,8 @@
+import assert from 'assert';
 import {
   AssociateSoftwareTokenCommand,
   SetUserMFAPreferenceCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import assert from 'assert';
 import { calcClientSignature } from 'domain/user/service/srp/calcClientSignature';
 import { calculateSrpA } from 'domain/user/service/srp/calcSrpA';
 import { fromBuffer } from 'domain/user/service/srp/util';

@@ -1,5 +1,5 @@
-import type { UserType } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
+import type { UserType } from '@aws-sdk/client-cognito-identity-provider';
 import type {
   ChangePasswordTarget,
   ConfirmForgotPasswordTarget,

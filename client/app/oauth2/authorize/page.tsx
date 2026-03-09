@@ -115,7 +115,7 @@ const AddAccount = (props: {
   );
 };
 
-// eslint-disable-next-line complexity
+// oxlint-disable-next-line complexity
 const Authorize = () => {
   const router = useRouter();
   const userPoolClientId = router.query.client_id as MaybeId['userPoolClient'];

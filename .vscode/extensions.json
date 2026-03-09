@@ -1,12 +1,10 @@
 {
   "recommendations": [
     "bierner.markdown-mermaid",
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
     "prisma.prisma",
+    "oxc.oxc-vscode",
     "ms-azuretools.vscode-docker",
     "stylelint.vscode-stylelint",
-    "styled-components.vscode-styled-components",
     "yoavbls.pretty-ts-errors"
   ]
 }

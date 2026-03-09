@@ -1,10 +1,10 @@
+import assert from 'assert';
+import { createHash } from 'crypto';
 import {
   AdminCreateUserCommand,
   AdminInitiateAuthCommand,
   AdminSetUserPasswordCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import assert from 'assert';
-import { createHash } from 'crypto';
 import { InbucketAPIClient } from 'inbucket-js-client';
 import { cognitoClient } from 'service/cognito';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'service/envValues';

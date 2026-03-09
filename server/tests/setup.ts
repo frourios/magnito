@@ -1,10 +1,10 @@
 import { exec } from 'child_process';
+import util from 'util';
 import { userPoolUseCase } from 'domain/userPool/useCase/userPoolUseCase';
 import type { FastifyInstance } from 'fastify';
 import { init } from 'service/app';
 import { PORT } from 'service/envValues';
 import { prismaClient } from 'service/prismaClient';
-import util from 'util';
 import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
 let server: FastifyInstance;

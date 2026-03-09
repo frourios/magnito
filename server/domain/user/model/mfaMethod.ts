@@ -15,7 +15,7 @@ export const mfaMethod = {
 
     return { ...user, mfaSettingList: ['SOFTWARE_TOKEN_MFA'] };
   },
-  // eslint-disable-next-line complexity
+  // oxlint-disable-next-line complexity
   setPreference: (
     user: CognitoUserEntity,
     req: SetUserMFAPreferenceTarget['reqBody'],

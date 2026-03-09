@@ -1,6 +1,6 @@
+import { randomUUID } from 'crypto';
 import type { EntityId } from 'common/types/brandedId';
 import type { UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
-import { randomUUID } from 'crypto';
 import { brandedId } from 'service/brandedId';
 import { createShortHash } from 'service/createShortHash';
 import { REGION } from 'service/envValues';

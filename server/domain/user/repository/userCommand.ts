@@ -3,7 +3,7 @@ import type { EntityId } from 'common/types/brandedId';
 import type { UserEntity } from 'common/types/user';
 
 export const userCommand = {
-  // eslint-disable-next-line complexity
+  // oxlint-disable-next-line complexity
   save: async (tx: Prisma.TransactionClient, user: UserEntity): Promise<void> => {
     await tx.userAttribute.deleteMany({ where: { userId: user.id } });
 

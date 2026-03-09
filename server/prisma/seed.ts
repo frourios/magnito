@@ -1,7 +1,7 @@
-import type { Prisma } from '@prisma/client';
 import assert from 'assert';
-import { USER_KINDS } from 'common/constants';
 import { createHash } from 'crypto';
+import type { Prisma } from '@prisma/client';
+import { USER_KINDS } from 'common/constants';
 import { prismaClient, transaction } from 'service/prismaClient';
 import { ulid } from 'ulid';
 

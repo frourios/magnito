@@ -1,3 +1,4 @@
+import assert from 'assert';
 import {
   AssociateSoftwareTokenCommand,
   GetUserCommand,
@@ -5,7 +6,6 @@ import {
   VerifySoftwareTokenCommand,
   VerifySoftwareTokenResponseType,
 } from '@aws-sdk/client-cognito-identity-provider';
-import assert from 'assert';
 import { MFA_SETTING_LIST } from 'common/constants';
 import { authenticator } from 'otplib';
 import { cognitoClient } from 'service/cognito';

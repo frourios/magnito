@@ -1,5 +1,5 @@
-import type { Prisma } from '@prisma/client';
 import assert from 'assert';
+import type { Prisma } from '@prisma/client';
 import type {
   AdminCreateUserTarget,
   AdminDeleteUserAttributesTarget,

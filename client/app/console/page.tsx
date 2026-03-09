@@ -18,7 +18,7 @@ const Main = (_: { user: UserEntity }) => {
       .send(new ListUsersCommand({ UserPoolId: defaults.userPoolId }))
       .then((res) => setUsers(res.Users))
       .catch(catchApiErr);
-  }, []);
+  }, [defaults, cognitoClient]);
 
   return (
     <div className={styles.container}>

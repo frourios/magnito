@@ -1,5 +1,5 @@
-import type { Jwks } from 'common/types/userPool';
 import { createHash, createPublicKey, generateKeyPairSync } from 'crypto';
+import type { Jwks } from 'common/types/userPool';
 import { JWK } from 'node-jose';
 
 export const genPrivatekey = (): string => {

@@ -1,5 +1,5 @@
-import { VerifySoftwareTokenResponseType } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
+import { VerifySoftwareTokenResponseType } from '@aws-sdk/client-cognito-identity-provider';
 import type {
   AssociateSoftwareTokenTarget,
   SetUserMFAPreferenceTarget,

@@ -85,26 +85,21 @@ You can check the emails sent by Magnito with Inbucket.
 ## Features
 
 - Sign Up
-
   - Create a new user account by entering an email address and password.
   - Passwords must have at least 8 characters, at least one uppercase letter, at least one lowercase letter, at least one number, and at least one special character.
 
 - Sign In
-
   - Sign in with your email address and password.
   - Sign in with Google / Apple / Amazon / Facebook emulators.
   - Support MFA with TOTP.
 
 - Forgot Password
-
   - Send a password reset email to the email address you registered with.
 
 - Reset Password
-
   - Reset your password by entering a old password and a new password.
 
 - Admin
-
   - List all user information.
 
 - Profile

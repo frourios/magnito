@@ -1,3 +1,4 @@
+import assert from 'assert';
 import {
   AdminCreateUserCommand,
   AdminDeleteUserAttributesCommand,
@@ -8,7 +9,6 @@ import {
   AdminUpdateUserAttributesCommand,
   UserStatusType,
 } from '@aws-sdk/client-cognito-identity-provider';
-import assert from 'assert';
 import { cognitoClient } from 'service/cognito';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'service/envValues';
 import { createUserClient, testPassword, testUserName } from 'tests/api/apiClient';

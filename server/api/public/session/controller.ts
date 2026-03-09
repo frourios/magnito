@@ -1,5 +1,5 @@
-import type { CookieSerializeOptions } from '@fastify/cookie';
 import assert from 'assert';
+import type { CookieSerializeOptions } from '@fastify/cookie';
 import { COOKIE_NAME } from 'service/constants';
 import { z } from 'zod';
 import type { Methods } from '.';

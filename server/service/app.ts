@@ -1,14 +1,14 @@
+import assert from 'assert';
+import { resolve } from 'path';
 import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import fastifyFormbody from '@fastify/formbody';
 import type { TokenOrHeader } from '@fastify/jwt';
 import fastifyJwt from '@fastify/jwt';
 import fastifyStatic from '@fastify/static';
-import assert from 'assert';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import Fastify from 'fastify';
 import buildGetJwks from 'get-jwks';
-import { resolve } from 'path';
 import server from '../$server';
 import { COOKIE_NAME } from './constants';
 

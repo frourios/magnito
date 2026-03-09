@@ -6,8 +6,8 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from 'components/Modal/Mod
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { APP_VERSION } from 'utils/envValues';
-import styles from './BasicHeader.module.css';
 import { YourProfile } from './YourProfile';
+import styles from './BasicHeader.module.css';
 
 const Menu = ({
   open,

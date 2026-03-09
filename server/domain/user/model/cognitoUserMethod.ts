@@ -1,5 +1,5 @@
-import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
 import assert from 'assert';
+import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
 import type { ChangePasswordTarget, VerifyUserAttributeTarget } from 'common/types/auth';
 import type { EntityId } from 'common/types/brandedId';
 import type { CognitoUserEntity, UserEntity } from 'common/types/user';
@@ -115,7 +115,7 @@ export const cognitoUserMethod = {
       updatedTime: Date.now(),
     };
   },
-  // eslint-disable-next-line complexity
+  // oxlint-disable-next-line complexity
   updateAttributes: (user: UserEntity, attributes: AttributeType[] | undefined): UserEntity => {
     assert(attributes);
 
