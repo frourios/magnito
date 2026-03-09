@@ -19,7 +19,7 @@ export const Layout = (props: { render: (user: UserEntity) => React.ReactNode })
   if (!user.inited) {
     return <Loading visible />;
   } else if (user.data === null) {
-    void router.replace(pagesPath.$url().path);
+    void router.replace(pagesPath.login.$url().path);
 
     return <Loading visible />;
   }

@@ -19,6 +19,7 @@ ARG NEXT_PUBLIC_API_ORIGIN=http://localhost:$SERVER_PORT
 
 RUN npm run batch:writeVersion -- $VERSION
 RUN npm run build
+RUN npm ci --omit=dev --prefix client
 RUN npm ci --omit=dev --prefix server
 
 FROM node:24-alpine3.22
@@ -43,9 +44,11 @@ ENV SMTP_USER=fake_mail_user
 ENV SMTP_PASS=fake_mail_password
 
 COPY --chown=node package.json ./
+COPY --chown=node client/package.json client/package-lock.json ./client/
 COPY --chown=node server/package.json server/package-lock.json ./server/
 
-COPY --chown=node --from=builder /usr/src/app/client/out client/out/
+COPY --chown=node --from=builder /usr/src/app/client/node_modules client/node_modules/
+COPY --chown=node --from=builder /usr/src/app/client/.next client/.next/
 COPY --chown=node --from=builder /usr/src/app/server/certificates server/certificates/
 COPY --chown=node --from=builder /usr/src/app/server/node_modules server/node_modules/
 COPY --chown=node --from=builder /usr/src/app/server/index.js server/index.js

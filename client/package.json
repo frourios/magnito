@@ -3,14 +3,17 @@
   "scripts": {
     "dev": "run-p dev:*",
     "dev:client": "next dev -p 5051",
+    "dev:frourio": "frourio-next --watch",
     "dev:hcm": "hcm '**/*.module.css' -w",
     "dev:aspida": "aspida --watch",
     "dev:path": "pathpida --ignorePath ../.gitignore -s -w",
     "build": "npm run generate && next build",
     "generate": "run-p generate:*",
     "generate:aspida": "aspida",
+    "generate:frourio": "frourio-next",
     "generate:path": "pathpida --ignorePath ../.gitignore -s",
     "hcm": "hcm '**/*.module.css'",
+    "start": "next start -p $CLIENT_PORT",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:updateSnapshot": "vitest -u",
@@ -35,6 +38,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@frourio/next": "^0.20.0",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",

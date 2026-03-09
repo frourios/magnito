@@ -17,8 +17,7 @@
     "migrate:dev:createonly": "prisma migrate dev --create-only",
     "migrate:deploy": "prisma migrate deploy && npx prisma db seed",
     "migrate:reset": "prisma migrate reset",
-    "start": "npm run start:client & npm run start:server & npm run start:ssl",
-    "start:client": "serve ../client/out -l $CLIENT_PORT",
+    "start": "npm run start:server & npm run start:ssl",
     "start:server": "prisma migrate deploy && prisma generate && node --enable-source-maps prisma/seed.js && node --enable-source-maps index.js",
     "start:ssl": "local-ssl-proxy --key ./certificates/server.key --cert ./certificates/server.crt --source $SSL_PORT --target $PORT",
     "test": "vitest run --coverage",
@@ -47,7 +46,6 @@
     "nodemailer": "^6.9.15",
     "otplib": "^12.0.1",
     "prisma": "^6.19.2",
-    "serve": "^14.2.3",
     "ulid": "^2.3.0",
     "velona": "^0.8.0",
     "zod": "^3.23.8"

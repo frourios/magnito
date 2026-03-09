@@ -15,10 +15,10 @@ npm-debug.log*
 
 # client
 client/.next/
-client/out/
 client/api/*
 **/*.css.d.ts
 **/*.css.d.ts.map
+frourio.*.ts
 
 # server
 server/index.js*

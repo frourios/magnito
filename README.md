@@ -64,7 +64,7 @@ volumes:
 
 ### Web UI
 
-You can access the Magnito web interface at <http://localhost:5051/>.
+You can access the Magnito web interface at <http://localhost:5051>.
 
 ### SMTP Server UI
 
@@ -74,12 +74,12 @@ You can check the emails sent by Magnito with Inbucket.
 
 ## Screenshots
 
-| Sign Up                                                                                 | Sign In                                                                                 |
-| --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Sign Up                                                                                | Sign In                                                                                |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | ![Sign Up](https://frourios.github.io/magnito/screenshots/sign-up.png)                 | ![Sign In](https://frourios.github.io/magnito/screenshots/sign-in.png)                 |
-| Forgot Password                                                                         | Admin                                                                                   |
+| Forgot Password                                                                        | Admin                                                                                  |
 | ![Forgot Password](https://frourios.github.io/magnito/screenshots/forgot-password.png) | ![Admin](https://frourios.github.io/magnito/screenshots/admin.png)                     |
-| Profile                                                                                 | Change Password                                                                         |
+| Profile                                                                                | Change Password                                                                        |
 | ![Profile](https://frourios.github.io/magnito/screenshots/profile.png)                 | ![Change Password](https://frourios.github.io/magnito/screenshots/change-password.png) |
 
 ## Features

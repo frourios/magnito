@@ -11,7 +11,7 @@
     "build": "run-p build:*",
     "build:client": "npm run build --prefix client",
     "build:server": "npm run build --prefix server",
-    "start": "npm start --prefix server",
+    "start": "npm start --prefix client & npm start --prefix server",
     "generate": "run-p generate:*",
     "generate:client": "npm run generate --prefix client",
     "generate:server": "npm run generate --prefix server",
