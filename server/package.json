@@ -8,7 +8,7 @@
     "dev:ssl": "local-ssl-proxy --key ./certificates/server.key --cert ./certificates/server.crt --source 5052 --target 5050",
     "dev:frourio": "frourio --watch",
     "dev:prisma": "prisma generate --watch",
-    "build": "npm run generate && node ./scripts/build.prod.js",
+    "build": "prisma migrate deploy && npm run generate && node ./scripts/build.prod.js",
     "lint": "prisma format",
     "generate": "run-s generate:prisma generate:frourio",
     "generate:prisma": "prisma generate",
@@ -18,7 +18,7 @@
     "migrate:deploy": "prisma migrate deploy && npx prisma db seed",
     "migrate:reset": "prisma migrate reset",
     "start": "npm run start:server & npm run start:ssl",
-    "start:server": "prisma migrate deploy && prisma generate && node --enable-source-maps prisma/seed.js && node --enable-source-maps index.js",
+    "start:server": "node --enable-source-maps prisma/seed.js && node --enable-source-maps index.js",
     "start:ssl": "local-ssl-proxy --key ./certificates/server.key --cert ./certificates/server.crt --source $SSL_PORT --target $PORT",
     "test": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
@@ -45,7 +45,6 @@
     "node-jose": "^2.2.0",
     "nodemailer": "^6.9.15",
     "otplib": "^12.0.1",
-    "prisma": "^6.19.2",
     "ulid": "^2.3.0",
     "velona": "^0.8.0",
     "zod": "^3.23.8"
@@ -66,6 +65,7 @@
     "inbucket-js-client": "^1.0.1",
     "node-dev": "^8.0.0",
     "notios": "^0.5.3",
+    "prisma": "^6.19.2",
     "typescript": "^5.6.2"
   },
   "engines": {

@@ -7,11 +7,13 @@
     "dev:hcm": "hcm '**/*.module.css' -w",
     "dev:aspida": "aspida --watch",
     "dev:path": "pathpida --ignorePath ../.gitignore -s -w",
+    "dev:prisma": "prisma generate --watch",
     "build": "npm run generate && next build",
     "generate": "run-p generate:*",
     "generate:aspida": "aspida",
     "generate:frourio": "frourio-next",
     "generate:path": "pathpida --ignorePath ../.gitignore -s",
+    "generate:prisma": "prisma generate",
     "hcm": "hcm '**/*.module.css'",
     "start": "next start -p $CLIENT_PORT",
     "test": "vitest run",
@@ -25,6 +27,7 @@
     "@aws-amplify/ui-react": "^6.3.0",
     "@aws-sdk/client-cognito-identity-provider": "^3.645.0",
     "@fakerjs/word": "^1.0.1",
+    "@prisma/client": "^6.19.2",
     "aspida": "^1.14.0",
     "aws-amplify": "^6.6.0",
     "axios": "^1.7.7",
@@ -39,12 +42,16 @@
   },
   "devDependencies": {
     "@frourio/next": "^0.20.0",
+    "@types/nodemailer": "^7.0.11",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "happy-css-modules": "^3.1.1",
+    "inbucket-js-client": "^2.0.0",
+    "nodemailer": "^8.0.2",
     "notios": "^0.5.3",
-    "pathpida": "^0.26.0"
+    "pathpida": "^0.26.0",
+    "prisma": "^6.19.2"
   },
   "engines": {
     "node": ">=24.0.0"

@@ -5,7 +5,7 @@ import type { UserEntity } from 'common/types/user';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'components/Modal/Modal';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
-import { APP_VERSION } from 'utils/envValues';
+import { APP_VERSION } from 'utils/clientEnvs';
 import { YourProfile } from './YourProfile';
 import styles from './BasicHeader.module.css';
 

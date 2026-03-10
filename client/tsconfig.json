@@ -18,11 +18,7 @@
     "jsx": "preserve",
     "types": ["vitest/importMeta"],
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "plugins": [{ "name": "next" }]
   },
   "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
   "exclude": ["node_modules", "api/**/*.ts"]

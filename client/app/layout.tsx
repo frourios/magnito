@@ -12,7 +12,7 @@ import { useEffect, useMemo } from 'react';
 import { staticPath } from 'utils/$path';
 import { apiClient } from 'utils/apiClient';
 import { catchApiErr } from 'utils/catchApiErr';
-import { NEXT_PUBLIC_API_ORIGIN } from 'utils/envValues';
+import { NEXT_PUBLIC_API_ORIGIN } from 'utils/clientEnvs';
 import '../styles/globals.css';
 
 if (typeof window !== 'undefined') {
