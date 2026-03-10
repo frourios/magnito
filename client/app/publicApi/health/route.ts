@@ -1,6 +1,6 @@
+import { userPoolUseCase } from 'server/domain/userPool/useCase/userPoolUseCase';
 import { cognito } from 'server/service/cognito';
 import { CustomError } from 'server/service/customAssert';
-import { prismaClient } from 'server/service/prismaClient';
 import { checkSmtpHealth } from 'server/service/sendMail';
 import { createRoute } from './frourio.server';
 
@@ -11,11 +11,13 @@ function throwCustomError(label: string) {
   };
 }
 
+const initPromise = userPoolUseCase.initDefaults();
+
 export const { GET } = createRoute({
   get: async () => ({
     status: 200,
     body: await Promise.all([
-      prismaClient.$queryRaw`SELECT CURRENT_TIMESTAMP;`.catch(throwCustomError('DB')),
+      initPromise.catch(throwCustomError('DB')),
       checkSmtpHealth().catch(throwCustomError('SMTP')),
       cognito.health().catch(throwCustomError('Cognito')),
     ]).then(() => 'ok'),

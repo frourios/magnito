@@ -15,8 +15,8 @@ const SMTP_USER = z.string().parse(process.env.SMTP_USER);
 const ACCESS_KEY = z.string().parse(process.env.COGNITO_ACCESS_KEY);
 const REGION = z.string().parse(process.env.COGNITO_REGION);
 const SECRET_KEY = z.string().parse(process.env.COGNITO_SECRET_KEY);
-const DEFAULT_USER_POOL_ID = brandedId.userPool.entity.parse(process.env.COGNITO_USER_POOL_ID);
-const DEFAULT_USER_POOL_CLIENT_ID = brandedId.userPoolClient.entity.parse(
+const DEFAULT_USER_POOL_ID = brandedId.userPool.dto.parse(process.env.COGNITO_USER_POOL_ID);
+const DEFAULT_USER_POOL_CLIENT_ID = brandedId.userPoolClient.dto.parse(
   process.env.COGNITO_USER_POOL_CLIENT_ID,
 );
 

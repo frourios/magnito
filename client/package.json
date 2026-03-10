@@ -34,6 +34,7 @@
     "jotai": "^2.9.3",
     "local-ssl-proxy": "^2.0.5",
     "next": "^15.5.12",
+    "node-jose": "^2.2.0",
     "qrcode": "^1.5.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "@frourio/next": "^0.20.0",
+    "@types/node-jose": "^1.1.13",
     "@types/nodemailer": "^7.0.11",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.3.5",
