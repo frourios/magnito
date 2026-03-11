@@ -2,6 +2,7 @@ import type { Prisma } from '@prisma/client';
 import { USER_KINDS } from 'common/constants';
 import type { MaybeId } from 'schemas/brandedId';
 import type { SocialUserDto, UserDto } from 'schemas/user';
+import type { UserEntity } from '../model/userType';
 import { toSocialUserDto, toUserDto, USER_INCLUDE } from './userDto';
 
 export const userQuery = {
@@ -32,7 +33,7 @@ export const userQuery = {
       .then((users) => users.map(toUserDto)),
   findById: (
     tx: Prisma.TransactionClient,
-    id: UserDto['id'] | MaybeId['socialUser'],
+    id: UserDto['id'] | UserEntity['id'] | MaybeId['socialUser'],
   ): Promise<UserDto> =>
     tx.user.findUniqueOrThrow({ where: { id }, include: USER_INCLUDE }).then(toUserDto),
   findByName: (tx: Prisma.TransactionClient, name: string): Promise<UserDto> =>

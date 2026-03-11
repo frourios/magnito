@@ -1,10 +1,15 @@
 import type { Prisma } from '@prisma/client';
 import type { EntityId } from 'common/types/brandedId';
+import type { UserDto } from 'schemas/user';
 import type { UserEntity } from '../model/userType';
+import { userQuery } from './userQuery';
 
 export const userCommand = {
   // oxlint-disable-next-line complexity
-  save: async (tx: Prisma.TransactionClient, user: UserEntity): Promise<void> => {
+  save: async <T extends UserEntity>(
+    tx: Prisma.TransactionClient,
+    user: T,
+  ): Promise<UserDto & { kind: T['kind'] }> => {
     await tx.userAttribute.deleteMany({ where: { userId: user.id } });
 
     await tx.user.upsert({
@@ -57,6 +62,8 @@ export const userCommand = {
         updatedAt: new Date(user.updatedTime),
       },
     });
+
+    return userQuery.findById(tx, user.id);
   },
   delete: async (
     tx: Prisma.TransactionClient,
