@@ -1,16 +1,11 @@
 import { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
-import type { User, UserAttribute } from '@prisma/client';
+import type { Prisma, User } from '@prisma/client';
 import { MFA_SETTING_LIST, PROVIDER_LIST, USER_KIND_LIST, USER_KINDS } from 'common/constants';
-import type {
-  CognitoUserEntity,
-  SocialUserEntity,
-  UserAttributeEntity,
-  UserEntity,
-} from 'common/types/user';
-import { brandedId } from 'service/brandedId';
+import { brandedId } from 'schemas/brandedId';
+import type { CognitoUserDto, SocialUserDto, UserAttributeDto, UserDto } from 'schemas/user';
 import { z } from 'zod';
 
-const getChallenge = (prismaUser: User): CognitoUserEntity['challenge'] =>
+const getChallenge = (prismaUser: User): CognitoUserDto['challenge'] =>
   prismaUser.secretBlock && prismaUser.pubA && prismaUser.pubB && prismaUser.secB
     ? {
         secretBlock: prismaUser.secretBlock,
@@ -20,11 +15,13 @@ const getChallenge = (prismaUser: User): CognitoUserEntity['challenge'] =>
       }
     : undefined;
 
-export const toCognitoUserEntity = (
-  prismaUser: User & { attributes: UserAttribute[] },
-): CognitoUserEntity => {
+export const USER_INCLUDE = { attributes: true } as const;
+
+type PrismaUser = Prisma.UserGetPayload<{ include: typeof USER_INCLUDE }>;
+
+export const toCognitoUserDto = (prismaUser: PrismaUser): CognitoUserDto => {
   return {
-    id: brandedId.cognitoUser.entity.parse(prismaUser.id),
+    id: brandedId.cognitoUser.dto.parse(prismaUser.id),
     kind: z.literal(USER_KINDS.cognito).parse(prismaUser.kind),
     name: prismaUser.name,
     enabled: prismaUser.enabled,
@@ -43,10 +40,10 @@ export const toCognitoUserEntity = (
     refreshToken: prismaUser.refreshToken,
     confirmationCode: z.string().parse(prismaUser.confirmationCode),
     challenge: getChallenge(prismaUser),
-    userPoolId: brandedId.userPool.entity.parse(prismaUser.userPoolId),
+    userPoolId: brandedId.userPool.dto.parse(prismaUser.userPoolId),
     attributes: prismaUser.attributes.map(
-      (attr): UserAttributeEntity => ({
-        id: brandedId.userAttribute.entity.parse(attr.id),
+      (attr): UserAttributeDto => ({
+        id: brandedId.userAttribute.dto.parse(attr.id),
         name: attr.name,
         value: attr.value,
       }),
@@ -73,11 +70,9 @@ export const toCognitoUserEntity = (
   };
 };
 
-export const toSocialUserEntity = (
-  prismaUser: User & { attributes: UserAttribute[] },
-): SocialUserEntity => {
+export const toSocialUserDto = (prismaUser: PrismaUser): SocialUserDto => {
   return {
-    id: brandedId.socialUser.entity.parse(prismaUser.id),
+    id: brandedId.socialUser.dto.parse(prismaUser.id),
     kind: z.literal(USER_KINDS.social).parse(prismaUser.kind),
     name: prismaUser.name,
     enabled: prismaUser.enabled,
@@ -87,10 +82,10 @@ export const toSocialUserEntity = (
     authorizationCode: z.string().parse(prismaUser.authorizationCode),
     codeChallenge: z.string().parse(prismaUser.codeChallenge),
     refreshToken: prismaUser.refreshToken,
-    userPoolId: brandedId.userPool.entity.parse(prismaUser.userPoolId),
+    userPoolId: brandedId.userPool.dto.parse(prismaUser.userPoolId),
     attributes: prismaUser.attributes.map(
-      (attr): UserAttributeEntity => ({
-        id: brandedId.userAttribute.entity.parse(attr.id),
+      (attr): UserAttributeDto => ({
+        id: brandedId.userAttribute.dto.parse(attr.id),
         name: attr.name,
         value: attr.value,
       }),
@@ -100,14 +95,14 @@ export const toSocialUserEntity = (
   };
 };
 
-export const toUserEntity = (prismaUser: User & { attributes: UserAttribute[] }): UserEntity => {
+export const toUserDto = (prismaUser: PrismaUser): UserDto => {
   const kind = z.enum(USER_KIND_LIST).parse(prismaUser.kind);
 
   switch (kind) {
     case 'cognito':
-      return toCognitoUserEntity(prismaUser);
+      return toCognitoUserDto(prismaUser);
     case 'social':
-      return toSocialUserEntity(prismaUser);
+      return toSocialUserDto(prismaUser);
     /* v8 ignore next 2 */
     default:
       throw new Error(kind satisfies never);

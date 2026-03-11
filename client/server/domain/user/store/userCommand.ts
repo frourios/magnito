@@ -1,6 +1,6 @@
 import type { Prisma } from '@prisma/client';
 import type { EntityId } from 'common/types/brandedId';
-import type { UserEntity } from 'common/types/user';
+import type { UserEntity } from '../model/userType';
 
 export const userCommand = {
   // oxlint-disable-next-line complexity

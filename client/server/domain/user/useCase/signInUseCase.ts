@@ -4,16 +4,16 @@ import type {
   RespondToAuthChallengeTarget,
   UserSrpAuthTarget,
 } from 'common/types/signIn';
-import { userCommand } from 'domain/user/repository/userCommand';
-import { userQuery } from 'domain/user/repository/userQuery';
-import { genTokens } from 'domain/user/service/genTokens';
-import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
-import { cognitoAssert } from 'service/cognitoAssert';
-import { EXPIRES_SEC } from 'service/constants';
-import { transaction } from 'service/prismaClient';
+import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
+import { cognitoAssert } from 'server/service/cognitoAssert';
+import { EXPIRES_SEC } from 'server/service/constants';
+import { transaction } from 'server/service/prismaClient';
 import { mfaMethod } from '../model/mfaMethod';
 import { signInMethod } from '../model/signInMethod';
+import { genTokens } from '../service/genTokens';
 import { isEmailVerified } from '../service/isEmailVerified';
+import { userCommand } from '../store/userCommand';
+import { userQuery } from '../store/userQuery';
 
 export const signInUseCase = {
   userSrpAuth: (req: UserSrpAuthTarget['reqBody']): Promise<UserSrpAuthTarget['resBody']> =>

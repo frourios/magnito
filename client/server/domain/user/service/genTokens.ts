@@ -1,18 +1,18 @@
-import type { EntityId } from 'common/types/brandedId';
-import type { UserEntity } from 'common/types/user';
-import type { Jwks } from 'common/types/userPool';
 import { createSigner } from 'fast-jwt';
-import { EXPIRES_SEC } from 'service/constants';
-import { PORT } from 'service/envValues';
-import type { AccessTokenJwt, IdTokenJwt } from 'service/types';
+import type { DtoId } from 'schemas/brandedId';
+import type { UserDto } from 'schemas/user';
+import type { JwksDto } from 'schemas/userPool';
+import { EXPIRES_SEC } from 'server/service/constants';
+import { SERVER_PORT } from 'server/service/serverEnvs';
+import type { AccessTokenJwt, IdTokenJwt } from 'server/service/types';
 import { ulid } from 'ulid';
 import { isEmailVerified } from './isEmailVerified';
 
 export const genTokens = (params: {
   privateKey: string;
-  userPoolClientId: EntityId['userPoolClient'];
-  jwks: Jwks;
-  user: UserEntity;
+  userPoolClientId: DtoId['userPoolClient'];
+  jwks: JwksDto;
+  user: UserDto;
 }): { AccessToken: string; IdToken: string } => {
   const signer = createSigner({
     key: params.privateKey,
@@ -22,7 +22,7 @@ export const genTokens = (params: {
   const now = Math.floor(Date.now() / 1000);
   const common = {
     sub: params.user.id,
-    iss: `http://localhost:${PORT}/${params.user.userPoolId}`,
+    iss: `http://localhost:${SERVER_PORT}/${params.user.userPoolId}`,
     origin_jti: ulid(),
     event_id: ulid(),
     auth_time: now,

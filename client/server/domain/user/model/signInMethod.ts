@@ -1,21 +1,20 @@
 import assert from 'assert';
 import crypto from 'crypto';
 import type { UserSrpAuthTarget } from 'common/types/signIn';
-import type { ChallengeVal, CognitoUserEntity } from 'common/types/user';
-import type { Jwks, UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
-import { genTokens } from 'domain/user/service/genTokens';
-import {
-  calculateScramblingParameter,
-  calculateSessionKey,
-} from 'domain/user/service/srp/calcSessionKey';
-import { calculateSignature } from 'domain/user/service/srp/calcSignature';
-import { calculateSrpB } from 'domain/user/service/srp/calcSrpB';
-import { getPoolName } from 'domain/user/service/srp/util';
-import { cognitoAssert } from 'service/cognitoAssert';
+import { brandedId } from 'schemas/brandedId';
+import type { ChallengeVal, CognitoUserDto } from 'schemas/user';
+import type { JwksDto, UserPoolClientDto, UserPoolDto } from 'schemas/userPool';
+import { cognitoAssert } from 'server/service/cognitoAssert';
+import { genTokens } from '../service/genTokens';
+import { calculateScramblingParameter, calculateSessionKey } from '../service/srp/calcSessionKey';
+import { calculateSignature } from '../service/srp/calcSignature';
+import { calculateSrpB } from '../service/srp/calcSrpB';
+import { getPoolName } from '../service/srp/util';
+import type { CognitoUserEntity } from './userType';
 
 export const signInMethod = {
   createChallenge: (
-    user: CognitoUserEntity,
+    user: CognitoUserDto,
     params: UserSrpAuthTarget['reqBody']['AuthParameters'],
   ): {
     userWithChallenge: CognitoUserEntity;
@@ -26,7 +25,16 @@ export const signInMethod = {
     const challenge: ChallengeVal = { pubB: B, secB: b, pubA: params.SRP_A, secretBlock };
 
     return {
-      userWithChallenge: { ...user, challenge },
+      userWithChallenge: {
+        ...user,
+        id: brandedId.cognitoUser.entity.parse(user.id),
+        attributes: user.attributes.map((attr) => ({
+          ...attr,
+          id: brandedId.userAttribute.entity.parse(attr.id),
+        })),
+        userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
+        challenge,
+      },
       ChallengeParameters: {
         SALT: user.salt,
         SECRET_BLOCK: secretBlock,
@@ -37,12 +45,12 @@ export const signInMethod = {
     };
   },
   srpAuth: (params: {
-    user: CognitoUserEntity;
+    user: CognitoUserDto;
     timestamp: string;
     clientSignature: string;
-    jwks: Jwks;
-    pool: UserPoolEntity;
-    poolClient: UserPoolClientEntity;
+    jwks: JwksDto;
+    pool: UserPoolDto;
+    poolClient: UserPoolClientDto;
   }): { AccessToken: string; IdToken: string } => {
     assert(params.user.challenge);
     const { pubA: A, pubB: B, secB: b } = params.user.challenge;
@@ -67,7 +75,16 @@ export const signInMethod = {
     });
   },
   challengeMfa: (
-    user: CognitoUserEntity,
+    user: CognitoUserDto,
     srpAuth: { timestamp: string; clientSignature: string },
-  ): CognitoUserEntity => ({ ...user, srpAuth }),
+  ): CognitoUserEntity => ({
+    ...user,
+    id: brandedId.cognitoUser.entity.parse(user.id),
+    attributes: user.attributes.map((attr) => ({
+      ...attr,
+      id: brandedId.userAttribute.entity.parse(attr.id),
+    })),
+    userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
+    srpAuth,
+  }),
 };

@@ -1,10 +1,10 @@
 import crypto from 'crypto';
-import type { EntityId } from 'common/types/brandedId';
+import type { DtoId } from 'schemas/brandedId';
 import { g, N, Nbytes } from './srp/constants';
 import { calculatePrivateKey, getPoolName, toBufferWithLength } from './srp/util';
 
 export const genVerifier = (params: {
-  poolId: EntityId['userPool'];
+  poolId: DtoId['userPool'];
   username: string;
   password: string;
   salt: string;
@@ -18,7 +18,7 @@ export const genVerifier = (params: {
 };
 
 export const genCredentials = (params: {
-  poolId: EntityId['userPool'];
+  poolId: DtoId['userPool'];
   username: string;
   password: string;
 }): { salt: string; verifier: string } => {

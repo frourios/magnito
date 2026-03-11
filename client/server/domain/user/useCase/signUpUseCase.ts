@@ -4,14 +4,14 @@ import type {
   ResendConfirmationCodeTarget,
   SignUpTarget,
 } from 'common/types/auth';
-import { cognitoUserMethod } from 'domain/user/model/cognitoUserMethod';
-import { userCommand } from 'domain/user/repository/userCommand';
-import { userQuery } from 'domain/user/repository/userQuery';
-import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
-import { transaction } from 'service/prismaClient';
+import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
+import { transaction } from 'server/service/prismaClient';
+import { cognitoUserMethod } from '../model/cognitoUserMethod';
 import { findEmail } from '../service/findEmail';
 import { genCodeDeliveryDetails } from '../service/genCodeDeliveryDetails';
 import { sendConfirmationCode } from '../service/sendAuthMail';
+import { userCommand } from '../store/userCommand';
+import { userQuery } from '../store/userQuery';
 
 export const signUpUseCase = {
   signUp: (req: SignUpTarget['reqBody']): Promise<SignUpTarget['resBody']> =>

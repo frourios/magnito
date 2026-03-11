@@ -1,16 +1,10 @@
 import assert from 'assert';
-import { calculateScramblingParameter } from 'domain/user/service/srp/calcSessionKey';
-import { calculateSignature } from 'domain/user/service/srp/calcSignature';
-import { N, Nbytes, g, multiplierParam } from 'domain/user/service/srp/constants';
-import {
-  calculatePrivateKey,
-  fromBuffer,
-  getPoolName,
-  padHex,
-  toBufferWithLength,
-} from 'domain/user/service/srp/util';
 import { BigInteger } from 'jsbn';
-import { DEFAULT_USER_POOL_ID } from 'service/envValues';
+import { DEFAULT_USER_POOL_ID } from 'server/service/serverEnvs';
+import { calculateScramblingParameter } from './calcSessionKey';
+import { calculateSignature } from './calcSignature';
+import { N, Nbytes, g, multiplierParam } from './constants';
+import { calculatePrivateKey, fromBuffer, getPoolName, padHex, toBufferWithLength } from './util';
 
 export const calcClientSignature = (params: {
   A: string;

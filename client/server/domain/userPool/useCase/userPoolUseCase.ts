@@ -86,7 +86,7 @@ export const userPoolUseCase = {
 
       const pool = await userPoolQuery.findById(tx, req.UserPoolId);
 
-      await userPoolCommand.delete(tx, pool);
+      await userPoolCommand.delete(tx, userPoolMethod.deleteUserPool(pool));
 
       return {};
     }),
@@ -98,9 +98,7 @@ export const userPoolUseCase = {
 
       const client = await userPoolQuery.findClientById(tx, req.ClientId);
 
-      assert(client.userPoolId === req.UserPoolId);
-
-      await userPoolCommand.deleteClient(tx, client);
+      await userPoolCommand.deleteClient(tx, userPoolMethod.deleteUserPoolClient(client));
 
       return {};
     }),

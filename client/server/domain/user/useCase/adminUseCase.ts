@@ -9,18 +9,18 @@ import type {
   AdminSetUserPasswordTarget,
   AdminUpdateUserAttributesTarget,
 } from 'common/types/auth';
-import type { CognitoUserEntity } from 'common/types/user';
-import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
-import { brandedId } from 'service/brandedId';
-import { prismaClient, transaction } from 'service/prismaClient';
-import { genJwks } from 'service/privateKey';
+import { brandedId } from 'schemas/brandedId';
+import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
+import { prismaClient, transaction } from 'server/service/prismaClient';
+import { genJwks } from 'server/service/privateKey';
 import { adminMethod } from '../model/adminMethod';
-import { cognitoUserMethod } from '../model/cognitoUserMethod';
-import { userCommand } from '../repository/userCommand';
-import { userQuery } from '../repository/userQuery';
+import { userMethod } from '../model/userMethod';
+import type { CognitoUserEntity } from '../model/userType';
 import { toAttributeTypes } from '../service/createAttributes';
 import { genTokens } from '../service/genTokens';
 import { sendTemporaryPassword } from '../service/sendAuthMail';
+import { userCommand } from '../store/userCommand';
+import { userQuery } from '../store/userQuery';
 
 const createUser = async (
   tx: Prisma.TransactionClient,
@@ -140,7 +140,7 @@ export const adminUseCase = {
 
       const user = await userQuery.findByName(tx, req.Username);
 
-      await userCommand.save(tx, cognitoUserMethod.deleteAttributes(user, req.UserAttributeNames));
+      await userCommand.save(tx, userMethod.deleteAttributes(user, req.UserAttributeNames));
 
       return {};
     }),

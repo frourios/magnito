@@ -1,26 +1,48 @@
 import type { SetUserMFAPreferenceTarget } from 'common/types/auth';
-import type { CognitoUserEntity } from 'common/types/user';
-import { authenticator } from 'otplib';
-import { cognitoAssert } from 'service/cognitoAssert';
+import { generateSecret, verifySync } from 'otplib';
+import { brandedId } from 'schemas/brandedId';
+import type { CognitoUserDto } from 'schemas/user';
+import { cognitoAssert } from 'server/service/cognitoAssert';
+import type { CognitoUserEntity } from './userType';
 
 export const mfaMethod = {
-  generateSecretCode: (user: CognitoUserEntity): CognitoUserEntity => {
-    return { ...user, totpSecretCode: authenticator.generateSecret() };
+  generateSecretCode: (user: CognitoUserDto): CognitoUserEntity => {
+    return {
+      ...user,
+      id: brandedId.cognitoUser.entity.parse(user.id),
+      attributes: user.attributes.map((attr) => ({
+        ...attr,
+        id: brandedId.userAttribute.entity.parse(attr.id),
+      })),
+      userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
+      totpSecretCode: generateSecret(),
+    };
   },
-  verify: (user: CognitoUserEntity, userCode: string | undefined): CognitoUserEntity => {
+  verify: (user: CognitoUserDto, userCode: string | undefined): CognitoUserEntity => {
     cognitoAssert(
-      userCode && user.totpSecretCode && authenticator.check(userCode, user.totpSecretCode),
+      userCode &&
+        user.totpSecretCode &&
+        verifySync({ secret: user.totpSecretCode, token: userCode }).valid,
       'Invalid verification code provided, please try again.',
     );
 
-    return { ...user, mfaSettingList: ['SOFTWARE_TOKEN_MFA'] };
+    return {
+      ...user,
+      id: brandedId.cognitoUser.entity.parse(user.id),
+      attributes: user.attributes.map((attr) => ({
+        ...attr,
+        id: brandedId.userAttribute.entity.parse(attr.id),
+      })),
+      userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
+      mfaSettingList: ['SOFTWARE_TOKEN_MFA'],
+    };
   },
   // oxlint-disable-next-line complexity
   setPreference: (
-    user: CognitoUserEntity,
+    user: CognitoUserDto,
     req: SetUserMFAPreferenceTarget['reqBody'],
   ): CognitoUserEntity => {
-    const mfaSettingList: CognitoUserEntity['mfaSettingList'] =
+    const mfaSettingList: CognitoUserDto['mfaSettingList'] =
       req.SoftwareTokenMfaSettings?.Enabled === undefined
         ? user.mfaSettingList
         : req.SoftwareTokenMfaSettings.Enabled
@@ -29,6 +51,12 @@ export const mfaMethod = {
 
     return {
       ...user,
+      id: brandedId.cognitoUser.entity.parse(user.id),
+      attributes: user.attributes.map((attr) => ({
+        ...attr,
+        id: brandedId.userAttribute.entity.parse(attr.id),
+      })),
+      userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
       mfaSettingList,
       preferredMfaSetting:
         !mfaSettingList?.some((s) => s === 'SOFTWARE_TOKEN_MFA') ||

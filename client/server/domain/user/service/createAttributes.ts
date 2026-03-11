@@ -1,8 +1,9 @@
 import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
-import type { UserAttributeEntity, UserEntity } from 'common/types/user';
-import { brandedId } from 'service/brandedId';
+import { brandedId } from 'schemas/brandedId';
+import type { UserAttributeDto, UserDto } from 'schemas/user';
 import { ulid } from 'ulid';
 import { z } from 'zod';
+import type { CognitoUserEntity, UserAttributeEntity } from '../model/userType';
 import { isEmailVerified } from './isEmailVerified';
 
 export const COMPUTED_ATTRIBUTE_NAMES = [
@@ -32,7 +33,7 @@ export const STANDARD_ATTRIBUTE_NAMES = [
   'zoneinfo',
 ] as const;
 
-export const toAttributeTypes = (user: UserEntity): AttributeType[] => {
+export const toAttributeTypes = (user: UserDto | CognitoUserEntity): AttributeType[] => {
   return [
     { Name: 'sub', Value: user.id },
     { Name: 'email', Value: user.email },
@@ -62,15 +63,17 @@ export const toAttributeTypes = (user: UserEntity): AttributeType[] => {
 
 export const createAttributes = (
   attributes: AttributeType[],
-  exists: UserAttributeEntity[],
+  exists: UserAttributeDto[],
 ): UserAttributeEntity[] => [
-  ...exists.filter((entity) => attributes.every((attr) => attr.Name !== entity.name)),
+  ...exists
+    .filter((entity) => attributes.every((attr) => attr.Name !== entity.name))
+    .map((entity) => ({ ...entity, id: brandedId.userAttribute.entity.parse(entity.id) })),
   ...attributes
     .filter((attr) => COMPUTED_ATTRIBUTE_NAMES.every((name) => name !== attr.Name))
     .map((attr) => ({
-      id:
-        exists.find((entity) => entity.name === attr.Name)?.id ??
-        brandedId.userAttribute.entity.parse(ulid()),
+      id: brandedId.userAttribute.entity.parse(
+        exists.find((entity) => entity.name === attr.Name)?.id ?? ulid(),
+      ),
       name: z.enum(STANDARD_ATTRIBUTE_NAMES).or(z.string().startsWith('custom:')).parse(attr.Name),
       value: z.string().parse(attr.Value),
     })),

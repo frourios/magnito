@@ -1,22 +1,23 @@
 import assert from 'assert';
 import { createHash } from 'crypto';
-import type { EntityId } from 'common/types/brandedId';
+import type { DtoId } from 'schemas/brandedId';
+import { brandedId } from 'schemas/brandedId';
 import type {
   SocialUserCreateVal,
-  SocialUserEntity,
+  SocialUserDto,
   SocialUserResponseTokensVal,
-  UserEntity,
-} from 'common/types/user';
-import type { Jwks, UserPoolClientEntity, UserPoolEntity } from 'common/types/userPool';
-import { brandedId } from 'service/brandedId';
-import { cognitoAssert } from 'service/cognitoAssert';
+  UserDto,
+} from 'schemas/user';
+import type { JwksDto, UserPoolClientDto, UserPoolDto } from 'schemas/userPool';
+import { cognitoAssert } from 'server/service/cognitoAssert';
 import { ulid } from 'ulid';
 import { z } from 'zod';
 import { createAttributes } from '../service/createAttributes';
 import { genTokens } from '../service/genTokens';
+import type { SocialUserEntity } from './userType';
 
 export const socialUserMethod = {
-  create: (userPoolId: EntityId['userPool'], val: SocialUserCreateVal): SocialUserEntity => {
+  create: (userPoolId: DtoId['userPool'], val: SocialUserCreateVal): SocialUserEntity => {
     cognitoAssert(
       /^[a-z][a-z\d_-]/.test(val.name),
       "1 validation error detected: Value at 'username' failed to satisfy constraint: Member must satisfy regular expression pattern: [\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]+",
@@ -37,7 +38,7 @@ export const socialUserMethod = {
       status: 'EXTERNAL_PROVIDER',
       name: val.name,
       refreshToken: ulid(),
-      userPoolId,
+      userPoolId: brandedId.userPool.entity.parse(userPoolId),
       attributes: val.photoUrl
         ? createAttributes([{ Name: 'picture', Value: val.photoUrl }], [])
         : [],
@@ -46,11 +47,11 @@ export const socialUserMethod = {
     };
   },
   createToken: (
-    user: SocialUserEntity,
+    user: SocialUserDto,
     codeVerifier: string,
-    pool: UserPoolEntity,
-    poolClient: UserPoolClientEntity,
-    jwks: Jwks,
+    pool: UserPoolDto,
+    poolClient: UserPoolClientDto,
+    jwks: JwksDto,
   ): SocialUserResponseTokensVal => {
     const tokens = genTokens({
       privateKey: pool.privateKey,
@@ -69,9 +70,18 @@ export const socialUserMethod = {
       token_type: 'Bearer',
     };
   },
-  updateCodeChallenge: (user: UserEntity, codeChallenge: string): SocialUserEntity => {
+  updateCodeChallenge: (user: UserDto, codeChallenge: string): SocialUserEntity => {
     assert(user.kind === 'social');
 
-    return { ...user, codeChallenge };
+    return {
+      ...user,
+      id: brandedId.socialUser.entity.parse(user.id),
+      userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
+      attributes: user.attributes.map((attr) => ({
+        ...attr,
+        id: brandedId.userAttribute.entity.parse(attr.id),
+      })),
+      codeChallenge,
+    };
   },
 };

@@ -6,7 +6,9 @@ export const BRANDED_ID_NAMES = [
   'userAttribute',
   'deletableUser',
   'userPool',
+  'deletableUserPool',
   'userPoolClient',
+  'deletableUserPoolClient',
 ] as const;
 
 export const USER_KIND_LIST = ['social', 'cognito'] as const;

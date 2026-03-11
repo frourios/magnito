@@ -1,5 +1,5 @@
 import type { Prisma } from '@prisma/client';
-import type { UserPoolClientDto, UserPoolDto } from 'schemas/userPool';
+import type { EntityId } from 'schemas/brandedId';
 import type { UserPoolClientEntity, UserPoolEntity } from '../model/userPoolType';
 
 export const userPoolCommand = {
@@ -30,16 +30,19 @@ export const userPoolCommand = {
       },
     });
   },
-  delete: async (tx: Prisma.TransactionClient, pool: UserPoolDto): Promise<void> => {
-    await tx.userAttribute.deleteMany({ where: { User: { userPoolId: pool.id } } });
-    await tx.user.deleteMany({ where: { userPoolId: pool.id } });
-    await tx.userPoolClient.deleteMany({ where: { userPoolId: pool.id } });
-    await tx.userPool.delete({ where: { id: pool.id } });
+  delete: async (
+    tx: Prisma.TransactionClient,
+    userPoolId: EntityId['deletableUserPool'],
+  ): Promise<void> => {
+    await tx.userAttribute.deleteMany({ where: { User: { userPoolId } } });
+    await tx.user.deleteMany({ where: { userPoolId } });
+    await tx.userPoolClient.deleteMany({ where: { userPoolId } });
+    await tx.userPool.delete({ where: { id: userPoolId } });
   },
   deleteClient: async (
     tx: Prisma.TransactionClient,
-    poolClient: UserPoolClientDto,
+    poolClientId: EntityId['deletableUserPoolClient'],
   ): Promise<void> => {
-    await tx.userPoolClient.delete({ where: { id: poolClient.id } });
+    await tx.userPoolClient.delete({ where: { id: poolClientId } });
   },
 };

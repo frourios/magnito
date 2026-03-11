@@ -11,17 +11,18 @@ import type {
   UpdateUserAttributesTarget,
   VerifyUserAttributeTarget,
 } from 'common/types/auth';
-import { cognitoUserMethod } from 'domain/user/model/cognitoUserMethod';
-import { userCommand } from 'domain/user/repository/userCommand';
-import { userQuery } from 'domain/user/repository/userQuery';
-import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
 import { jwtDecode } from 'jwt-decode';
-import { pretendAsDate } from 'service/pretendAsDate';
-import { transaction } from 'service/prismaClient';
-import type { AccessTokenJwt } from 'service/types';
+import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
+import { pretendAsDate } from 'server/service/pretendAsDate';
+import { transaction } from 'server/service/prismaClient';
+import type { AccessTokenJwt } from 'server/service/types';
+import { cognitoUserMethod } from '../model/cognitoUserMethod';
+import { userMethod } from '../model/userMethod';
 import { toAttributeTypes } from '../service/createAttributes';
 import { genCodeDeliveryDetails } from '../service/genCodeDeliveryDetails';
 import { sendConfirmationCode } from '../service/sendAuthMail';
+import { userCommand } from '../store/userCommand';
+import { userQuery } from '../store/userQuery';
 
 export const authUseCase = {
   getUser: (req: GetUserTarget['reqBody']): Promise<GetUserTarget['resBody']> =>
@@ -116,7 +117,7 @@ export const authUseCase = {
 
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
-      const updated = cognitoUserMethod.updateAttributes(user, req.UserAttributes);
+      const updated = userMethod.updateAttributes(user, req.UserAttributes);
 
       await userCommand.save(tx, updated);
 
@@ -135,7 +136,7 @@ export const authUseCase = {
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
 
-      await userCommand.save(tx, cognitoUserMethod.verifyAttribute(user, req));
+      await userCommand.save(tx, cognitoUserMethod.verifyEmailAttribute(user, req));
 
       return {};
     }),
@@ -148,7 +149,7 @@ export const authUseCase = {
       const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
       const user = await userQuery.findById(tx, decoded.sub);
 
-      await userCommand.save(tx, cognitoUserMethod.deleteAttributes(user, req.UserAttributeNames));
+      await userCommand.save(tx, userMethod.deleteAttributes(user, req.UserAttributeNames));
 
       return {};
     }),

@@ -1,15 +1,15 @@
-import type { MaybeId } from 'common/types/brandedId';
+import type { MaybeId } from 'schemas/brandedId';
 import type {
   SocialUserCreateVal,
-  SocialUserEntity,
   SocialUserRequestTokensVal,
   SocialUserResponseTokensVal,
-} from 'common/types/user';
-import { userPoolQuery } from 'domain/userPool/repository/userPoolQuery';
-import { transaction } from 'service/prismaClient';
+} from 'schemas/user';
+import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
+import { transaction } from 'server/service/prismaClient';
 import { socialUserMethod } from '../model/socialUserMethod';
-import { userCommand } from '../repository/userCommand';
-import { userQuery } from '../repository/userQuery';
+import type { SocialUserEntity } from '../model/userType';
+import { userCommand } from '../store/userCommand';
+import { userQuery } from '../store/userQuery';
 
 export const socialUseCase = {
   createUser: (val: SocialUserCreateVal): Promise<SocialUserEntity> =>

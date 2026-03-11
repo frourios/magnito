@@ -10,7 +10,7 @@ export const calculateSrpB = (
   B: string;
 } => {
   let BInt = BigInteger.ZERO;
-  let b = Buffer.from([0]);
+  let b: Buffer = Buffer.from([0]);
   const vInt = new BigInteger(v, 16);
 
   while (BInt === BigInteger.ZERO) {

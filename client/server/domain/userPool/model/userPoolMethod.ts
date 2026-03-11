@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
-import type { DtoId } from 'schemas/brandedId';
+import type { DtoId, EntityId } from 'schemas/brandedId';
 import { brandedId } from 'schemas/brandedId';
+import type { UserPoolClientDto, UserPoolDto } from 'schemas/userPool';
 import { createShortHash } from 'server/service/createShortHash';
 import { genPrivatekey } from 'server/service/privateKey';
 import { REGION } from 'server/service/serverEnvs';
@@ -23,4 +24,10 @@ export const userPoolMethod = {
     name: val.name,
     createdTime: Date.now(),
   }),
+  deleteUserPool: (dto: UserPoolDto): EntityId['deletableUserPool'] => {
+    return brandedId.deletableUserPool.entity.parse(dto.id);
+  },
+  deleteUserPoolClient: (dto: UserPoolClientDto): EntityId['deletableUserPoolClient'] => {
+    return brandedId.deletableUserPoolClient.entity.parse(dto.id);
+  },
 };
