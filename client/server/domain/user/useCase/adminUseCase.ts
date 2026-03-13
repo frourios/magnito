@@ -8,7 +8,7 @@ import type {
   AdminInitiateAuthTarget,
   AdminSetUserPasswordTarget,
   AdminUpdateUserAttributesTarget,
-} from 'common/types/auth';
+} from 'schemas/auth';
 import { brandedId } from 'schemas/brandedId';
 import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
 import { prismaClient, transaction } from 'server/service/prismaClient';

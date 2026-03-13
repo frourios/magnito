@@ -6,7 +6,7 @@ import type {
   DeleteUserPoolTarget,
   ListUserPoolClientsTarget,
   ListUserPoolsTarget,
-} from 'common/types/auth';
+} from 'schemas/auth';
 import { prismaClient, transaction } from 'server/service/prismaClient';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'server/service/serverEnvs';
 import { userPoolMethod } from '../model/userPoolMethod';

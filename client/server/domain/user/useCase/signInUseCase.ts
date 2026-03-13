@@ -3,7 +3,7 @@ import type {
   RefreshTokenAuthTarget,
   RespondToAuthChallengeTarget,
   UserSrpAuthTarget,
-} from 'common/types/signIn';
+} from 'schemas/signIn';
 import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
 import { cognitoAssert } from 'server/service/cognitoAssert';
 import { EXPIRES_SEC } from 'server/service/constants';

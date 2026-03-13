@@ -1,4 +1,5 @@
 import type { UserType } from '@aws-sdk/client-cognito-identity-provider';
+import { createDecoder } from 'fast-jwt';
 import type {
   ChangePasswordTarget,
   ConfirmForgotPasswordTarget,
@@ -9,8 +10,7 @@ import type {
   RevokeTokenTarget,
   UpdateUserAttributesTarget,
   VerifyUserAttributeTarget,
-} from 'common/types/auth';
-import { createDecoder } from 'fast-jwt';
+} from 'schemas/auth';
 import { AccessTokenJwtSchema } from 'schemas/jwt';
 import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
 import { customAssert } from 'server/service/customAssert';

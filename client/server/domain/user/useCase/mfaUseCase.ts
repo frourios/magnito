@@ -1,10 +1,10 @@
 import { VerifySoftwareTokenResponseType } from '@aws-sdk/client-cognito-identity-provider';
+import { createDecoder } from 'fast-jwt';
 import type {
   AssociateSoftwareTokenTarget,
   SetUserMFAPreferenceTarget,
   VerifySoftwareTokenTarget,
-} from 'common/types/auth';
-import { createDecoder } from 'fast-jwt';
+} from 'schemas/auth';
 import { AccessTokenJwtSchema } from 'schemas/jwt';
 import { customAssert } from 'server/service/customAssert';
 import { transaction } from 'server/service/prismaClient';

@@ -1,5 +1,5 @@
-import type { SetUserMFAPreferenceTarget } from 'common/types/auth';
 import { generateSecret, verifySync } from 'otplib';
+import type { SetUserMFAPreferenceTarget } from 'schemas/auth';
 import { brandedId } from 'schemas/brandedId';
 import type { CognitoUserDto } from 'schemas/user';
 import { cognitoAssert } from 'server/service/cognitoAssert';

@@ -44,9 +44,7 @@ import type {
   VerifyUserAttributeResponse,
 } from '@aws-sdk/client-cognito-identity-provider';
 import type { MaybeId } from './brandedId';
-import type { InitiateAuthTarget, RespondToAuthChallengeTarget } from './signIn';
-
-export type TargetBody<Req, Res> = { reqBody: Req; resBody: Res };
+import type { InitiateAuthTarget, RespondToAuthChallengeTarget, TargetBody } from './signIn';
 
 export type SignUpTarget = TargetBody<SignUpRequest, SignUpResponse>;
 

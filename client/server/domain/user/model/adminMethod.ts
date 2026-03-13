@@ -1,6 +1,6 @@
 import assert from 'assert';
 import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
-import type { AdminCreateUserTarget, AdminSetUserPasswordTarget } from 'common/types/auth';
+import type { AdminCreateUserTarget, AdminSetUserPasswordTarget } from 'schemas/auth';
 import { brandedId, type DtoId, type EntityId } from 'schemas/brandedId';
 import type { CognitoUserDto, UserDto } from 'schemas/user';
 import { ulid } from 'ulid';

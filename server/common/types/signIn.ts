@@ -1,6 +1,7 @@
 import type { MFA_SETTING_LIST } from 'common/constants';
-import type { TargetBody } from './auth';
 import type { MaybeId } from './brandedId';
+
+export type TargetBody<Req, Res> = { reqBody: Req; resBody: Res };
 
 export type UserSrpAuthTarget = TargetBody<
   {
@@ -53,10 +54,7 @@ export type RespondToAuthChallengeTarget = TargetBody<
     }
   | {
       ChallengeName: 'SOFTWARE_TOKEN_MFA';
-      ChallengeResponses: {
-        SOFTWARE_TOKEN_MFA_CODE: string;
-        USERNAME: string;
-      };
+      ChallengeResponses: { SOFTWARE_TOKEN_MFA_CODE: string; USERNAME: string };
       ClientId: MaybeId['userPoolClient'];
       Session: string;
     },

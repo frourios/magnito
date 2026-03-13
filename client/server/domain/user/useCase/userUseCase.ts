@@ -1,5 +1,5 @@
-import type { DeleteUserTarget } from 'common/types/auth';
 import { createDecoder } from 'fast-jwt';
+import type { DeleteUserTarget } from 'schemas/auth';
 import { AccessTokenJwtSchema } from 'schemas/jwt';
 import { customAssert } from 'server/service/customAssert';
 import { transaction } from 'server/service/prismaClient';
