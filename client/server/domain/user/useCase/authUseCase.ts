@@ -1,4 +1,3 @@
-import assert from 'assert';
 import type { UserType } from '@aws-sdk/client-cognito-identity-provider';
 import type {
   ChangePasswordTarget,
@@ -11,11 +10,12 @@ import type {
   UpdateUserAttributesTarget,
   VerifyUserAttributeTarget,
 } from 'common/types/auth';
-import { jwtDecode } from 'jwt-decode';
+import { createDecoder } from 'fast-jwt';
+import { AccessTokenJwtSchema } from 'schemas/jwt';
 import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
+import { customAssert } from 'server/service/customAssert';
 import { pretendAsDate } from 'server/service/pretendAsDate';
 import { transaction } from 'server/service/prismaClient';
-import type { AccessTokenJwt } from 'server/service/types';
 import { cognitoUserMethod } from '../model/cognitoUserMethod';
 import { userMethod } from '../model/userMethod';
 import { toAttributeTypes } from '../service/createAttributes';
@@ -24,11 +24,16 @@ import { sendConfirmationCode } from '../service/sendAuthMail';
 import { userCommand } from '../store/userCommand';
 import { userQuery } from '../store/userQuery';
 
+const decoder = createDecoder();
+
 export const authUseCase = {
   getUser: (req: GetUserTarget['reqBody']): Promise<GetUserTarget['resBody']> =>
     transaction(async (tx) => {
-      const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
-      const user = await userQuery.findById(tx, decoded.sub);
+      const payload = AccessTokenJwtSchema.safeParse(decoder(req.AccessToken));
+
+      customAssert(payload.success, 'Eliminate fraudulent requests');
+
+      const user = await userQuery.findById(tx, payload.data.sub);
 
       return {
         UserAttributes: toAttributeTypes(user),
@@ -39,7 +44,8 @@ export const authUseCase = {
     }),
   listUsers: (req: ListUsersTarget['reqBody']): Promise<ListUsersTarget['resBody']> =>
     transaction(async (tx) => {
-      assert(req.UserPoolId);
+      customAssert(req.UserPoolId, 'Eliminate fraudulent requests');
+
       const users = await userQuery.listAll(tx, req.UserPoolId, req.Limit);
 
       return {
@@ -65,10 +71,13 @@ export const authUseCase = {
     req: ChangePasswordTarget['reqBody'],
   ): Promise<ChangePasswordTarget['resBody']> =>
     transaction(async (tx) => {
-      const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
-      const user = await userQuery.findById(tx, decoded.sub);
+      const payload = AccessTokenJwtSchema.safeParse(decoder(req.AccessToken));
 
-      assert(user.kind === 'cognito');
+      customAssert(payload.success, 'Eliminate fraudulent requests');
+
+      const user = await userQuery.findById(tx, payload.data.sub);
+
+      customAssert(user.kind === 'cognito', 'Eliminate fraudulent requests');
 
       await userCommand.save(tx, cognitoUserMethod.changePassword({ user, req }));
 
@@ -81,8 +90,8 @@ export const authUseCase = {
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
       const user = await userQuery.findByName(tx, req.Username);
 
-      assert(poolClient.userPoolId === user.userPoolId);
-      assert(user.kind === 'cognito');
+      customAssert(poolClient.userPoolId === user.userPoolId, 'Eliminate fraudulent requests');
+      customAssert(user.kind === 'cognito', 'Eliminate fraudulent requests');
 
       const forgotUser = cognitoUserMethod.forgotPassword(user);
       await userCommand.save(tx, forgotUser);
@@ -96,7 +105,7 @@ export const authUseCase = {
     transaction(async (tx) => {
       const user = await userQuery.findByName(tx, req.Username);
 
-      assert(user.kind === 'cognito');
+      customAssert(user.kind === 'cognito', 'Eliminate fraudulent requests');
 
       await userCommand.save(
         tx,
@@ -113,10 +122,13 @@ export const authUseCase = {
     req: UpdateUserAttributesTarget['reqBody'],
   ): Promise<UpdateUserAttributesTarget['resBody']> =>
     transaction(async (tx) => {
-      assert(req.AccessToken);
+      customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
-      const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
-      const user = await userQuery.findById(tx, decoded.sub);
+      const payload = AccessTokenJwtSchema.safeParse(decoder(req.AccessToken));
+
+      customAssert(payload.success, 'Eliminate fraudulent requests');
+
+      const user = await userQuery.findById(tx, payload.data.sub);
       const updated = userMethod.updateAttributes(user, req.UserAttributes);
 
       await userCommand.save(tx, updated);
@@ -131,10 +143,13 @@ export const authUseCase = {
     req: VerifyUserAttributeTarget['reqBody'],
   ): Promise<VerifyUserAttributeTarget['resBody']> =>
     transaction(async (tx) => {
-      assert(req.AccessToken);
+      customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
-      const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
-      const user = await userQuery.findById(tx, decoded.sub);
+      const payload = AccessTokenJwtSchema.safeParse(decoder(req.AccessToken));
+
+      customAssert(payload.success, 'Eliminate fraudulent requests');
+
+      const user = await userQuery.findById(tx, payload.data.sub);
 
       await userCommand.save(tx, cognitoUserMethod.verifyEmailAttribute(user, req));
 
@@ -144,10 +159,13 @@ export const authUseCase = {
     req: DeleteUserAttributesTarget['reqBody'],
   ): Promise<DeleteUserAttributesTarget['resBody']> =>
     transaction(async (tx) => {
-      assert(req.AccessToken);
+      customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
-      const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
-      const user = await userQuery.findById(tx, decoded.sub);
+      const payload = AccessTokenJwtSchema.safeParse(decoder(req.AccessToken));
+
+      customAssert(payload.success, 'Eliminate fraudulent requests');
+
+      const user = await userQuery.findById(tx, payload.data.sub);
 
       await userCommand.save(tx, userMethod.deleteAttributes(user, req.UserAttributeNames));
 

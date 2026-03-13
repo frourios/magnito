@@ -84,7 +84,9 @@ export const CognitoUserDtoSchema = z.object({
 
 export type CognitoUserDto = z.infer<typeof CognitoUserDtoSchema>;
 
-export type UserDto = SocialUserDto | CognitoUserDto;
+export const UserDtoSchema = SocialUserDtoSchema.or(CognitoUserDtoSchema);
+
+export type UserDto = z.infer<typeof UserDtoSchema>;
 
 export const SocialUserCreateValSchema = z.object({
   provider: z.enum(PROVIDER_LIST),

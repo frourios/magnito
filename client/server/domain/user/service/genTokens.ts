@@ -1,10 +1,10 @@
 import { createSigner } from 'fast-jwt';
 import type { DtoId } from 'schemas/brandedId';
+import type { AccessTokenJwt, IdTokenJwt } from 'schemas/jwt';
 import type { UserDto } from 'schemas/user';
 import type { JwksDto } from 'schemas/userPool';
 import { EXPIRES_SEC } from 'server/service/constants';
 import { SERVER_PORT } from 'server/service/serverEnvs';
-import type { AccessTokenJwt, IdTokenJwt } from 'server/service/types';
 import { ulid } from 'ulid';
 import { isEmailVerified } from './isEmailVerified';
 

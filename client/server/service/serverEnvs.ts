@@ -6,6 +6,7 @@ import rootPackage from '../../../package.json';
 dotenv.config();
 
 const APP_VERSION = `v${z.string().parse(rootPackage.version)}`;
+const CLIENT_PORT = +z.string().regex(/^\d+$/).parse(process.env.CLIENT_PORT);
 const SERVER_PORT = +z.string().regex(/^\d+$/).parse(process.env.SERVER_PORT);
 const SSL_PORT = +z.string().regex(/^\d+$/).parse(process.env.SSL_PORT);
 const SMTP_HOST = z.string().parse(process.env.SMTP_HOST);
@@ -25,6 +26,7 @@ export {
   APP_VERSION,
   DEFAULT_USER_POOL_CLIENT_ID,
   DEFAULT_USER_POOL_ID,
+  CLIENT_PORT,
   SERVER_PORT,
   REGION,
   SECRET_KEY,

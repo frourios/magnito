@@ -1,28 +1,33 @@
-import assert from 'assert';
 import { VerifySoftwareTokenResponseType } from '@aws-sdk/client-cognito-identity-provider';
 import type {
   AssociateSoftwareTokenTarget,
   SetUserMFAPreferenceTarget,
   VerifySoftwareTokenTarget,
 } from 'common/types/auth';
-import { jwtDecode } from 'jwt-decode';
+import { createDecoder } from 'fast-jwt';
+import { AccessTokenJwtSchema } from 'schemas/jwt';
+import { customAssert } from 'server/service/customAssert';
 import { transaction } from 'server/service/prismaClient';
-import type { AccessTokenJwt } from 'server/service/types';
 import { mfaMethod } from '../model/mfaMethod';
 import { userCommand } from '../store/userCommand';
 import { userQuery } from '../store/userQuery';
+
+const decoder = createDecoder();
 
 export const mfaUseCase = {
   associateSoftwareToken: (
     req: AssociateSoftwareTokenTarget['reqBody'],
   ): Promise<AssociateSoftwareTokenTarget['resBody']> =>
     transaction(async (tx) => {
-      assert(req.AccessToken);
+      customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
-      const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
-      const user = await userQuery.findById(tx, decoded.sub);
+      const payload = AccessTokenJwtSchema.safeParse(decoder(req.AccessToken));
 
-      assert(user.kind === 'cognito');
+      customAssert(payload.success, 'Eliminate fraudulent requests');
+
+      const user = await userQuery.findById(tx, payload.data.sub);
+
+      customAssert(user.kind === 'cognito', 'Eliminate fraudulent requests');
 
       const updated = mfaMethod.generateSecretCode(user);
 
@@ -34,12 +39,15 @@ export const mfaUseCase = {
     req: VerifySoftwareTokenTarget['reqBody'],
   ): Promise<VerifySoftwareTokenTarget['resBody']> =>
     transaction(async (tx) => {
-      assert(req.AccessToken);
+      customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
-      const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
-      const user = await userQuery.findById(tx, decoded.sub);
+      const payload = AccessTokenJwtSchema.safeParse(decoder(req.AccessToken));
 
-      assert(user.kind === 'cognito');
+      customAssert(payload.success, 'Eliminate fraudulent requests');
+
+      const user = await userQuery.findById(tx, payload.data.sub);
+
+      customAssert(user.kind === 'cognito', 'Eliminate fraudulent requests');
 
       const updated = mfaMethod.verify(user, req.UserCode);
 
@@ -51,12 +59,15 @@ export const mfaUseCase = {
     req: SetUserMFAPreferenceTarget['reqBody'],
   ): Promise<SetUserMFAPreferenceTarget['resBody']> =>
     transaction(async (tx) => {
-      assert(req.AccessToken);
+      customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
-      const decoded = jwtDecode<AccessTokenJwt>(req.AccessToken);
-      const user = await userQuery.findById(tx, decoded.sub);
+      const payload = AccessTokenJwtSchema.safeParse(decoder(req.AccessToken));
 
-      assert(user.kind === 'cognito');
+      customAssert(payload.success, 'Eliminate fraudulent requests');
+
+      const user = await userQuery.findById(tx, payload.data.sub);
+
+      customAssert(user.kind === 'cognito', 'Eliminate fraudulent requests');
 
       const updated = mfaMethod.setPreference(user, req);
 

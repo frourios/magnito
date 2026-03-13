@@ -33,7 +33,7 @@ export const userQuery = {
       .then((users) => users.map(toUserDto)),
   findById: (
     tx: Prisma.TransactionClient,
-    id: UserDto['id'] | UserEntity['id'] | MaybeId['socialUser'],
+    id: UserDto['id'] | UserEntity['id'] | MaybeId['socialUser'] | MaybeId['cognitoUser'],
   ): Promise<UserDto> =>
     tx.user.findUniqueOrThrow({ where: { id }, include: USER_INCLUDE }).then(toUserDto),
   findByName: (tx: Prisma.TransactionClient, name: string): Promise<UserDto> =>
