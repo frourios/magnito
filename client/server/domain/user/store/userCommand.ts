@@ -1,5 +1,5 @@
 import type { Prisma } from '@prisma/client';
-import type { EntityId } from 'common/types/brandedId';
+import type { EntityId } from 'schemas/brandedId';
 import type { UserDto } from 'schemas/user';
 import type { UserEntity } from '../model/userType';
 import { userQuery } from './userQuery';

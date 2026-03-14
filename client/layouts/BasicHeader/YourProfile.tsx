@@ -8,12 +8,12 @@ import {
   updateUserAttribute,
   verifyTOTPSetup,
 } from 'aws-amplify/auth';
-import { APP_NAME } from 'common/constants';
 import { Btn } from 'components/Btn/Btn';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'components/Modal/Modal';
 import { Spacer } from 'components/Spacer';
 import QRCode from 'qrcode';
 import { useEffect, useState } from 'react';
+import { APP_NAME } from 'schemas/constants';
 import type { UserDto } from 'schemas/user';
 
 export const YourProfile = (props: { user: UserDto; onClose: () => void }) => {

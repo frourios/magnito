@@ -20,7 +20,6 @@
     "**/$*.ts",
     "**/npm-debug.log*",
     "client/.next/",
-    "client/api/*",
     "**/*.css.d.ts",
     "**/*.css.d.ts.map",
     "**/frourio.*.ts",

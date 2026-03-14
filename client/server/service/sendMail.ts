@@ -1,7 +1,7 @@
 import assert from 'assert';
-import { APP_NAME } from 'common/constants';
 import { createTransport } from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
+import { APP_NAME } from 'schemas/constants';
 import { ulid } from 'ulid';
 import { SMTP_HOST, SMTP_PASS, SMTP_PORT, SMTP_USER } from './serverEnvs';
 

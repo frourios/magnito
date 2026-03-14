@@ -1,7 +1,7 @@
 import { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
 import type { Prisma, User } from '@prisma/client';
-import { MFA_SETTING_LIST, PROVIDER_LIST, USER_KIND_LIST, USER_KINDS } from 'common/constants';
 import { brandedId } from 'schemas/brandedId';
+import { MFA_SETTING_LIST, PROVIDER_LIST, USER_KIND_LIST, USER_KINDS } from 'schemas/constants';
 import type { CognitoUserDto, SocialUserDto, UserAttributeDto, UserDto } from 'schemas/user';
 import { z } from 'zod';
 

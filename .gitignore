@@ -15,7 +15,6 @@ npm-debug.log*
 
 # client
 client/.next/
-client/api/*
 **/*.css.d.ts
 **/*.css.d.ts.map
 frourio.*.ts

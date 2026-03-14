@@ -1,7 +1,7 @@
 import assert from 'assert';
 import crypto from 'crypto';
-import type { UserSrpAuthTarget } from 'common/types/signIn';
 import { brandedId } from 'schemas/brandedId';
+import type { UserSrpAuthTarget } from 'schemas/signIn';
 import type { ChallengeVal, CognitoUserDto } from 'schemas/user';
 import type { JwksDto, UserPoolClientDto, UserPoolDto } from 'schemas/userPool';
 import { cognitoAssert } from 'server/service/cognitoAssert';

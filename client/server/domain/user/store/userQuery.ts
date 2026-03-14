@@ -1,6 +1,6 @@
 import type { Prisma } from '@prisma/client';
-import { USER_KINDS } from 'common/constants';
 import type { MaybeId } from 'schemas/brandedId';
+import { USER_KINDS } from 'schemas/constants';
 import type { SocialUserDto, UserDto } from 'schemas/user';
 import type { UserEntity } from '../model/userType';
 import { toSocialUserDto, toUserDto, USER_INCLUDE } from './userDto';

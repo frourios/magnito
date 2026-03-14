@@ -1,5 +1,5 @@
 import { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
-import { PROVIDER_LIST, USER_KINDS, MFA_SETTING_LIST } from 'common/constants';
+import { PROVIDER_LIST, USER_KINDS, MFA_SETTING_LIST } from 'schemas/constants';
 import { z } from 'zod';
 import { brandedId } from './brandedId';
 

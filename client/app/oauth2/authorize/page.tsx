@@ -2,11 +2,11 @@
 
 import type { OAuthConfig } from '@aws-amplify/core';
 import word from '@fakerjs/word';
-import { APP_NAME, PROVIDER_LIST } from 'common/constants';
 import { Spacer } from 'components/Spacer';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import type { MaybeId } from 'schemas/brandedId';
+import { APP_NAME, PROVIDER_LIST } from 'schemas/constants';
 import type { SocialUserDto } from 'schemas/user';
 import useSWR from 'swr';
 import { apiClient } from 'utils/apiClient';

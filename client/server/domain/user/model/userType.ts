@@ -1,6 +1,6 @@
 import type { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
-import type { MFA_SETTING_LIST, PROVIDER_LIST, USER_KINDS } from 'common/constants';
 import type { EntityId } from 'schemas/brandedId';
+import type { MFA_SETTING_LIST, PROVIDER_LIST, USER_KINDS } from 'schemas/constants';
 import type { ChallengeVal } from 'schemas/user';
 
 export type UserAttributeEntity = {

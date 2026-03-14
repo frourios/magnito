@@ -6,8 +6,8 @@ import {
   VerifySoftwareTokenCommand,
   VerifySoftwareTokenResponseType,
 } from '@aws-sdk/client-cognito-identity-provider';
-import { MFA_SETTING_LIST } from 'common/constants';
 import { generate } from 'otplib';
+import { MFA_SETTING_LIST } from 'schemas/constants';
 import { cognitoClient } from 'server/service/cognito';
 import { createCognitoUserAndToken } from 'tests/api/utils';
 import { expect, test } from 'vitest';

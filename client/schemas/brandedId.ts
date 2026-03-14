@@ -1,4 +1,4 @@
-import { BRANDED_ID_NAMES } from 'common/constants';
+import { BRANDED_ID_NAMES } from 'schemas/constants';
 import { z } from 'zod';
 
 type IdName = (typeof BRANDED_ID_NAMES)[number];
