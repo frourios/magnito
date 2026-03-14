@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN "pubA" TEXT;
+ALTER TABLE "User" ADD COLUMN "pubB" TEXT;
+ALTER TABLE "User" ADD COLUMN "secB" TEXT;
+ALTER TABLE "User" ADD COLUMN "secretBlock" TEXT;

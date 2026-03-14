@@ -13,12 +13,19 @@
     "generate:frourio": "frourio-next && frourio-next-msw",
     "generate:path": "pathpida --ignorePath ../.gitignore -s",
     "generate:prisma": "prisma generate",
+    "migrate:dev": "prisma migrate dev && npx prisma db seed",
+    "migrate:dev:createonly": "prisma migrate dev --create-only",
+    "migrate:deploy": "prisma migrate deploy && npx prisma db seed",
+    "migrate:reset": "prisma migrate reset",
     "hcm": "hcm '**/*.module.css'",
     "start": "next start -p $CLIENT_PORT",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
     "test:updateSnapshot": "vitest -u",
     "typecheck": "npm run hcm && tsc --noEmit"
+  },
+  "prisma": {
+    "seed": "node -r esbuild-register prisma/seed.ts"
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^6.3.0",
@@ -49,6 +56,9 @@
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitest/coverage-v8": "^3.2.4",
+    "esbuild": "^0.27.4",
+    "esbuild-node-externals": "^1.20.1",
+    "esbuild-register": "^3.6.0",
     "happy-css-modules": "^3.1.1",
     "inbucket-js-client": "^2.0.0",
     "msw": "^2.12.10",
