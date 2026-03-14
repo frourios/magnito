@@ -3,6 +3,7 @@
   "scripts": {
     "dev": "run-p dev:*",
     "dev:client": "next dev -p 5051",
+    "dev:ssl": "local-ssl-proxy --key ./certificates/server.key --cert ./certificates/server.crt --source 5052 --target 5050",
     "dev:frourio": "frourio-next --watch",
     "dev:hcm": "hcm '**/*.module.css' -w",
     "dev:path": "pathpida --ignorePath ../.gitignore -s -w",
@@ -18,7 +19,9 @@
     "migrate:deploy": "prisma migrate deploy && npx prisma db seed",
     "migrate:reset": "prisma migrate reset",
     "hcm": "hcm '**/*.module.css'",
-    "start": "next start -p $CLIENT_PORT",
+    "start": "npm run start:client & npm run start:ssl",
+    "start:client": "next start -p $CLIENT_PORT",
+    "start:ssl": "local-ssl-proxy --key ./certificates/server.key --cert ./certificates/server.crt --source $SSL_PORT --target $PORT",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
     "test:updateSnapshot": "vitest -u",
