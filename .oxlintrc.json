@@ -10,7 +10,7 @@
     "es2020": true
   },
   "ignorePatterns": [
-    "**/node_modules/",
+    "node_modules/",
     "**/.DS_Store",
     "**/*.pem",
     "**/tsconfig.tsbuildinfo",
@@ -19,7 +19,7 @@
     "**/.env",
     "**/$*.ts",
     "**/npm-debug.log*",
-    "client/.next/",
+    ".next/",
     "**/*.css.d.ts",
     "**/*.css.d.ts.map",
     "**/frourio.*.ts"
@@ -1275,7 +1275,7 @@
       "plugins": ["react"]
     },
     {
-      "files": ["client/app/**/*.ts", "client/server/**/*.ts"],
+      "files": ["src/app/**/*.ts", "server/**/*.ts"],
       "rules": {
         "@typescript-eslint/explicit-function-return-type": ["error"]
       }
@@ -1287,7 +1287,7 @@
       }
     },
     {
-      "files": ["client/tests/**/*.ts"],
+      "files": ["tests/**/*.ts"],
       "rules": {
         "max-lines": "off"
       }

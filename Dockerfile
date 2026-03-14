@@ -6,7 +6,7 @@ ARG COGNITO_SECRET_KEY=magnito-secret-key
 ARG COGNITO_REGION=ap-northeast-1
 ARG COGNITO_USER_POOL_ID=ap-northeast-1_default
 ARG COGNITO_USER_POOL_CLIENT_ID=default-client-id
-ARG DATABASE_URL=file:../../data/app.db
+ARG DATABASE_URL=file:../data/app.db
 ARG SMTP_HOST=inbucket
 ARG SMTP_PORT=2500
 ARG SMTP_USER=fake_mail_user
@@ -18,9 +18,6 @@ WORKDIR /usr/src/app
 
 COPY package.json package-lock.json ./
 RUN npm ci
-
-COPY client/package.json client/package-lock.json client/
-RUN npm ci --prefix client
 
 COPY . ./
 
@@ -71,15 +68,14 @@ ENV SMTP_PORT=$SMTP_PORT
 ENV SMTP_USER=$SMTP_USER
 ENV SMTP_PASS=$SMTP_PASS
 
-COPY --chown=node package.json ./
-COPY --chown=node client/package.json client/package-lock.json ./client/
+COPY --chown=node package.json package-lock.json ./
 
-RUN npm ci --omit=dev --prefix client
+RUN npm ci --omit=dev
 
-COPY --chown=node --from=builder /usr/src/app/client/node_modules/.prisma client/node_modules/.prisma
-COPY --chown=node --from=builder /usr/src/app/client/prisma client/prisma/
-COPY --chown=node --from=builder /usr/src/app/client/.next client/.next/
-COPY --chown=node --from=builder /usr/src/app/client/certificates client/certificates/
+COPY --chown=node --from=builder /usr/src/app/node_modules/.prisma node_modules/.prisma
+COPY --chown=node --from=builder /usr/src/app/prisma prisma/
+COPY --chown=node --from=builder /usr/src/app/.next .next/
+COPY --chown=node --from=builder /usr/src/app/certificates certificates/
 COPY --chown=node --from=builder /usr/src/app/data data/
 
 HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD wget --quiet --spider http://127.0.0.1:$PORT/publicApi/health && wget --quiet --spider --no-check-certificate https://127.0.0.1:$SSL_PORT || exit 1

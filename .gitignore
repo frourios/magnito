@@ -13,10 +13,10 @@ data/*
 # debug
 npm-debug.log*
 
-# client
-client/.next/
+# app
+.next/
 **/*.css.d.ts
 **/*.css.d.ts.map
 frourio.*.ts
-client/tests/setupMswHandlers.ts
-client/coverage/
+tests/setupMswHandlers.ts
+coverage/

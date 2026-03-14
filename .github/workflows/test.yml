@@ -13,23 +13,16 @@ jobs:
         with:
           node-version: 24
       - uses: actions/cache@v5
-        id: root-npm-cache
+        id: npm-cache
         with:
           path: 'node_modules'
-          key: root-npm-${{ hashFiles('package-lock.json') }}
-      - uses: actions/cache@v5
-        id: client-npm-cache
-        with:
-          path: 'client/node_modules'
-          key: client-npm-${{ hashFiles('client/package-lock.json') }}
+          key: npm-${{ hashFiles('package-lock.json') }}
       - run: npm install
-        if: steps.root-npm-cache.outputs.cache-hit != 'true'
-      - run: npm install --prefix client
-        if: steps.client-npm-cache.outputs.cache-hit != 'true'
+        if: steps.npm-cache.outputs.cache-hit != 'true'
       - run: npm run generate
       - run: npm run lint
       - run: npm run typecheck
-      - run: cp client/.env.example client/.env
+      - run: cp .env.example .env
       - run: docker compose -p magnito-test up -d
       - run: npm test
 

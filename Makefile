@@ -1,9 +1,9 @@
 setup: install
-	cp client/.env.example client/.env
+	cp .env.example .env
 	docker compose up -d
 
 install:
-	npm install & npm install --prefix client
+	npm install
 
 release:
 	@echo ${VERSION} | grep -E "^[0-9]+\.[0-9]+\.[0-9]+(-r[0-9]+)?$$"

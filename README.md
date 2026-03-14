@@ -34,6 +34,8 @@ services:
       - 5050:5050 # Cognito API / Web interface
       - 5051:5051 # OAuth2 SSL endpoint
     environment:
+      PORT: 5050
+      SSL_PORT: 5051
       COGNITO_USER_POOL_ID: ap-northeast-1_example
       COGNITO_USER_POOL_CLIENT_ID: example-client-name
       COGNITO_ACCESS_KEY: magnito-access-key
