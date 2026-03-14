@@ -9,14 +9,14 @@ import {
   verifyTOTPSetup,
 } from 'aws-amplify/auth';
 import { APP_NAME } from 'common/constants';
-import type { UserEntity } from 'common/types/user';
 import { Btn } from 'components/Btn/Btn';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'components/Modal/Modal';
 import { Spacer } from 'components/Spacer';
 import QRCode from 'qrcode';
 import { useEffect, useState } from 'react';
+import type { UserDto } from 'schemas/user';
 
-export const YourProfile = (props: { user: UserEntity; onClose: () => void }) => {
+export const YourProfile = (props: { user: UserDto; onClose: () => void }) => {
   const [enabledTotp, setEnabledTotp] = useState<boolean>();
   const [qrDataURL, setQrDataURL] = useState<string | null>(null);
   const [totpCode, setTotpCode] = useState('');

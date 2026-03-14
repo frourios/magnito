@@ -1,4 +1,3 @@
-import type { UserEntity } from 'common/types/user';
 import { useAlert } from 'components/Alert/useAlert';
 import { useUser } from 'components/Auth/useUser';
 import { useConfirm } from 'components/Confirm/useConfirm';
@@ -7,9 +6,10 @@ import { useLoading } from 'components/Loading/useLoading';
 import { BasicHeader } from 'layouts/BasicHeader/BasicHeader';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import type { UserDto } from 'schemas/user';
 import { pagesPath } from 'utils/$path';
 
-export const Layout = (props: { render: (user: UserEntity) => React.ReactNode }) => {
+export const Layout = (props: { render: (user: UserDto) => React.ReactNode }) => {
   const router = useRouter();
   const { user } = useUser();
   const { loadingElm } = useLoading();

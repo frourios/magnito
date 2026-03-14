@@ -1,8 +1,6 @@
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
-
-dotenv.config();
 
 export default defineConfig({
   plugins: [tsconfigPaths()],

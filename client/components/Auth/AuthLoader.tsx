@@ -1,54 +1,37 @@
-import { fetchAuthSession, getCurrentUser, signOut } from 'aws-amplify/auth';
+import { fetchAuthSession, signOut } from 'aws-amplify/auth';
 import { Hub } from 'aws-amplify/utils';
-import { isAxiosError } from 'axios';
 import { useAlert } from 'components/Alert/useAlert';
 import { useLoading } from 'components/Loading/useLoading';
 import { useCallback, useEffect } from 'react';
-import { apiAxios, apiClient } from 'utils/apiClient';
+import { apiClient } from 'utils/apiClient';
 import { catchApiErr } from 'utils/catchApiErr';
 import { useUser } from './useUser';
 
-export const AuthLoader = () => {
-  const { user, setUser } = useUser();
+export function AuthLoader(): React.ReactElement {
+  const { setUser } = useUser();
   const { setLoading } = useLoading();
   const { setAlert } = useAlert();
-  const updateCookie = useCallback(async () => {
-    const jwt = await fetchAuthSession().then((e) => e.tokens?.idToken?.toString());
+  const fetchUser = useCallback(async () => {
+    await apiClient['privateApi/me']
+      .$get()
+      .catch(async () => {
+        await signOut();
 
-    if (jwt !== undefined) {
-      await apiClient.public.session.$post({ body: { jwt } }).catch(catchApiErr);
-      await apiClient.private.me.$get().catch(catchApiErr).then(setUser);
-    } else {
-      setUser(null);
-    }
+        return null;
+      })
+      .then(setUser);
   }, [setUser]);
 
   useEffect(() => {
-    getCurrentUser()
-      .then(updateCookie)
-      .catch(() => setUser(null));
-  }, [setUser, updateCookie]);
-
-  useEffect(() => {
-    // oxlint-disable-next-line complexity
-    const useId = apiAxios.interceptors.response.use(undefined, async (err) => {
-      if (user.data && isAxiosError(err) && err.response?.status === 401 && err.config) {
-        const { config } = err;
-        return updateCookie()
-          .then(() => apiAxios.request(config))
-          .catch(() => Promise.reject(err));
-      }
-
-      return Promise.reject(err);
-    });
-
-    return () => apiAxios.interceptors.response.eject(useId);
-  }, [user.data, updateCookie, setAlert]);
+    void fetchAuthSession()
+      .then((e) => (e.tokens?.idToken ? fetchUser() : setUser(null)))
+      .catch(catchApiErr);
+  }, [fetchUser, setUser]);
 
   useEffect(() => {
     return Hub.listen(
       'auth',
-      // oxlint-disable-next-line complexity
+      // eslint-disable-next-line complexity
       async (data) => {
         switch (data.payload.event) {
           case 'customOAuthState':
@@ -57,17 +40,18 @@ export const AuthLoader = () => {
           case 'tokenRefresh':
             break;
           case 'signedOut':
-            await apiClient.public.session.$delete().catch(catchApiErr);
+            await apiClient['publicApi/session'].$delete().catch(catchApiErr);
             setUser(null);
             break;
-          case 'signedIn':
-            await updateCookie().catch(catchApiErr);
+          case 'signedIn': {
+            const result = await fetchAuthSession().catch(catchApiErr);
+
+            if (result?.tokens?.idToken) await fetchUser();
+
             break;
+          }
           case 'tokenRefresh_failure':
-            await setAlert('トークンの有効期限が切れました。再度サインインしてください。');
-            setLoading(true);
-            await signOut().catch(catchApiErr);
-            setLoading(false);
+            await signOut();
             break;
           /* v8 ignore next 2 */
           default:
@@ -75,7 +59,7 @@ export const AuthLoader = () => {
         }
       },
     );
-  }, [setAlert, updateCookie, setLoading, setUser]);
+  }, [setAlert, fetchUser, setLoading, setUser]);
 
   return <></>;
-};
+}

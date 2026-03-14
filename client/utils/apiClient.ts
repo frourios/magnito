@@ -1,15 +1,3 @@
-import aspida from '@aspida/axios';
-import api from 'api/$api';
-import axios from 'axios';
-import { NEXT_PUBLIC_API_ORIGIN } from './clientEnvs';
+import { $fc } from 'app/frourio.client';
 
-export const apiAxios = axios.create({ withCredentials: true });
-
-export const apiClient = api(
-  aspida(apiAxios, {
-    baseURL:
-      typeof location !== 'undefined' && location.protocol === 'https:'
-        ? undefined
-        : NEXT_PUBLIC_API_ORIGIN,
-  }),
-);
+export const apiClient = $fc({ init: { credentials: 'same-origin' } });

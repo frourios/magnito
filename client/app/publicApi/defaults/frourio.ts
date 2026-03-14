@@ -1,20 +1,8 @@
 import type { FrourioSpec } from '@frourio/next';
-import { brandedId } from 'schemas/brandedId';
-import { z } from 'zod';
+import { DefaultsDtoSchema } from 'schemas/defaults';
 
 export const frourioSpec = {
   get: {
-    res: {
-      200: {
-        body: z.object({
-          userPoolId: brandedId.userPool.dto,
-          userPoolClientId: brandedId.userPoolClient.dto,
-          region: z.string(),
-          accessKey: z.string(),
-          secretKey: z.string(),
-          oauthDomain: z.string(),
-        }),
-      },
-    },
+    res: { 200: { body: DefaultsDtoSchema } },
   },
 } satisfies FrourioSpec;

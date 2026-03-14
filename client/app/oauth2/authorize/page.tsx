@@ -1,14 +1,14 @@
 'use client';
 
-import useAspidaSWR from '@aspida/swr';
 import type { OAuthConfig } from '@aws-amplify/core';
 import word from '@fakerjs/word';
 import { APP_NAME, PROVIDER_LIST } from 'common/constants';
-import type { MaybeId } from 'common/types/brandedId';
-import type { SocialUserEntity } from 'common/types/user';
 import { Spacer } from 'components/Spacer';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import type { MaybeId } from 'schemas/brandedId';
+import type { SocialUserDto } from 'schemas/user';
+import useSWR from 'swr';
 import { apiClient } from 'utils/apiClient';
 import { z } from 'zod';
 import styles from './page.module.css';
@@ -28,7 +28,7 @@ const AddAccount = (props: {
   provider: (typeof PROVIDER_LIST)[number];
   codeChallenge: string;
   userPoolClientId: MaybeId['userPoolClient'];
-  onAdded: (user: SocialUserEntity) => void;
+  onAdded: (user: SocialUserDto) => void;
   onBack: () => void;
 }) => {
   const [email, setEmail] = useState('');
@@ -50,7 +50,7 @@ const AddAccount = (props: {
   const addUser = async () => {
     if (!data.success) return;
 
-    const user = await apiClient.public.socialUsers.$post({
+    const user = await apiClient['publicApi/socialUsers'].$post({
       body: {
         ...data.data,
         photoUrl: photoUrl || undefined,
@@ -128,16 +128,16 @@ const Authorize = () => {
       (router.query.identity_provider as string | undefined)?.replace(/^.+([A-Z][a-z]+)$/, '$1') ??
         'Google',
     );
-  const { data: users } = useAspidaSWR(apiClient.public.socialUsers, {
-    query: { userPoolClientId },
-  });
+  const { data: users } = useSWR(
+    ...apiClient['publicApi/socialUsers'].$build({ query: { userPoolClientId } }),
+  );
   const filteredUsers = users?.filter((user) => user.provider === provider) ?? [];
   const [mode, setMode] = useState<'default' | 'add'>('default');
-  const redirect = (user: SocialUserEntity) => {
+  const redirect = (user: SocialUserDto) => {
     location.href = `${redirectUri}?code=${user.authorizationCode}&state=${state}`;
   };
-  const selectAccount = async (user: SocialUserEntity) => {
-    await apiClient.public.socialUsers
+  const selectAccount = async (user: SocialUserDto) => {
+    await apiClient['publicApi/socialUsers']
       .$patch({ body: { id: user.id, codeChallenge } })
       .then(redirect);
   };

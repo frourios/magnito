@@ -50,7 +50,7 @@ export default function RootLayout({ children }: PropsWithChildren): React.React
   }, [defaults]);
 
   useEffect(() => {
-    apiClient.public.defaults.$get().then(setDefaults).catch(catchApiErr);
+    apiClient['publicApi/defaults'].$get().then(setDefaults).catch(catchApiErr);
   }, [setDefaults]);
 
   return (

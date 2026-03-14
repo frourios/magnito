@@ -1,10 +1,10 @@
 import { AccountSettings } from '@aws-amplify/ui-react';
 import { signOut } from 'aws-amplify/auth';
 import { APP_NAME } from 'common/constants';
-import type { UserEntity } from 'common/types/user';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'components/Modal/Modal';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
+import type { UserDto } from 'schemas/user';
 import { APP_VERSION } from 'utils/clientEnvs';
 import { YourProfile } from './YourProfile';
 import styles from './BasicHeader.module.css';
@@ -36,7 +36,7 @@ const MenuItem = (props: { onClick: () => void; children: ReactNode }) => {
   );
 };
 
-export const BasicHeader = (props: { user: UserEntity }) => {
+export const BasicHeader = (props: { user: UserDto }) => {
   const [openProfile, setOpenProfile] = useState(false);
   const [openPassword, setOpenPassword] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
