@@ -23,7 +23,7 @@ import { setupMswHandlers } from './setupMswHandlers';
 let server: SetupServerApi;
 
 const TEST_ENV_NAMES = [
-  'SERVER_PORT',
+  'PORT',
   'INBUCKET_URL',
   'COGNITO_USER_POOL_CLIENT_ID',
   'COGNITO_USER_POOL_ID',
@@ -41,7 +41,7 @@ function testEnvs(): TestEnvs {
 beforeAll(() => {
   server = setupServer(
     http.all(`${testEnvs().INBUCKET_URL}/*`, passthrough),
-    ...setupMswHandlers({ baseURL: `http://localhost:${testEnvs().SERVER_PORT}` }),
+    ...setupMswHandlers({ baseURL: `http://localhost:${testEnvs().PORT}` }),
   );
 
   server.listen({ onUnhandledRequest: 'error' });

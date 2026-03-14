@@ -1,8 +1,8 @@
 import { $fc, fc } from 'app/frourio.client';
 import { COOKIE_NAME } from 'server/service/constants';
-import { SERVER_PORT } from 'server/service/serverEnvs';
+import { PORT } from 'server/service/serverEnvs';
 
-const baseURL = `http://localhost:${SERVER_PORT}`;
+const baseURL = `http://localhost:${PORT}`;
 
 export const noCookieClient = $fc({ baseURL });
 

@@ -8,7 +8,7 @@ import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
 import { COOKIE_NAME, COOKIE_OPTIONS } from 'server/service/constants';
 import { customAssert } from 'server/service/customAssert';
 import { prismaClient } from 'server/service/prismaClient';
-import { SERVER_PORT } from 'server/service/serverEnvs';
+import { PORT } from 'server/service/serverEnvs';
 import { z } from 'zod';
 import { createRoute } from './frourio.server';
 
@@ -47,7 +47,7 @@ export const { middleware } = createRoute({
         const publicKey = await getJwks.getPublicKey({
           kid: jwt.header.kid,
           alg: jwt.header.alg,
-          domain: `http://localhost:${SERVER_PORT}/${poolInfo.userPoolId}`,
+          domain: `http://localhost:${PORT}/${poolInfo.userPoolId}`,
         });
 
         return publicKey;

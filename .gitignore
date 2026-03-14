@@ -20,8 +20,3 @@ client/.next/
 frourio.*.ts
 client/tests/setupMswHandlers.ts
 client/coverage/
-
-# server
-server/index.js*
-server/prisma/seed.js*
-server/coverage/

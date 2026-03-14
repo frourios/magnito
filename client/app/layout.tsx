@@ -12,7 +12,6 @@ import { APP_NAME } from 'schemas/constants';
 import { staticPath } from 'utils/$path';
 import { apiClient } from 'utils/apiClient';
 import { catchApiErr } from 'utils/catchApiErr';
-import { NEXT_PUBLIC_API_ORIGIN } from 'utils/clientEnvs';
 import '../styles/globals.css';
 
 if (typeof window !== 'undefined') {
@@ -34,7 +33,7 @@ export default function RootLayout({ children }: PropsWithChildren): React.React
         Cognito: {
           userPoolId: defaults.userPoolId,
           userPoolClientId: defaults.userPoolClientId,
-          userPoolEndpoint: NEXT_PUBLIC_API_ORIGIN,
+          userPoolEndpoint: location.origin,
           loginWith: {
             oauth: {
               domain: defaults.oauthDomain,

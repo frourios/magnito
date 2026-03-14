@@ -7,7 +7,6 @@ services:
   #   ports:
   #     - 5050:5050
   #     - 5051:5051
-  #     - 5052:5052
   #   volumes:
   #     - magnito-data:/usr/src/app/data
   #   depends_on:

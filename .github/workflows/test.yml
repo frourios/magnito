@@ -22,25 +22,21 @@ jobs:
         with:
           path: 'client/node_modules'
           key: client-npm-${{ hashFiles('client/package-lock.json') }}
-      - uses: actions/cache@v5
-        id: server-npm-cache
-        with:
-          path: 'server/node_modules'
-          key: server-npm-${{ hashFiles('server/package-lock.json') }}
       - run: npm install
         if: steps.root-npm-cache.outputs.cache-hit != 'true'
       - run: npm install --prefix client
         if: steps.client-npm-cache.outputs.cache-hit != 'true'
-      - run: npm install --prefix server
-        if: steps.server-npm-cache.outputs.cache-hit != 'true'
       - run: npm run generate
       - run: npm run lint
       - run: npm run typecheck
-      - run: cp server/.env.example server/.env
+      - run: cp client/.env.example client/.env
       - run: docker compose -p magnito-test up -d
       - run: npm test
 
       - run: docker build . -t magnito --build-arg VERSION=0.0.0
       - run: docker run -d --name test --network magnito-test_default magnito
       - run: count=0 && until [ "$(docker inspect --format='{{json .State.Health.Status}}' test)" == "\"healthy\"" ] || [ $count -eq 30 ]; do sleep 1; count=$((count + 1)); done && [ $count -ne 30 ]
+        id: healthcheck
+      - if: failure() && steps.healthcheck.outcome == 'failure'
+        run: docker logs test
       - run: docker stop test

@@ -22,10 +22,7 @@
     "client/.next/",
     "**/*.css.d.ts",
     "**/*.css.d.ts.map",
-    "**/frourio.*.ts",
-    "server/index.js*",
-    "server/prisma/seed.js*",
-    "server/coverage/"
+    "**/frourio.*.ts"
   ],
   "rules": {
     "constructor-super": "error",
@@ -1278,15 +1275,9 @@
       "plugins": ["react"]
     },
     {
-      "files": ["server/**/*.ts"],
+      "files": ["client/app/**/*.ts", "client/server/**/*.ts"],
       "rules": {
         "@typescript-eslint/explicit-function-return-type": ["error"]
-      }
-    },
-    {
-      "files": ["server/api/**/controller.ts", "server/api/**/hooks.ts"],
-      "rules": {
-        "@typescript-eslint/explicit-function-return-type": ["off"]
       }
     },
     {
@@ -1296,7 +1287,7 @@
       }
     },
     {
-      "files": ["client/tests/**/*.ts", "server/tests/**/*.ts"],
+      "files": ["client/tests/**/*.ts"],
       "rules": {
         "max-lines": "off"
       }

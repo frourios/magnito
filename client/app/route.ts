@@ -17,7 +17,7 @@ const useCases = {
   'AWSCognitoIdentityProviderService.ConfirmSignUp': signUpUseCase.confirmSignUp,
   'AWSCognitoIdentityProviderService.InitiateAuth': (
     req: UserSrpAuthTarget['reqBody'] | RefreshTokenAuthTarget['reqBody'],
-  ) =>
+  ): Promise<UserSrpAuthTarget['resBody'] | RefreshTokenAuthTarget['resBody']> =>
     req.AuthFlow === 'USER_SRP_AUTH'
       ? signInUseCase.userSrpAuth(req)
       : signInUseCase.refreshTokenAuth(req),

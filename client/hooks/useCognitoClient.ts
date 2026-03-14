@@ -1,7 +1,6 @@
 import { CognitoIdentityProviderClient } from '@aws-sdk/client-cognito-identity-provider';
 import { atom, useAtom, useAtomValue } from 'jotai';
 import type { DefaultsDto } from 'schemas/defaults';
-import { NEXT_PUBLIC_API_ORIGIN } from 'utils/clientEnvs';
 
 const defaultsAtom = atom<DefaultsDto | { [Key in keyof DefaultsDto]?: undefined }>({});
 const clientAtom = atom((get) => {
@@ -10,7 +9,7 @@ const clientAtom = atom((get) => {
   return new CognitoIdentityProviderClient(
     defaults.accessKey
       ? {
-          endpoint: NEXT_PUBLIC_API_ORIGIN,
+          endpoint: location.origin,
           region: defaults.region,
           credentials: { accessKeyId: defaults.accessKey, secretAccessKey: defaults.secretKey },
         }

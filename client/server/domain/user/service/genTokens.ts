@@ -4,7 +4,7 @@ import type { AccessTokenJwt, IdTokenJwt } from 'schemas/jwt';
 import type { UserDto } from 'schemas/user';
 import type { JwksDto } from 'schemas/userPool';
 import { EXPIRES_SEC } from 'server/service/constants';
-import { SERVER_PORT } from 'server/service/serverEnvs';
+import { PORT } from 'server/service/serverEnvs';
 import { ulid } from 'ulid';
 import { isEmailVerified } from './isEmailVerified';
 
@@ -22,7 +22,7 @@ export const genTokens = (params: {
   const now = Math.floor(Date.now() / 1000);
   const common = {
     sub: params.user.id,
-    iss: `http://localhost:${SERVER_PORT}/${params.user.userPoolId}`,
+    iss: `http://localhost:${PORT}/${params.user.userPoolId}`,
     origin_jti: ulid(),
     event_id: ulid(),
     auth_time: now,

@@ -2,10 +2,10 @@ import {
   CognitoIdentityProviderClient,
   ListUserPoolsCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import { ACCESS_KEY, SERVER_PORT, REGION, SECRET_KEY } from './serverEnvs';
+import { ACCESS_KEY, PORT, REGION, SECRET_KEY } from './serverEnvs';
 
 export const cognitoClient = new CognitoIdentityProviderClient({
-  endpoint: `http://localhost:${SERVER_PORT}`,
+  endpoint: `http://localhost:${PORT}`,
   region: REGION,
   credentials: { accessKeyId: ACCESS_KEY, secretAccessKey: SECRET_KEY },
 });

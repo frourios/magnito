@@ -31,7 +31,7 @@ const createUser = async (
   assert(req.UserPoolId);
 
   const userPool = await userPoolQuery.findById(tx, req.UserPoolId);
-  const idCount = await userQuery.countId(tx, req.Username);
+  const idCount = await userQuery.countUsername(tx, req.Username);
   const user = adminMethod.createVerifiedUser(idCount, req, userPool.id);
 
   await userCommand.save(tx, user);

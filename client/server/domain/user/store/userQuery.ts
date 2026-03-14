@@ -6,8 +6,8 @@ import type { UserEntity } from '../model/userType';
 import { toSocialUserDto, toUserDto, USER_INCLUDE } from './userDto';
 
 export const userQuery = {
-  countId: (tx: Prisma.TransactionClient, id: string): Promise<number> =>
-    tx.user.count({ where: { id } }),
+  countUsername: (tx: Prisma.TransactionClient, userName: string): Promise<number> =>
+    tx.user.count({ where: { name: userName } }),
   listSocials: (
     tx: Prisma.TransactionClient,
     userPoolClientId: MaybeId['userPoolClient'],

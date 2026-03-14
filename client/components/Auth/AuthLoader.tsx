@@ -46,7 +46,12 @@ export function AuthLoader(): React.ReactElement {
           case 'signedIn': {
             const result = await fetchAuthSession().catch(catchApiErr);
 
-            if (result?.tokens?.idToken) await fetchUser();
+            if (result?.tokens?.idToken) {
+              await apiClient['publicApi/session']
+                .$post({ body: { jwt: result.tokens.idToken.toString() } })
+                .then(fetchUser)
+                .catch(catchApiErr);
+            }
 
             break;
           }
