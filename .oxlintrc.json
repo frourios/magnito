@@ -1297,7 +1297,7 @@
       }
     },
     {
-      "files": ["server/tests/**/*.ts"],
+      "files": ["client/tests/**/*.ts", "server/tests/**/*.ts"],
       "rules": {
         "max-lines": "off"
       }

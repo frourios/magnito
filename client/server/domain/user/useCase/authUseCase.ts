@@ -11,11 +11,11 @@ import type {
   UpdateUserAttributesTarget,
   VerifyUserAttributeTarget,
 } from 'schemas/auth';
-import { AccessTokenJwtSchema } from 'schemas/jwt';
+import { TokenJwtSchema } from 'schemas/jwt';
 import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
 import { customAssert } from 'server/service/customAssert';
 import { pretendAsDate } from 'server/service/pretendAsDate';
-import { transaction } from 'server/service/prismaClient';
+import { transaction } from 'server/service/transaction';
 import { cognitoUserMethod } from '../model/cognitoUserMethod';
 import { userMethod } from '../model/userMethod';
 import { toAttributeTypes } from '../service/createAttributes';
@@ -29,7 +29,7 @@ const decoder = createDecoder();
 export const authUseCase = {
   getUser: (req: GetUserTarget['reqBody']): Promise<GetUserTarget['resBody']> =>
     transaction(async (tx) => {
-      const payload = AccessTokenJwtSchema.safeParse(decoder(req.AccessToken));
+      const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
 
       customAssert(payload.success, 'Eliminate fraudulent requests');
 
@@ -71,7 +71,7 @@ export const authUseCase = {
     req: ChangePasswordTarget['reqBody'],
   ): Promise<ChangePasswordTarget['resBody']> =>
     transaction(async (tx) => {
-      const payload = AccessTokenJwtSchema.safeParse(decoder(req.AccessToken));
+      const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
 
       customAssert(payload.success, 'Eliminate fraudulent requests');
 
@@ -124,7 +124,7 @@ export const authUseCase = {
     transaction(async (tx) => {
       customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
-      const payload = AccessTokenJwtSchema.safeParse(decoder(req.AccessToken));
+      const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
 
       customAssert(payload.success, 'Eliminate fraudulent requests');
 
@@ -145,7 +145,7 @@ export const authUseCase = {
     transaction(async (tx) => {
       customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
-      const payload = AccessTokenJwtSchema.safeParse(decoder(req.AccessToken));
+      const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
 
       customAssert(payload.success, 'Eliminate fraudulent requests');
 
@@ -161,7 +161,7 @@ export const authUseCase = {
     transaction(async (tx) => {
       customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
-      const payload = AccessTokenJwtSchema.safeParse(decoder(req.AccessToken));
+      const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
 
       customAssert(payload.success, 'Eliminate fraudulent requests');
 

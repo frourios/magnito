@@ -7,8 +7,9 @@ import type {
   ListUserPoolClientsTarget,
   ListUserPoolsTarget,
 } from 'schemas/auth';
-import { prismaClient, transaction } from 'server/service/prismaClient';
+import { prismaClient } from 'server/service/prismaClient';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'server/service/serverEnvs';
+import { transaction } from 'server/service/transaction';
 import { userPoolMethod } from '../model/userPoolMethod';
 import { userPoolCommand } from '../store/userPoolCommand';
 import { userPoolQuery } from '../store/userPoolQuery';
@@ -17,7 +18,7 @@ export const userPoolUseCase = {
   initDefaults: (): Promise<void> =>
     transaction(async (tx) => {
       await userPoolQuery
-        .findById(prismaClient, DEFAULT_USER_POOL_ID)
+        .findById(tx, DEFAULT_USER_POOL_ID)
         .catch(() =>
           userPoolCommand.save(
             tx,
@@ -25,7 +26,7 @@ export const userPoolUseCase = {
           ),
         );
 
-      await userPoolQuery.findClientById(prismaClient, DEFAULT_USER_POOL_CLIENT_ID).catch(() =>
+      await userPoolQuery.findClientById(tx, DEFAULT_USER_POOL_CLIENT_ID).catch(() =>
         userPoolCommand.saveClient(
           tx,
           userPoolMethod.createClient({

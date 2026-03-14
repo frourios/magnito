@@ -6,7 +6,7 @@ import type {
   SocialUserResponseTokensVal,
 } from 'schemas/user';
 import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
-import { transaction } from 'server/service/prismaClient';
+import { transaction } from 'server/service/transaction';
 import { socialUserMethod } from '../model/socialUserMethod';
 import { userCommand } from '../store/userCommand';
 import { userQuery } from '../store/userQuery';

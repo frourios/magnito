@@ -1,5 +1,6 @@
 import assert from 'assert';
-import type { AmzTargets } from 'schemas/auth';
+import { NextResponse } from 'next/server';
+import type { RefreshTokenAuthTarget, UserSrpAuthTarget } from 'schemas/signIn';
 import { adminUseCase } from 'server/domain/user/useCase/adminUseCase';
 import { authUseCase } from 'server/domain/user/useCase/authUseCase';
 import { mfaUseCase } from 'server/domain/user/useCase/mfaUseCase';
@@ -7,17 +8,16 @@ import { signInUseCase } from 'server/domain/user/useCase/signInUseCase';
 import { signUpUseCase } from 'server/domain/user/useCase/signUpUseCase';
 import { userUseCase } from 'server/domain/user/useCase/userUseCase';
 import { userPoolUseCase } from 'server/domain/userPool/useCase/userPoolUseCase';
+import { CustomError } from 'server/service/customAssert';
 import { returnPostError } from 'server/service/returnStatus';
 import { createRoute } from './frourio.server';
 
-const useCases: {
-  [Target in keyof AmzTargets]: (
-    req: AmzTargets[Target]['reqBody'],
-  ) => Promise<AmzTargets[Target]['resBody']>;
-} = {
+const useCases = {
   'AWSCognitoIdentityProviderService.SignUp': signUpUseCase.signUp,
   'AWSCognitoIdentityProviderService.ConfirmSignUp': signUpUseCase.confirmSignUp,
-  'AWSCognitoIdentityProviderService.InitiateAuth': (req) =>
+  'AWSCognitoIdentityProviderService.InitiateAuth': (
+    req: UserSrpAuthTarget['reqBody'] | RefreshTokenAuthTarget['reqBody'],
+  ) =>
     req.AuthFlow === 'USER_SRP_AUTH'
       ? signInUseCase.userSrpAuth(req)
       : signInUseCase.refreshTokenAuth(req),
@@ -51,22 +51,32 @@ const useCases: {
   'AWSCognitoIdentityProviderService.SetUserMFAPreference': mfaUseCase.setUserMFAPreference,
 };
 
-const main = <T extends keyof AmzTargets>(target: T, body: AmzTargets[T]['reqBody']) => {
-  assert(useCases[target], JSON.stringify({ target, body }));
+export const { GET, POST, middleware } = createRoute({
+  middleware({ req, next }) {
+    return next().catch((err) => {
+      if (err instanceof Error) console.error(new Date(), err.stack);
 
-  return useCases[target](body);
-};
-
-export const { GET, POST } = createRoute({
+      /* v8 ignore next */
+      return new NextResponse(err instanceof CustomError ? err.message : undefined, {
+        /* v8 ignore next */
+        status: req.method === 'GET' ? 404 : 403,
+      });
+    });
+  },
   async get() {
     return {
       status: 200,
       body: '<script>location.replace("./login")</script>',
-      headers: { 'Content-Type': 'text/html' },
+      headers: { 'content-type': 'text/html' },
     };
   },
   async post({ headers, body }) {
-    return main(headers['x-amz-target'], body)
+    const target = headers['x-amz-target'];
+
+    assert(target in useCases, JSON.stringify({ target, body }));
+
+    // oxlint-disable-next-line no-explicit-any
+    return useCases[target as keyof typeof useCases](body as any)
       .then((body) => ({
         status: 200 as const,
         headers: { 'content-type': 'application/x-amz-json-1.1' } as const,

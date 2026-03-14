@@ -1,8 +1,8 @@
 import { createDecoder } from 'fast-jwt';
 import type { DeleteUserTarget } from 'schemas/auth';
-import { AccessTokenJwtSchema } from 'schemas/jwt';
+import { TokenJwtSchema } from 'schemas/jwt';
 import { customAssert } from 'server/service/customAssert';
-import { transaction } from 'server/service/prismaClient';
+import { transaction } from 'server/service/transaction';
 import { userMethod } from '../model/userMethod';
 import { userCommand } from '../store/userCommand';
 import { userQuery } from '../store/userQuery';
@@ -14,7 +14,7 @@ export const userUseCase = {
     transaction(async (tx) => {
       customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
-      const payload = AccessTokenJwtSchema.safeParse(decoder(req.AccessToken));
+      const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
 
       customAssert(payload.success, 'Eliminate fraudulent requests');
 

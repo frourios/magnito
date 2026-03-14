@@ -6,20 +6,25 @@ import { createRoute } from './frourio.server';
 
 function throwCustomError(label: string) {
   return (e: Error): never => {
-    /* v8 ignore next 1 */
+    /* v8 ignore next */
     throw new CustomError(`${label} ${e.message}`);
+    /* v8 ignore next */
   };
 }
 
-const initPromise = userPoolUseCase.initDefaults();
+let initPromise: Promise<void>;
 
 export const { GET } = createRoute({
-  get: async () => ({
-    status: 200,
-    body: await Promise.all([
-      initPromise.catch(throwCustomError('DB')),
-      checkSmtpHealth().catch(throwCustomError('SMTP')),
-      cognito.health().catch(throwCustomError('Cognito')),
-    ]).then(() => 'ok'),
-  }),
+  get: async () => {
+    initPromise ??= userPoolUseCase.initDefaults();
+
+    return {
+      status: 200,
+      body: await Promise.all([
+        initPromise.catch(throwCustomError('DB')),
+        checkSmtpHealth().catch(throwCustomError('SMTP')),
+        cognito.health().catch(throwCustomError('Cognito')),
+      ]).then(() => 'ok'),
+    };
+  },
 });

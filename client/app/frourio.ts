@@ -1,28 +1,20 @@
 import type { FrourioSpec } from '@frourio/next';
-import { AmzTargetKeys, AmzTargetSchemas } from 'schemas/auth';
 import { z } from 'zod';
 
 export const frourioSpec = {
+  middleware: true,
   get: {
     res: {
-      200: { body: z.string(), headers: z.object({ 'Content-Type': z.literal('text/html') }) },
+      200: { body: z.string(), headers: z.object({ 'content-type': z.literal('text/html') }) },
     },
   },
   post: {
-    headers: z.object({ 'x-amz-target': z.enum(AmzTargetKeys) }),
-    body: z.union([
-      AmzTargetSchemas[AmzTargetKeys[0]].reqBody,
-      AmzTargetSchemas[AmzTargetKeys[1]].reqBody,
-      ...AmzTargetKeys.slice(2).map((key) => AmzTargetSchemas[key].reqBody),
-    ]),
+    headers: z.object({ 'x-amz-target': z.string() }),
+    body: z.record(z.string(), z.any()),
     res: {
       200: {
         headers: z.object({ 'content-type': z.literal('application/x-amz-json-1.1') }),
-        body: z.union([
-          AmzTargetSchemas[AmzTargetKeys[0]].resBody,
-          AmzTargetSchemas[AmzTargetKeys[1]].resBody,
-          ...AmzTargetKeys.slice(2).map((key) => AmzTargetSchemas[key].resBody),
-        ]),
+        body: z.record(z.string(), z.any()),
       },
       400: {
         headers: z.record(z.enum(['X-Amzn-Errormessage', 'X-Amzn-Errortype']), z.string()),

@@ -1,6 +1,6 @@
 import { createHash, createPublicKey, generateKeyPairSync } from 'crypto';
 import { JWK } from 'node-jose';
-import type { JwksDto } from 'schemas/userPool';
+import { JwksDtoSchema, type JwksDto } from 'schemas/userPool';
 
 export const genPrivatekey = (): string => {
   const { privateKey } = generateKeyPairSync('rsa', {
@@ -20,5 +20,5 @@ export const genJwks = async (privateKey: string): Promise<JwksDto> => {
 
   await keystore.add(publicKeyPem, 'pem', { alg: 'RS256', use: 'sig', kid });
 
-  return keystore.toJSON() as JwksDto;
+  return JwksDtoSchema.parse(keystore.toJSON());
 };

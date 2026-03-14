@@ -11,8 +11,9 @@ import type {
 } from 'schemas/auth';
 import { brandedId } from 'schemas/brandedId';
 import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
-import { prismaClient, transaction } from 'server/service/prismaClient';
+import { prismaClient } from 'server/service/prismaClient';
 import { genJwks } from 'server/service/privateKey';
+import { transaction } from 'server/service/transaction';
 import { adminMethod } from '../model/adminMethod';
 import { userMethod } from '../model/userMethod';
 import type { CognitoUserEntity } from '../model/userType';

@@ -7,7 +7,7 @@ import type {
 import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
 import { cognitoAssert } from 'server/service/cognitoAssert';
 import { EXPIRES_SEC } from 'server/service/constants';
-import { transaction } from 'server/service/prismaClient';
+import { transaction } from 'server/service/transaction';
 import { mfaMethod } from '../model/mfaMethod';
 import { signInMethod } from '../model/signInMethod';
 import { genTokens } from '../service/genTokens';

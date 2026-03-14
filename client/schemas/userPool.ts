@@ -2,7 +2,16 @@ import { z } from 'zod';
 import { brandedId } from './brandedId';
 
 export const JwksDtoSchema = z.object({
-  keys: z.array(z.object({ kid: z.string(), alg: z.string() })),
+  keys: z.array(
+    z.object({
+      kty: z.string(),
+      kid: z.string(),
+      use: z.string(),
+      alg: z.string(),
+      n: z.string(),
+      e: z.string(),
+    }),
+  ),
 });
 
 export type JwksDto = z.infer<typeof JwksDtoSchema>;

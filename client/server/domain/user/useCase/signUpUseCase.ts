@@ -1,7 +1,7 @@
 import assert from 'assert';
 import type { ConfirmSignUpTarget, ResendConfirmationCodeTarget, SignUpTarget } from 'schemas/auth';
 import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
-import { transaction } from 'server/service/prismaClient';
+import { transaction } from 'server/service/transaction';
 import { cognitoUserMethod } from '../model/cognitoUserMethod';
 import { findEmail } from '../service/findEmail';
 import { genCodeDeliveryDetails } from '../service/genCodeDeliveryDetails';

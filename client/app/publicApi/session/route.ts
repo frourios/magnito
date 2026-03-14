@@ -11,11 +11,7 @@ export const { POST, DELETE, middleware } = createRoute({
     if (req.method === 'POST') {
       const body = frourioSpec.post.body.parse(await req.clone().json());
       const res = await next();
-
-      const { payload } = z
-        .object({ payload: z.object({ exp: z.number() }).passthrough() })
-        .passthrough()
-        .parse(decoder(body.jwt));
+      const payload = z.object({ exp: z.number() }).parse(decoder(body.jwt));
 
       res.cookies.set(COOKIE_NAME, body.jwt, {
         ...COOKIE_OPTIONS,

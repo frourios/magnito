@@ -9,7 +9,7 @@ import type { UserPoolClientEntity, UserPoolEntity } from './userPoolType';
 
 export const userPoolMethod = {
   create: (val: { id?: DtoId['userPool']; name: string }): UserPoolEntity => ({
-    id: brandedId.userPool.entity.parse(`${REGION}_${createShortHash(randomUUID())}`),
+    id: brandedId.userPool.entity.parse(val.id ?? `${REGION}_${createShortHash(randomUUID())}`),
     name: val.name,
     privateKey: genPrivatekey(),
     createdTime: Date.now(),
@@ -19,7 +19,7 @@ export const userPoolMethod = {
     name: string;
     userPoolId: DtoId['userPool'];
   }): UserPoolClientEntity => ({
-    id: brandedId.userPoolClient.entity.parse(randomUUID().replace(/-/g, '')),
+    id: brandedId.userPoolClient.entity.parse(val.id ?? randomUUID().replace(/-/g, '')),
     userPoolId: brandedId.userPool.entity.parse(val.userPoolId),
     name: val.name,
     createdTime: Date.now(),

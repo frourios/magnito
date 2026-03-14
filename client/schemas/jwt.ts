@@ -1,7 +1,7 @@
 import { brandedId } from 'schemas/brandedId';
 import { z } from 'zod';
 
-export const IdTokenJwtSchema = z.object({
+const IdTokenJwtSchema = z.object({
   sub: brandedId.cognitoUser.maybe.or(brandedId.socialUser.maybe),
   email_verified: z.boolean(),
   iss: z.string(),
@@ -19,7 +19,7 @@ export const IdTokenJwtSchema = z.object({
 
 export type IdTokenJwt = z.infer<typeof IdTokenJwtSchema>;
 
-export const AccessTokenJwtSchema = z.object({
+const AccessTokenJwtSchema = z.object({
   sub: brandedId.cognitoUser.maybe.or(brandedId.socialUser.maybe),
   iss: z.string(),
   client_id: brandedId.userPoolClient.maybe,
@@ -36,12 +36,6 @@ export const AccessTokenJwtSchema = z.object({
 
 export type AccessTokenJwt = z.infer<typeof AccessTokenJwtSchema>;
 
-export const JwtUserSchema = z
-  .object({
-    sub: brandedId.cognitoUser.dto.or(brandedId.socialUser.dto),
-    'cognito:username': z.string(),
-    email: z.string().email(),
-  })
-  .readonly();
+export const TokenJwtSchema = IdTokenJwtSchema.or(AccessTokenJwtSchema);
 
-export type JwtUser = z.infer<typeof JwtUserSchema>;
+export type TokenJwt = z.infer<typeof TokenJwtSchema>;

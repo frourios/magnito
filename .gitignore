@@ -19,6 +19,8 @@ client/api/*
 **/*.css.d.ts
 **/*.css.d.ts.map
 frourio.*.ts
+client/tests/setupMswHandlers.ts
+client/coverage/
 
 # server
 server/index.js*
