@@ -19,10 +19,10 @@ jobs:
           key: npm-${{ hashFiles('package-lock.json') }}
       - run: npm install
         if: steps.npm-cache.outputs.cache-hit != 'true'
+      - run: cp .env.example .env
       - run: npm run generate
       - run: npm run lint
       - run: npm run typecheck
-      - run: cp .env.example .env
       - run: docker compose -p magnito-test up -d
       - run: npm test
 
