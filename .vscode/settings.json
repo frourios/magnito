@@ -16,6 +16,7 @@
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     "*.module.css": "${capture}.module.css.d.ts, ${capture}.module.css.d.ts.map",
+    "frourio.ts": "frourio.*.ts",
     "tsconfig.json": "tsconfig.tsbuildinfo"
   }
 }

@@ -1,5 +1,4 @@
 import assert from 'assert';
-import { NextResponse } from 'next/server';
 import { adminUseCase } from 'server/domain/user/useCase/adminUseCase';
 import { authUseCase } from 'server/domain/user/useCase/authUseCase';
 import { mfaUseCase } from 'server/domain/user/useCase/mfaUseCase';
@@ -7,7 +6,6 @@ import { signInUseCase } from 'server/domain/user/useCase/signInUseCase';
 import { signUpUseCase } from 'server/domain/user/useCase/signUpUseCase';
 import { userUseCase } from 'server/domain/user/useCase/userUseCase';
 import { userPoolUseCase } from 'server/domain/userPool/useCase/userPoolUseCase';
-import { CustomError } from 'server/service/customAssert';
 import { returnPostError } from 'server/service/returnStatus';
 import type { RefreshTokenAuthTarget, UserSrpAuthTarget } from 'src/schemas/signIn';
 import { createRoute } from './frourio.server';
@@ -51,17 +49,7 @@ const useCases = {
   'AWSCognitoIdentityProviderService.SetUserMFAPreference': mfaUseCase.setUserMFAPreference,
 };
 
-export const { GET, POST, middleware } = createRoute({
-  middleware({ req, next }) {
-    return next().catch((err) => {
-      if (err instanceof Error) console.error(new Date(), err.stack);
-
-      /* v8 ignore next 2 */
-      return new NextResponse(err instanceof CustomError ? err.message : undefined, {
-        status: req.method === 'GET' ? 404 : 403,
-      });
-    });
-  },
+export const { GET, POST } = createRoute({
   async get() {
     return {
       status: 200,
