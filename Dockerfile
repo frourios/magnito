@@ -6,7 +6,7 @@ ARG COGNITO_SECRET_KEY=magnito-secret-key
 ARG COGNITO_REGION=ap-northeast-1
 ARG COGNITO_USER_POOL_ID=ap-northeast-1_default
 ARG COGNITO_USER_POOL_CLIENT_ID=default-client-id
-ARG DATABASE_URL=file:../data/app.db
+ARG DATABASE_URL=file:./data/app.db
 ARG SMTP_HOST=inbucket
 ARG SMTP_PORT=2500
 ARG SMTP_USER=fake_mail_user
@@ -72,8 +72,6 @@ COPY --chown=node package.json package-lock.json ./
 
 RUN npm ci --omit=dev
 
-COPY --chown=node --from=builder /usr/src/app/node_modules/.prisma node_modules/.prisma
-COPY --chown=node --from=builder /usr/src/app/prisma prisma/
 COPY --chown=node --from=builder /usr/src/app/.next .next/
 COPY --chown=node --from=builder /usr/src/app/certificates certificates/
 COPY --chown=node --from=builder /usr/src/app/data data/

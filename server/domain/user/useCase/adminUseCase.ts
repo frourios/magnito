@@ -1,6 +1,6 @@
 import assert from 'assert';
-import type { Prisma } from '@prisma/client';
 import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
+import type { Prisma } from 'server/prisma/client';
 import { prismaClient } from 'server/service/prismaClient';
 import { genJwks } from 'server/service/privateKey';
 import { transaction } from 'server/service/transaction';

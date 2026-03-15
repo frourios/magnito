@@ -1,5 +1,6 @@
 import assert from 'assert';
-import { PrismaClient } from '@prisma/client';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import { PrismaClient } from 'server/prisma/client';
 import { ulid } from 'ulid';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
@@ -9,7 +10,9 @@ vi.mock('server/service/prismaClient', async () => {
   process.env.DATABASE_URL = process.env.DATABASE_URL.replace(/[^/]+$/, `test-${ulid()}`);
 
   return {
-    prismaClient: new PrismaClient({ datasources: { db: { url: process.env.DATABASE_URL } } }),
+    prismaClient: new PrismaClient({
+      adapter: new PrismaBetterSqlite3({ url: process.env.DATABASE_URL }),
+    }),
   };
 });
 

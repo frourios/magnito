@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from 'server/prisma/client';
 import { genJwks } from 'server/service/privateKey';
 import type { DtoId, MaybeId } from 'src/schemas/brandedId';
 import { brandedId } from 'src/schemas/brandedId';

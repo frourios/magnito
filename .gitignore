@@ -20,3 +20,4 @@ npm-debug.log*
 frourio.*.ts
 tests/setupMswHandlers.ts
 coverage/
+server/prisma/

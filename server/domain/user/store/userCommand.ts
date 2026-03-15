@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from 'server/prisma/client';
 import type { EntityId } from 'src/schemas/brandedId';
 import type { UserDto } from 'src/schemas/user';
 import type { UserEntity } from '../model/userType';
