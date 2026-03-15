@@ -103,8 +103,9 @@ export const toUserDto = (prismaUser: PrismaUser): UserDto => {
       return toCognitoUserDto(prismaUser);
     case 'social':
       return toSocialUserDto(prismaUser);
-    /* v8 ignore next 2 */
+    /* v8 ignore start */
     default:
       throw new Error(kind satisfies never);
+    /* v8 ignore stop */
   }
 };

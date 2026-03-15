@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
-import { cognitoAssert } from 'server/service/cognitoAssert';
+import { catchCognitoErr, cognitoAssert } from 'server/service/cognitoAssert';
 import { EXPIRES_SEC } from 'server/service/constants';
 import { transaction } from 'server/service/transaction';
 import type {
@@ -19,9 +19,10 @@ import { userQuery } from '../store/userQuery';
 export const signInUseCase = {
   userSrpAuth: (req: UserSrpAuthTarget['reqBody']): Promise<UserSrpAuthTarget['resBody']> =>
     transaction(async (tx) => {
-      const user = await userQuery.findByName(tx, req.AuthParameters.USERNAME).catch(() => null);
+      const user = await userQuery
+        .findByName(tx, req.AuthParameters.USERNAME)
+        .catch(catchCognitoErr('Incorrect username or password.'));
 
-      cognitoAssert(user, 'Incorrect username or password.');
       assert(user.kind === 'cognito');
 
       const { userWithChallenge, ChallengeParameters } = signInMethod.createChallenge(

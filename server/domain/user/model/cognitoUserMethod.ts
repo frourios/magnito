@@ -7,7 +7,7 @@ import { brandedId } from 'src/schemas/brandedId';
 import type { CognitoUserDto, UserDto } from 'src/schemas/user';
 import { ulid } from 'ulid';
 import { z } from 'zod';
-import { createAttributes } from '../service/createAttributes';
+import { attributeDtoToEntity, createAttributes } from '../service/createAttributes';
 import { genConfirmationCode } from '../service/genConfirmationCode';
 import { genCredentials } from '../service/genCredentials';
 import { validatePass } from '../service/validatePass';
@@ -65,10 +65,7 @@ export const cognitoUserMethod = {
     return {
       ...user,
       id: brandedId.cognitoUser.entity.parse(user.id),
-      attributes: user.attributes.map((attr) => ({
-        ...attr,
-        id: brandedId.userAttribute.entity.parse(attr.id),
-      })),
+      attributes: user.attributes.map(attributeDtoToEntity),
       userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
       status: 'CONFIRMED',
       updatedTime: Date.now(),
@@ -87,11 +84,7 @@ export const cognitoUserMethod = {
     return {
       ...params.user,
       id: brandedId.cognitoUser.entity.parse(params.user.id),
-      /* v8 ignore next 4 */
-      attributes: params.user.attributes.map((attr) => ({
-        ...attr,
-        id: brandedId.userAttribute.entity.parse(attr.id),
-      })),
+      attributes: params.user.attributes.map(attributeDtoToEntity),
       userPoolId: brandedId.userPool.entity.parse(params.user.userPoolId),
       ...genCredentials({
         poolId: params.user.userPoolId,
@@ -110,11 +103,7 @@ export const cognitoUserMethod = {
     return {
       ...user,
       id: brandedId.cognitoUser.entity.parse(user.id),
-      /* v8 ignore next 4 */
-      attributes: user.attributes.map((attr) => ({
-        ...attr,
-        id: brandedId.userAttribute.entity.parse(attr.id),
-      })),
+      attributes: user.attributes.map(attributeDtoToEntity),
       userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
       status: 'RESET_REQUIRED',
       confirmationCode,
@@ -126,27 +115,19 @@ export const cognitoUserMethod = {
     confirmationCode: string;
     password: string;
   }): CognitoUserEntity => {
-    const { user, confirmationCode } = params;
+    const { user, confirmationCode, password } = params;
     cognitoAssert(
       user.confirmationCode === confirmationCode,
       'Invalid verification code provided, please try again.',
     );
-    validatePass(params.password);
+    validatePass(password);
 
     return {
       ...user,
-      id: brandedId.cognitoUser.entity.parse(params.user.id),
-      /* v8 ignore next 4 */
-      attributes: params.user.attributes.map((attr) => ({
-        ...attr,
-        id: brandedId.userAttribute.entity.parse(attr.id),
-      })),
-      userPoolId: brandedId.userPool.entity.parse(params.user.userPoolId),
-      ...genCredentials({
-        poolId: user.userPoolId,
-        username: user.name,
-        password: params.password,
-      }),
+      id: brandedId.cognitoUser.entity.parse(user.id),
+      attributes: user.attributes.map(attributeDtoToEntity),
+      userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
+      ...genCredentials({ poolId: user.userPoolId, username: user.name, password }),
       status: 'CONFIRMED',
       confirmationCode: '',
       updatedTime: Date.now(),
@@ -166,11 +147,7 @@ export const cognitoUserMethod = {
     return {
       ...user,
       id: brandedId.cognitoUser.entity.parse(user.id),
-      /* v8 ignore next 4 */
-      attributes: user.attributes.map((attr) => ({
-        ...attr,
-        id: brandedId.userAttribute.entity.parse(attr.id),
-      })),
+      attributes: user.attributes.map(attributeDtoToEntity),
       userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
       status: 'CONFIRMED',
       updatedTime: Date.now(),

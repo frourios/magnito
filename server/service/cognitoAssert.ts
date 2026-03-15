@@ -24,3 +24,7 @@ export class CognitoError extends Error {}
 export function cognitoAssert(val: unknown, msg: keyof typeof COGNITO_ERRORS): asserts val {
   assert(val, new CognitoError(msg));
 }
+
+export const catchCognitoErr = (msg: keyof typeof COGNITO_ERRORS) => () => {
+  throw new CognitoError(msg);
+};

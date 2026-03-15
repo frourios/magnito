@@ -5,6 +5,7 @@ import { brandedId } from 'src/schemas/brandedId';
 import type { UserSrpAuthTarget } from 'src/schemas/signIn';
 import type { ChallengeVal, CognitoUserDto } from 'src/schemas/user';
 import type { JwksDto, UserPoolClientDto, UserPoolDto } from 'src/schemas/userPool';
+import { attributeDtoToEntity } from '../service/createAttributes';
 import { genTokens } from '../service/genTokens';
 import { calculateScramblingParameter, calculateSessionKey } from '../service/srp/calcSessionKey';
 import { calculateSignature } from '../service/srp/calcSignature';
@@ -28,11 +29,7 @@ export const signInMethod = {
       userWithChallenge: {
         ...user,
         id: brandedId.cognitoUser.entity.parse(user.id),
-        /* v8 ignore next 4 */
-        attributes: user.attributes.map((attr) => ({
-          ...attr,
-          id: brandedId.userAttribute.entity.parse(attr.id),
-        })),
+        attributes: user.attributes.map(attributeDtoToEntity),
         userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
         challenge,
       },
@@ -81,11 +78,7 @@ export const signInMethod = {
   ): CognitoUserEntity => ({
     ...user,
     id: brandedId.cognitoUser.entity.parse(user.id),
-    /* v8 ignore next 4 */
-    attributes: user.attributes.map((attr) => ({
-      ...attr,
-      id: brandedId.userAttribute.entity.parse(attr.id),
-    })),
+    attributes: user.attributes.map(attributeDtoToEntity),
     userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
     srpAuth,
   }),

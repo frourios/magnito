@@ -12,7 +12,6 @@ export const middleware = createMiddleware(({ req, next }) => {
     .catch((err) => {
       if (err instanceof Error) console.error(new Date(), err.stack);
 
-      /* v8 ignore next 2 */
       return new NextResponse(err instanceof CustomError ? err.message : undefined, {
         status: req.method === 'GET' ? 404 : 403,
       });

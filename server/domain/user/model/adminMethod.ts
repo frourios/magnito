@@ -4,7 +4,7 @@ import type { AdminCreateUserTarget, AdminSetUserPasswordTarget } from 'src/sche
 import { brandedId, type DtoId, type EntityId } from 'src/schemas/brandedId';
 import type { CognitoUserDto, UserDto } from 'src/schemas/user';
 import { ulid } from 'ulid';
-import { createAttributes } from '../service/createAttributes';
+import { attributeDtoToEntity, createAttributes } from '../service/createAttributes';
 import { findEmail } from '../service/findEmail';
 import { genCredentials } from '../service/genCredentials';
 import { validatePass } from '../service/validatePass';
@@ -49,11 +49,7 @@ export const adminMethod = {
     return {
       ...user,
       id: brandedId.cognitoUser.entity.parse(user.id),
-      /* v8 ignore next 4 */
-      attributes: user.attributes.map((attr) => ({
-        ...attr,
-        id: brandedId.userAttribute.entity.parse(attr.id),
-      })),
+      attributes: user.attributes.map(attributeDtoToEntity),
       userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
       ...genCredentials({ poolId: user.userPoolId, username: user.name, password: req.Password }),
       status: req.Permanent ? 'CONFIRMED' : 'FORCE_CHANGE_PASSWORD',

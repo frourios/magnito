@@ -5,8 +5,8 @@ import { checkSmtpHealth } from 'server/service/sendMail';
 import { createRoute } from './frourio.server';
 
 function throwCustomError(label: string) {
+  /* v8 ignore next */
   return (e: Error): never => {
-    /* v8 ignore next 2 */
     throw new CustomError(`${label} ${e.message}`);
   };
 }

@@ -78,3 +78,8 @@ export const createAttributes = (
       value: z.string().parse(attr.Value),
     })),
 ];
+
+export const attributeDtoToEntity = (attr: UserAttributeDto): UserAttributeEntity => ({
+  ...attr,
+  id: brandedId.userAttribute.entity.parse(attr.id),
+});

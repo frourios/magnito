@@ -58,9 +58,10 @@ export function AuthLoader(): React.ReactElement {
           case 'tokenRefresh_failure':
             await signOut();
             break;
-          /* v8 ignore next 2 */
+          /* v8 ignore start */
           default:
             throw new Error(data.payload satisfies never);
+          /* v8 ignore stop */
         }
       },
     );

@@ -12,7 +12,7 @@ import type {
 import type { JwksDto, UserPoolClientDto, UserPoolDto } from 'src/schemas/userPool';
 import { ulid } from 'ulid';
 import { z } from 'zod';
-import { createAttributes } from '../service/createAttributes';
+import { attributeDtoToEntity, createAttributes } from '../service/createAttributes';
 import { genTokens } from '../service/genTokens';
 import type { SocialUserEntity } from './userType';
 
@@ -77,11 +77,7 @@ export const socialUserMethod = {
       ...user,
       id: brandedId.socialUser.entity.parse(user.id),
       userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
-      /* v8 ignore next 4 */
-      attributes: user.attributes.map((attr) => ({
-        ...attr,
-        id: brandedId.userAttribute.entity.parse(attr.id),
-      })),
+      attributes: user.attributes.map(attributeDtoToEntity),
       codeChallenge,
     };
   },

@@ -3,6 +3,7 @@ import { cognitoAssert } from 'server/service/cognitoAssert';
 import type { SetUserMFAPreferenceTarget } from 'src/schemas/auth';
 import { brandedId } from 'src/schemas/brandedId';
 import type { CognitoUserDto } from 'src/schemas/user';
+import { attributeDtoToEntity } from '../service/createAttributes';
 import type { CognitoUserEntity } from './userType';
 
 export const mfaMethod = {
@@ -10,11 +11,7 @@ export const mfaMethod = {
     return {
       ...user,
       id: brandedId.cognitoUser.entity.parse(user.id),
-      /* v8 ignore next 4 */
-      attributes: user.attributes.map((attr) => ({
-        ...attr,
-        id: brandedId.userAttribute.entity.parse(attr.id),
-      })),
+      attributes: user.attributes.map(attributeDtoToEntity),
       userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
       totpSecretCode: generateSecret(),
     };
@@ -30,11 +27,7 @@ export const mfaMethod = {
     return {
       ...user,
       id: brandedId.cognitoUser.entity.parse(user.id),
-      /* v8 ignore next 4 */
-      attributes: user.attributes.map((attr) => ({
-        ...attr,
-        id: brandedId.userAttribute.entity.parse(attr.id),
-      })),
+      attributes: user.attributes.map(attributeDtoToEntity),
       userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
       mfaSettingList: ['SOFTWARE_TOKEN_MFA'],
     };
@@ -54,11 +47,7 @@ export const mfaMethod = {
     return {
       ...user,
       id: brandedId.cognitoUser.entity.parse(user.id),
-      /* v8 ignore next 4 */
-      attributes: user.attributes.map((attr) => ({
-        ...attr,
-        id: brandedId.userAttribute.entity.parse(attr.id),
-      })),
+      attributes: user.attributes.map(attributeDtoToEntity),
       userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
       mfaSettingList,
       preferredMfaSetting:
