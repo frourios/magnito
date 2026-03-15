@@ -4,6 +4,7 @@ import { cognitoAssert } from 'server/service/cognitoAssert';
 import { EXPIRES_SEC } from 'server/service/constants';
 import { transaction } from 'server/service/transaction';
 import type {
+  GetTokensFromRefreshTokenTarget,
   RefreshTokenAuthTarget,
   RespondToAuthChallengeTarget,
   UserSrpAuthTarget,
@@ -55,6 +56,30 @@ export const signInUseCase = {
           TokenType: 'Bearer',
         },
         ChallengeParameters: {},
+      };
+    }),
+  getTokensFromRefreshToken: (
+    req: GetTokensFromRefreshTokenTarget['reqBody'],
+  ): Promise<GetTokensFromRefreshTokenTarget['resBody']> =>
+    transaction(async (tx) => {
+      const user = await userQuery.findByRefreshToken(tx, req.RefreshToken);
+      const pool = await userPoolQuery.findById(tx, user.userPoolId);
+      const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
+      const jwks = await userPoolQuery.findJwks(tx, user.userPoolId);
+
+      assert(pool.id === poolClient.userPoolId);
+
+      return {
+        AuthenticationResult: {
+          ...genTokens({
+            privateKey: pool.privateKey,
+            userPoolClientId: poolClient.id,
+            jwks,
+            user,
+          }),
+          ExpiresIn: EXPIRES_SEC,
+          TokenType: 'Bearer',
+        },
       };
     }),
   respondToAuthChallenge: (

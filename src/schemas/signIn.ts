@@ -38,6 +38,21 @@ export type RefreshTokenAuthTarget = TargetBody<
   }
 >;
 
+export type GetTokensFromRefreshTokenTarget = TargetBody<
+  {
+    ClientId: MaybeId['userPoolClient'];
+    RefreshToken: string;
+  },
+  {
+    AuthenticationResult: {
+      AccessToken: string;
+      ExpiresIn: number;
+      IdToken: string;
+      TokenType: 'Bearer';
+    };
+  }
+>;
+
 export type InitiateAuthTarget = UserSrpAuthTarget | RefreshTokenAuthTarget;
 
 export type RespondToAuthChallengeTarget = TargetBody<

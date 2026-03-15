@@ -66,6 +66,7 @@
 - [ ] GetGroup
 - [ ] GetIdentityProviderByIdentifier
 - [ ] GetLogDeliveryConfiguration
+- [x] GetTokensFromRefreshToken
 - [ ] GetSigningCertificate
 - [ ] GetUiCustomization
 - [x] GetUser

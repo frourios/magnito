@@ -47,6 +47,8 @@ const useCases = {
   'AWSCognitoIdentityProviderService.AssociateSoftwareToken': mfaUseCase.associateSoftwareToken,
   'AWSCognitoIdentityProviderService.VerifySoftwareToken': mfaUseCase.verifySoftwareToken,
   'AWSCognitoIdentityProviderService.SetUserMFAPreference': mfaUseCase.setUserMFAPreference,
+  'AWSCognitoIdentityProviderService.GetTokensFromRefreshToken':
+    signInUseCase.getTokensFromRefreshToken,
 };
 
 export const { GET, POST } = createRoute({
