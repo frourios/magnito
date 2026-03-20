@@ -9,51 +9,62 @@ import * as route_1hgkt2c from '../src/app/publicApi/health/route';
 import * as route_1j9vdnu from '../src/app/publicApi/session/route';
 import * as route_2er65n from '../src/app/publicApi/socialUsers/route';
 
+export const patchDuplicateCookie = (req: Request): Request => {
+  const cookie = req.headers.get('cookie');
+
+  if (cookie) {
+    const unique = [...new Set(cookie.split(/,\s*/).flatMap((s) => s.split('; ')))];
+    req.headers.set('cookie', unique.join('; '));
+  }
+
+  return req;
+};
+
 export function setupMswHandlers(option?: { baseURL: string }): RequestHandler[] {
   const baseURL = option?.baseURL.replace(/\/$/, '') ?? '';
 
   return [
     http.get(`${baseURL}`, ({ request }) => {
-      return route_ztntfp.GET(request);
+      return route_ztntfp.GET(patchDuplicateCookie(request));
     }),
     http.post(`${baseURL}`, ({ request }) => {
-      return route_ztntfp.POST(request);
+      return route_ztntfp.POST(patchDuplicateCookie(request));
     }),
     http.get(`${baseURL}/:userPoolId/.well-known/jwks.json`, ({ request }) => {
       const pathChunks = request.url.replace(baseURL || /https?:\/\/[^/]+/, '').split('/');
       const params = { 'userPoolId': `${pathChunks[1]}` };
 
-      return route_1l9bsp.GET(request, { params: Promise.resolve(params) });
+      return route_1l9bsp.GET(patchDuplicateCookie(request), { params: Promise.resolve(params) });
     }),
     http.get(`${baseURL}/logout`, ({ request }) => {
-      return route_1vt2ad4.GET(request);
+      return route_1vt2ad4.GET(patchDuplicateCookie(request));
     }),
     http.post(`${baseURL}/oauth2/token`, ({ request }) => {
-      return route_ifpnvn.POST(request);
+      return route_ifpnvn.POST(patchDuplicateCookie(request));
     }),
     http.get(`${baseURL}/privateApi/me`, ({ request }) => {
-      return route_16atxom.GET(request);
+      return route_16atxom.GET(patchDuplicateCookie(request));
     }),
     http.get(`${baseURL}/publicApi/defaults`, ({ request }) => {
-      return route_5i3cig.GET(request);
+      return route_5i3cig.GET(patchDuplicateCookie(request));
     }),
     http.get(`${baseURL}/publicApi/health`, ({ request }) => {
-      return route_1hgkt2c.GET(request);
+      return route_1hgkt2c.GET(patchDuplicateCookie(request));
     }),
     http.post(`${baseURL}/publicApi/session`, ({ request }) => {
-      return route_1j9vdnu.POST(request);
+      return route_1j9vdnu.POST(patchDuplicateCookie(request));
     }),
     http.delete(`${baseURL}/publicApi/session`, ({ request }) => {
-      return route_1j9vdnu.DELETE(request);
+      return route_1j9vdnu.DELETE(patchDuplicateCookie(request));
     }),
     http.get(`${baseURL}/publicApi/socialUsers`, ({ request }) => {
-      return route_2er65n.GET(request);
+      return route_2er65n.GET(patchDuplicateCookie(request));
     }),
     http.post(`${baseURL}/publicApi/socialUsers`, ({ request }) => {
-      return route_2er65n.POST(request);
+      return route_2er65n.POST(patchDuplicateCookie(request));
     }),
     http.patch(`${baseURL}/publicApi/socialUsers`, ({ request }) => {
-      return route_2er65n.PATCH(request);
+      return route_2er65n.PATCH(patchDuplicateCookie(request));
     }),
   ];
 }

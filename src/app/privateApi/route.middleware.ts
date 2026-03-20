@@ -1,3 +1,4 @@
+import { parseCookie } from 'cookie';
 import { createDecoder } from 'fast-jwt';
 import { createVerifier } from 'fast-jwt';
 import buildGetJwks from 'get-jwks';
@@ -16,11 +17,15 @@ const getJwks = buildGetJwks();
 const decoder = createDecoder();
 
 export const middleware = createMiddleware(async ({ req, next }) => {
-  const cookie = req.cookies.get(COOKIE_NAME);
+  const cookieText = req.headers.get('cookie');
 
-  if (!cookie) return new NextResponse(null, { status: 401 });
+  if (!cookieText) return new NextResponse(null, { status: 401 });
 
-  const payload = TokenJwtSchema.safeParse(decoder(cookie.value));
+  const parsedCookie = parseCookie(cookieText)[COOKIE_NAME];
+
+  customAssert(parsedCookie, 'Eliminate fraudulent requests');
+
+  const payload = TokenJwtSchema.safeParse(decoder(parsedCookie));
 
   customAssert(payload.success, 'Eliminate fraudulent requests');
 
@@ -53,7 +58,7 @@ export const middleware = createMiddleware(async ({ req, next }) => {
     },
     allowedAud: poolInfo.poolClientIds,
   });
-  const jwtResult = await verifyWithPromise(cookie.value).then((val) => TokenJwtSchema.parse(val));
+  const jwtResult = await verifyWithPromise(parsedCookie).then((val) => TokenJwtSchema.parse(val));
 
   return userQuery.findById(prismaClient, jwtResult.sub).then((user) => next({ user }));
 });

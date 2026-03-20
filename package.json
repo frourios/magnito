@@ -30,7 +30,8 @@
     "lint": "run-p lint:*",
     "lint:style": "stylelint \"**/*.css\" --ignore-path .gitignore",
     "lint:oxc": "oxlint && oxfmt --check",
-    "fix:lint": "oxlint --fix && npm run lint:style -- --fix && oxfmt",
+    "lint:prisma": "prisma format",
+    "fix:lint": "oxlint --fix && npm run lint:style -- --fix && npm run lint:prisma && oxfmt",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
     "test:updateSnapshot": "vitest -u",
@@ -43,6 +44,7 @@
     "@prisma/adapter-better-sqlite3": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "aws-amplify": "^6.16.3",
+    "cookie": "^1.1.1",
     "dotenv": "^17.3.1",
     "fast-jwt": "^6.1.0",
     "get-jwks": "^11.0.3",
@@ -59,7 +61,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@frourio/next": "^0.22.1",
+    "@frourio/next": "^0.23.2",
     "@types/jsbn": "^1.2.33",
     "@types/node-jose": "^1.1.13",
     "@types/nodemailer": "^7.0.11",
@@ -81,7 +83,6 @@
     "stylelint-config-standard": "^40.0.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.0"
   },
   "engines": {

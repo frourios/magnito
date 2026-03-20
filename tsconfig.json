@@ -18,11 +18,7 @@
     "jsx": "react-jsx",
     "types": ["vitest/importMeta"],
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "plugins": [{ "name": "next" }]
   },
   "include": [
     "**/*.ts",
