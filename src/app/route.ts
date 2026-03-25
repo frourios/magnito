@@ -1,4 +1,3 @@
-import assert from 'assert';
 import { adminUseCase } from 'server/domain/user/useCase/adminUseCase';
 import { authUseCase } from 'server/domain/user/useCase/authUseCase';
 import { mfaUseCase } from 'server/domain/user/useCase/mfaUseCase';
@@ -6,8 +5,10 @@ import { signInUseCase } from 'server/domain/user/useCase/signInUseCase';
 import { signUpUseCase } from 'server/domain/user/useCase/signUpUseCase';
 import { userUseCase } from 'server/domain/user/useCase/userUseCase';
 import { userPoolUseCase } from 'server/domain/userPool/useCase/userPoolUseCase';
-import { returnPostError } from 'server/service/returnStatus';
+import { COGNITO_ERRORS, CognitoError } from 'server/service/cognitoAssert';
 import type { RefreshTokenAuthTarget, UserSrpAuthTarget } from 'src/schemas/signIn';
+import type z from 'zod';
+import type { frourioSpec } from './frourio';
 import { createRoute } from './frourio.server';
 
 const useCases = {
@@ -51,6 +52,33 @@ const useCases = {
     signInUseCase.getTokensFromRefreshToken,
 };
 
+/* v8 ignore next */
+const returnPostError = (
+  e: unknown,
+):
+  | {
+      status: 400;
+      headers: z.infer<(typeof frourioSpec)['post']['res'][400]['headers']>;
+      body: z.infer<(typeof frourioSpec)['post']['res'][400]['body']>;
+    }
+  | { status: 403; body: z.infer<(typeof frourioSpec)['post']['res'][403]['body']> } => {
+  if (e instanceof CognitoError) {
+    const type = COGNITO_ERRORS[e.message as keyof typeof COGNITO_ERRORS];
+
+    return {
+      status: 400,
+      headers: { 'X-Amzn-Errormessage': e.message, 'X-Amzn-Errortype': type },
+      body: { message: e.message, __type: type },
+    };
+  }
+
+  if (!(e instanceof Error)) return { status: 403, body: { message: 'UnknownError' } };
+
+  console.log(new Date(), e.stack);
+
+  return { status: 403, body: { message: e.message } };
+};
+
 export const { GET, POST } = createRoute({
   async get() {
     return {
@@ -60,12 +88,12 @@ export const { GET, POST } = createRoute({
     };
   },
   async post({ headers, body }) {
-    const target = headers['x-amz-target'];
+    const key = headers['x-amz-target'];
 
-    assert(target in useCases, JSON.stringify({ target, body }));
+    if (!(key in useCases)) return { status: 403, body: { message: 'NotImplementedError' } };
 
     // oxlint-disable-next-line no-explicit-any
-    return useCases[target as keyof typeof useCases](body as any)
+    return useCases[key as keyof typeof useCases](body as any)
       .then((body) => ({
         status: 200 as const,
         headers: { 'content-type': 'application/x-amz-json-1.1' } as const,

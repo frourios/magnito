@@ -20,7 +20,7 @@ export const frourioSpec = {
         headers: z.record(z.enum(['X-Amzn-Errormessage', 'X-Amzn-Errortype']), z.string()),
         body: z.object({ message: z.string(), __type: z.string() }),
       },
-      403: { body: z.record(z.string(), z.never()) },
+      403: { body: z.object({ message: z.string() }) },
     },
   },
 } satisfies FrourioSpec;
