@@ -39,6 +39,7 @@ const useCases = {
   'AWSCognitoIdentityProviderService.AdminSetUserPassword': adminUseCase.setUserPassword,
   'AWSCognitoIdentityProviderService.AdminUpdateUserAttributes': adminUseCase.updateUserAttributes,
   'AWSCognitoIdentityProviderService.AdminDeleteUserAttributes': adminUseCase.deleteUserAttributes,
+  'AWSCognitoIdentityProviderService.AdminUserGlobalSignOut': adminUseCase.userGlobalSignOut,
   'AWSCognitoIdentityProviderService.ChangePassword': authUseCase.changePassword,
   'AWSCognitoIdentityProviderService.ForgotPassword': authUseCase.forgotPassword,
   'AWSCognitoIdentityProviderService.ConfirmForgotPassword': authUseCase.confirmForgotPassword,

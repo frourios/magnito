@@ -38,8 +38,6 @@ export const userQuery = {
     tx.user.findUniqueOrThrow({ where: { id }, include: USER_INCLUDE }).then(toUserDto),
   findByName: (tx: Prisma.TransactionClient, name: string): Promise<UserDto> =>
     tx.user.findFirstOrThrow({ where: { name }, include: USER_INCLUDE }).then(toUserDto),
-  findByRefreshToken: (tx: Prisma.TransactionClient, refreshToken: string): Promise<UserDto> =>
-    tx.user.findFirstOrThrow({ where: { refreshToken }, include: USER_INCLUDE }).then(toUserDto),
   findByAuthorizationCode: (
     tx: Prisma.TransactionClient,
     authorizationCode: string,

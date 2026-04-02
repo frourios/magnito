@@ -23,6 +23,8 @@ import { genCodeDeliveryDetails } from '../service/genCodeDeliveryDetails';
 import { sendConfirmationCode } from '../service/sendAuthMail';
 import { userCommand } from '../store/userCommand';
 import { userQuery } from '../store/userQuery';
+import { userTokenCommand } from '../store/userTokenCommand';
+import { userTokenQuery } from '../store/userTokenQuery';
 
 const decoder = createDecoder();
 
@@ -32,6 +34,7 @@ export const authUseCase = {
       const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
 
       customAssert(payload.success, 'Eliminate fraudulent requests');
+      await userTokenQuery.validateAccessToken(tx, req.AccessToken);
 
       const user = await userQuery.findById(tx, payload.data.sub);
 
@@ -63,7 +66,7 @@ export const authUseCase = {
     }),
   revokeToken: (req: RevokeTokenTarget['reqBody']): Promise<RevokeTokenTarget['resBody']> =>
     transaction(async (tx) => {
-      await userQuery.findByRefreshToken(tx, req.Token);
+      await userTokenCommand.revokeByToken(tx, req.Token);
 
       return {};
     }),
@@ -74,12 +77,14 @@ export const authUseCase = {
       const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
 
       customAssert(payload.success, 'Eliminate fraudulent requests');
+      await userTokenQuery.validateAccessToken(tx, req.AccessToken);
 
       const user = await userQuery.findById(tx, payload.data.sub);
 
       customAssert(user.kind === 'cognito', 'Eliminate fraudulent requests');
 
       await userCommand.save(tx, cognitoUserMethod.changePassword({ user, req }));
+      await userTokenCommand.revokeAllByUserId(tx, user.id);
 
       return {};
     }),
@@ -127,6 +132,7 @@ export const authUseCase = {
       const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
 
       customAssert(payload.success, 'Eliminate fraudulent requests');
+      await userTokenQuery.validateAccessToken(tx, req.AccessToken);
 
       const user = await userQuery.findById(tx, payload.data.sub);
       const updated = userMethod.updateAttributes(user, req.UserAttributes);
@@ -148,6 +154,7 @@ export const authUseCase = {
       const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
 
       customAssert(payload.success, 'Eliminate fraudulent requests');
+      await userTokenQuery.validateAccessToken(tx, req.AccessToken);
 
       const user = await userQuery.findById(tx, payload.data.sub);
 
@@ -164,6 +171,7 @@ export const authUseCase = {
       const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
 
       customAssert(payload.success, 'Eliminate fraudulent requests');
+      await userTokenQuery.validateAccessToken(tx, req.AccessToken);
 
       const user = await userQuery.findById(tx, payload.data.sub);
 

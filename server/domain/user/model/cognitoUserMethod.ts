@@ -48,7 +48,6 @@ export const cognitoUserMethod = {
       status: 'UNCONFIRMED',
       name: params.name,
       password: params.password,
-      refreshToken: ulid(),
       userPoolId: brandedId.userPool.entity.parse(params.userPoolId),
       confirmationCode: genConfirmationCode(),
       attributes: createAttributes(params.attributes, []),
@@ -92,7 +91,6 @@ export const cognitoUserMethod = {
         password: params.req.ProposedPassword,
       }),
       password: params.req.ProposedPassword,
-      refreshToken: ulid(),
       challenge: undefined,
       updatedTime: Date.now(),
     };

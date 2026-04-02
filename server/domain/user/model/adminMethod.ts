@@ -3,7 +3,6 @@ import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
 import type { AdminCreateUserTarget, AdminSetUserPasswordTarget } from 'src/schemas/auth';
 import { brandedId, type DtoId, type EntityId } from 'src/schemas/brandedId';
 import type { CognitoUserDto, UserDto } from 'src/schemas/user';
-import { ulid } from 'ulid';
 import { attributeDtoToEntity, createAttributes } from '../service/createAttributes';
 import { findEmail } from '../service/findEmail';
 import { genCredentials } from '../service/genCredentials';
@@ -54,7 +53,6 @@ export const adminMethod = {
       ...genCredentials({ poolId: user.userPoolId, username: user.name, password: req.Password }),
       status: req.Permanent ? 'CONFIRMED' : 'FORCE_CHANGE_PASSWORD',
       password: req.Password,
-      refreshToken: ulid(),
       challenge: undefined,
       updatedTime: Date.now(),
     };

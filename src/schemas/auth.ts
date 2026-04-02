@@ -87,6 +87,11 @@ export type AdminDeleteUserAttributesTarget = TargetBody<
   AmzType.AdminDeleteUserAttributesResponse
 >;
 
+export type AdminUserGlobalSignOutTarget = TargetBody<
+  AmzType.AdminUserGlobalSignOutRequest,
+  AmzType.AdminUserGlobalSignOutResponse
+>;
+
 export type ChangePasswordTarget = TargetBody<
   { AccessToken: string; PreviousPassword: string; ProposedPassword: string },
   Record<string, never>

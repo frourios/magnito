@@ -7,9 +7,12 @@ import {
   AdminInitiateAuthCommand,
   AdminSetUserPasswordCommand,
   AdminUpdateUserAttributesCommand,
+  AdminUserGlobalSignOutCommand,
+  GetUserCommand,
   UserStatusType,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { cognitoClient } from 'server/service/cognito';
+import { prismaClient } from 'server/service/prismaClient';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'server/service/serverEnvs';
 import { createUserClient, testPassword, testUserName } from 'tests/api/apiClient';
 import {
@@ -209,4 +212,87 @@ test(AdminDeleteUserAttributesCommand.name, async () => {
 
   expect(user.UserAttributes?.every((attr) => attr.Name !== attrName1)).toBeTruthy();
   expect(user.UserAttributes?.some((attr) => attr.Name === attrName2)).toBeTruthy();
+});
+
+test(AdminUserGlobalSignOutCommand.name, async () => {
+  await createCognitoUserAndToken();
+
+  const tokens = await cognitoClient.send(
+    new AdminInitiateAuthCommand({
+      AuthFlow: 'ADMIN_NO_SRP_AUTH',
+      UserPoolId: DEFAULT_USER_POOL_ID,
+      ClientId: DEFAULT_USER_POOL_CLIENT_ID,
+      AuthParameters: { USERNAME: testUserName, PASSWORD: testPassword },
+    }),
+  );
+
+  expect(tokens.AuthenticationResult?.RefreshToken).toBeTruthy();
+
+  const refreshTokenBefore = tokens.AuthenticationResult?.RefreshToken;
+
+  await cognitoClient.send(
+    new AdminUserGlobalSignOutCommand({ UserPoolId: DEFAULT_USER_POOL_ID, Username: testUserName }),
+  );
+
+  const tokensAfter = await cognitoClient.send(
+    new AdminInitiateAuthCommand({
+      AuthFlow: 'ADMIN_NO_SRP_AUTH',
+      UserPoolId: DEFAULT_USER_POOL_ID,
+      ClientId: DEFAULT_USER_POOL_CLIENT_ID,
+      AuthParameters: { USERNAME: testUserName, PASSWORD: testPassword },
+    }),
+  );
+
+  expect(tokensAfter.AuthenticationResult?.RefreshToken).not.toBe(refreshTokenBefore);
+});
+
+test(`${AdminUserGlobalSignOutCommand.name} - revoked access token is rejected`, async () => {
+  await createCognitoUserAndToken();
+
+  const tokens = await cognitoClient.send(
+    new AdminInitiateAuthCommand({
+      AuthFlow: 'ADMIN_NO_SRP_AUTH',
+      UserPoolId: DEFAULT_USER_POOL_ID,
+      ClientId: DEFAULT_USER_POOL_CLIENT_ID,
+      AuthParameters: { USERNAME: testUserName, PASSWORD: testPassword },
+    }),
+  );
+
+  assert(tokens.AuthenticationResult?.AccessToken);
+
+  await cognitoClient.send(
+    new AdminUserGlobalSignOutCommand({ UserPoolId: DEFAULT_USER_POOL_ID, Username: testUserName }),
+  );
+
+  await expect(
+    cognitoClient.send(
+      new GetUserCommand({ AccessToken: tokens.AuthenticationResult.AccessToken }),
+    ),
+  ).rejects.toThrow('Access Token has been revoked');
+});
+
+test('expired access token is rejected', async () => {
+  await createCognitoUserAndToken();
+
+  const tokens = await cognitoClient.send(
+    new AdminInitiateAuthCommand({
+      AuthFlow: 'ADMIN_NO_SRP_AUTH',
+      UserPoolId: DEFAULT_USER_POOL_ID,
+      ClientId: DEFAULT_USER_POOL_CLIENT_ID,
+      AuthParameters: { USERNAME: testUserName, PASSWORD: testPassword },
+    }),
+  );
+
+  assert(tokens.AuthenticationResult?.AccessToken);
+
+  await prismaClient.userToken.updateMany({
+    where: { token: tokens.AuthenticationResult.AccessToken, kind: 'access' },
+    data: { expiresAt: new Date(Date.now() - 1000) },
+  });
+
+  await expect(
+    cognitoClient.send(
+      new GetUserCommand({ AccessToken: tokens.AuthenticationResult.AccessToken }),
+    ),
+  ).rejects.toThrow('Access Token has expired');
 });

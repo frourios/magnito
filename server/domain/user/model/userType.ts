@@ -23,7 +23,6 @@ export type SocialUserEntity = {
   codeChallenge: string;
   salt?: undefined;
   verifier?: undefined;
-  refreshToken: string;
   userPoolId: EntityId['userPool'];
   attributes: UserAttributeEntity[];
   createdTime: number;
@@ -49,7 +48,6 @@ export type CognitoUserEntity = {
   codeChallenge?: undefined;
   salt: string;
   verifier: string;
-  refreshToken: string;
   userPoolId: EntityId['userPool'];
   attributes: UserAttributeEntity[];
   createdTime: number;

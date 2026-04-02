@@ -31,7 +31,7 @@
 - [ ] AdminUpdateAuthEventFeedback
 - [ ] AdminUpdateDeviceStatus
 - [x] AdminUpdateUserAttributes
-- [ ] AdminUserGlobalSignOut
+- [x] AdminUserGlobalSignOut
 - [x] AssociateSoftwareToken
 - [x] ChangePassword
 - [ ] ConfirmDevice

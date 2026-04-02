@@ -37,7 +37,6 @@ export const socialUserMethod = {
       enabled: true,
       status: 'EXTERNAL_PROVIDER',
       name: val.name,
-      refreshToken: ulid(),
       userPoolId: brandedId.userPool.entity.parse(userPoolId),
       attributes: val.photoUrl
         ? createAttributes([{ Name: 'picture', Value: val.photoUrl }], [])
@@ -65,7 +64,7 @@ export const socialUserMethod = {
     return {
       id_token: tokens.IdToken,
       access_token: tokens.AccessToken,
-      refresh_token: user.refreshToken,
+      refresh_token: ulid(),
       expires_in: 3600,
       token_type: 'Bearer',
     };

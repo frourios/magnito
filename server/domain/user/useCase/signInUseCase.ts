@@ -9,12 +9,15 @@ import type {
   RespondToAuthChallengeTarget,
   UserSrpAuthTarget,
 } from 'src/schemas/signIn';
+import { ulid } from 'ulid';
 import { mfaMethod } from '../model/mfaMethod';
 import { signInMethod } from '../model/signInMethod';
 import { genTokens } from '../service/genTokens';
 import { isEmailVerified } from '../service/isEmailVerified';
 import { userCommand } from '../store/userCommand';
 import { userQuery } from '../store/userQuery';
+import { userTokenCommand } from '../store/userTokenCommand';
+import { userTokenQuery } from '../store/userTokenQuery';
 
 export const signInUseCase = {
   userSrpAuth: (req: UserSrpAuthTarget['reqBody']): Promise<UserSrpAuthTarget['resBody']> =>
@@ -38,24 +41,28 @@ export const signInUseCase = {
     req: RefreshTokenAuthTarget['reqBody'],
   ): Promise<RefreshTokenAuthTarget['resBody']> =>
     transaction(async (tx) => {
-      const user = await userQuery.findByRefreshToken(tx, req.AuthParameters.REFRESH_TOKEN);
+      const user = await userTokenQuery.findUserByRefreshToken(
+        tx,
+        req.AuthParameters.REFRESH_TOKEN,
+      );
       const pool = await userPoolQuery.findById(tx, user.userPoolId);
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
       const jwks = await userPoolQuery.findJwks(tx, user.userPoolId);
 
       assert(pool.id === poolClient.userPoolId);
 
+      const tokens = genTokens({
+        privateKey: pool.privateKey,
+        userPoolClientId: poolClient.id,
+        jwks,
+        user,
+      });
+
+      await userTokenCommand.create(tx, user.id, 'access', tokens.AccessToken);
+      await userTokenCommand.create(tx, user.id, 'id', tokens.IdToken);
+
       return {
-        AuthenticationResult: {
-          ...genTokens({
-            privateKey: pool.privateKey,
-            userPoolClientId: poolClient.id,
-            jwks,
-            user,
-          }),
-          ExpiresIn: EXPIRES_SEC,
-          TokenType: 'Bearer',
-        },
+        AuthenticationResult: { ...tokens, ExpiresIn: EXPIRES_SEC, TokenType: 'Bearer' },
         ChallengeParameters: {},
       };
     }),
@@ -63,25 +70,24 @@ export const signInUseCase = {
     req: GetTokensFromRefreshTokenTarget['reqBody'],
   ): Promise<GetTokensFromRefreshTokenTarget['resBody']> =>
     transaction(async (tx) => {
-      const user = await userQuery.findByRefreshToken(tx, req.RefreshToken);
+      const user = await userTokenQuery.findUserByRefreshToken(tx, req.RefreshToken);
       const pool = await userPoolQuery.findById(tx, user.userPoolId);
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
       const jwks = await userPoolQuery.findJwks(tx, user.userPoolId);
 
       assert(pool.id === poolClient.userPoolId);
 
-      return {
-        AuthenticationResult: {
-          ...genTokens({
-            privateKey: pool.privateKey,
-            userPoolClientId: poolClient.id,
-            jwks,
-            user,
-          }),
-          ExpiresIn: EXPIRES_SEC,
-          TokenType: 'Bearer',
-        },
-      };
+      const tokens = genTokens({
+        privateKey: pool.privateKey,
+        userPoolClientId: poolClient.id,
+        jwks,
+        user,
+      });
+
+      await userTokenCommand.create(tx, user.id, 'access', tokens.AccessToken);
+      await userTokenCommand.create(tx, user.id, 'id', tokens.IdToken);
+
+      return { AuthenticationResult: { ...tokens, ExpiresIn: EXPIRES_SEC, TokenType: 'Bearer' } };
     }),
   respondToAuthChallenge: (
     req: RespondToAuthChallengeTarget['reqBody'],
@@ -125,11 +131,15 @@ export const signInUseCase = {
           poolClient,
         });
 
+        const refreshToken = ulid();
+
+        await userTokenCommand.createTokens(tx, user.id, { ...tokens, RefreshToken: refreshToken });
+
         return {
           AuthenticationResult: {
             ...tokens,
             ExpiresIn: 3600,
-            RefreshToken: user.refreshToken,
+            RefreshToken: refreshToken,
             TokenType: 'Bearer',
           },
           ChallengeParameters: {},
@@ -148,11 +158,15 @@ export const signInUseCase = {
           poolClient,
         });
 
+        const refreshToken = ulid();
+
+        await userTokenCommand.createTokens(tx, user.id, { ...tokens, RefreshToken: refreshToken });
+
         return {
           AuthenticationResult: {
             ...tokens,
             ExpiresIn: 3600,
-            RefreshToken: user.refreshToken,
+            RefreshToken: refreshToken,
             TokenType: 'Bearer',
           },
           ChallengeParameters: {},

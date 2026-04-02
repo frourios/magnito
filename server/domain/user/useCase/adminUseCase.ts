@@ -12,8 +12,10 @@ import type {
   AdminInitiateAuthTarget,
   AdminSetUserPasswordTarget,
   AdminUpdateUserAttributesTarget,
+  AdminUserGlobalSignOutTarget,
 } from 'src/schemas/auth';
 import { brandedId } from 'src/schemas/brandedId';
+import { ulid } from 'ulid';
 import { adminMethod } from '../model/adminMethod';
 import { userMethod } from '../model/userMethod';
 import type { CognitoUserEntity } from '../model/userType';
@@ -22,6 +24,7 @@ import { genTokens } from '../service/genTokens';
 import { sendTemporaryPassword } from '../service/sendAuthMail';
 import { userCommand } from '../store/userCommand';
 import { userQuery } from '../store/userQuery';
+import { userTokenCommand } from '../store/userTokenCommand';
 
 const createUser = async (
   tx: Prisma.TransactionClient,
@@ -71,6 +74,7 @@ export const adminUseCase = {
       const user = await userQuery.findByName(tx, req.Username);
       const deletableId = adminMethod.deleteUser(user, req.UserPoolId);
 
+      await userTokenCommand.deleteByUserId(tx, deletableId);
       await userCommand.delete(tx, deletableId);
 
       return {};
@@ -96,11 +100,15 @@ export const adminUseCase = {
         user,
       });
 
+      const refreshToken = ulid();
+
+      await userTokenCommand.createTokens(tx, user.id, { ...tokens, RefreshToken: refreshToken });
+
       return {
         AuthenticationResult: {
           ...tokens,
           ExpiresIn: 3600,
-          RefreshToken: user.refreshToken,
+          RefreshToken: refreshToken,
           TokenType: 'Bearer',
         },
       };
@@ -142,6 +150,20 @@ export const adminUseCase = {
       const user = await userQuery.findByName(tx, req.Username);
 
       await userCommand.save(tx, userMethod.deleteAttributes(user, req.UserAttributeNames));
+
+      return {};
+    }),
+  userGlobalSignOut: (
+    req: AdminUserGlobalSignOutTarget['reqBody'],
+  ): Promise<AdminUserGlobalSignOutTarget['resBody']> =>
+    transaction(async (tx) => {
+      assert(req.Username);
+      assert(req.UserPoolId);
+
+      const user = await userQuery.findByName(tx, req.Username);
+      assert(user.userPoolId === req.UserPoolId);
+
+      await userTokenCommand.revokeAllByUserId(tx, user.id);
 
       return {};
     }),

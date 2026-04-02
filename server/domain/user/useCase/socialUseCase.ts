@@ -10,6 +10,7 @@ import type {
 import { socialUserMethod } from '../model/socialUserMethod';
 import { userCommand } from '../store/userCommand';
 import { userQuery } from '../store/userQuery';
+import { userTokenCommand } from '../store/userTokenCommand';
 
 export const socialUseCase = {
   createUser: (val: SocialUserCreateVal): Promise<SocialUserDto> =>
@@ -26,7 +27,15 @@ export const socialUseCase = {
       const poolClient = await userPoolQuery.findClientById(tx, val.client_id);
       const jwks = await userPoolQuery.findJwks(tx, user.userPoolId);
 
-      return socialUserMethod.createToken(user, val.code_verifier, pool, poolClient, jwks);
+      const tokens = socialUserMethod.createToken(user, val.code_verifier, pool, poolClient, jwks);
+
+      await userTokenCommand.createTokens(tx, user.id, {
+        AccessToken: tokens.access_token,
+        IdToken: tokens.id_token,
+        RefreshToken: tokens.refresh_token,
+      });
+
+      return tokens;
     }),
   updateCodeChallenge: (val: {
     id: MaybeId['socialUser'];

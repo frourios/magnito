@@ -37,7 +37,6 @@ export const toCognitoUserDto = (prismaUser: PrismaUser): CognitoUserDto => {
     password: z.string().parse(prismaUser.password),
     salt: z.string().parse(prismaUser.salt),
     verifier: z.string().parse(prismaUser.verifier),
-    refreshToken: prismaUser.refreshToken,
     confirmationCode: z.string().parse(prismaUser.confirmationCode),
     challenge: getChallenge(prismaUser),
     userPoolId: brandedId.userPool.dto.parse(prismaUser.userPoolId),
@@ -81,7 +80,6 @@ export const toSocialUserDto = (prismaUser: PrismaUser): SocialUserDto => {
     provider: z.enum(PROVIDER_LIST).parse(prismaUser.provider),
     authorizationCode: z.string().parse(prismaUser.authorizationCode),
     codeChallenge: z.string().parse(prismaUser.codeChallenge),
-    refreshToken: prismaUser.refreshToken,
     userPoolId: brandedId.userPool.dto.parse(prismaUser.userPoolId),
     attributes: prismaUser.attributes.map(
       (attr): UserAttributeDto => ({

@@ -24,7 +24,7 @@ export const userCommand = {
         password: user.password,
         salt: user.salt,
         verifier: user.verifier,
-        refreshToken: user.refreshToken,
+
         confirmationCode: user.confirmationCode,
         authorizationCode: user.authorizationCode,
         codeChallenge: user.codeChallenge,
@@ -52,7 +52,7 @@ export const userCommand = {
         password: user.password,
         salt: user.salt,
         verifier: user.verifier,
-        refreshToken: user.refreshToken,
+
         confirmationCode: user.confirmationCode,
         authorizationCode: user.authorizationCode,
         codeChallenge: user.codeChallenge,
