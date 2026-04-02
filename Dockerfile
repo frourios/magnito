@@ -74,7 +74,12 @@ RUN npm ci --omit=dev
 
 COPY --chown=node --from=builder /usr/src/app/.next .next/
 COPY --chown=node --from=builder /usr/src/app/certificates certificates/
+COPY --chown=node --from=builder /usr/src/app/prisma prisma/
 COPY --chown=node --from=builder /usr/src/app/data data/
+COPY --chown=node server server/
+COPY --chown=node src src/
+COPY --chown=node prisma.config.ts ./
+COPY --chown=node tsconfig.json ./
 
 HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD wget --quiet --spider http://127.0.0.1:$PORT/publicApi/health && wget --quiet --spider --no-check-certificate https://127.0.0.1:$SSL_PORT || exit 1
 
