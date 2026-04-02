@@ -76,8 +76,8 @@ COPY --chown=node --from=builder /usr/src/app/.next .next/
 COPY --chown=node --from=builder /usr/src/app/certificates certificates/
 COPY --chown=node --from=builder /usr/src/app/prisma prisma/
 COPY --chown=node --from=builder /usr/src/app/data data/
-COPY --chown=node server server/
-COPY --chown=node src src/
+COPY --chown=node --from=builder /usr/src/app/server server/
+COPY --chown=node --from=builder /usr/src/app/src src/
 COPY --chown=node prisma.config.ts ./
 COPY --chown=node tsconfig.json ./
 
