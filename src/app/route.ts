@@ -6,10 +6,29 @@ import { signUpUseCase } from 'server/domain/user/useCase/signUpUseCase';
 import { userUseCase } from 'server/domain/user/useCase/userUseCase';
 import { userPoolUseCase } from 'server/domain/userPool/useCase/userPoolUseCase';
 import { COGNITO_ERRORS, CognitoError } from 'server/service/cognitoAssert';
+import { validateSignature } from 'server/service/validateSignature';
 import type { RefreshTokenAuthTarget, UserSrpAuthTarget } from 'src/schemas/signIn';
 import type z from 'zod';
 import type { frourioSpec } from './frourio';
 import { createRoute } from './frourio.server';
+
+const iamAuthTargets = new Set([
+  'AWSCognitoIdentityProviderService.AdminGetUser',
+  'AWSCognitoIdentityProviderService.AdminCreateUser',
+  'AWSCognitoIdentityProviderService.AdminDeleteUser',
+  'AWSCognitoIdentityProviderService.AdminInitiateAuth',
+  'AWSCognitoIdentityProviderService.AdminSetUserPassword',
+  'AWSCognitoIdentityProviderService.AdminUpdateUserAttributes',
+  'AWSCognitoIdentityProviderService.AdminDeleteUserAttributes',
+  'AWSCognitoIdentityProviderService.AdminUserGlobalSignOut',
+  'AWSCognitoIdentityProviderService.ListUserPools',
+  'AWSCognitoIdentityProviderService.ListUserPoolClients',
+  'AWSCognitoIdentityProviderService.CreateUserPool',
+  'AWSCognitoIdentityProviderService.CreateUserPoolClient',
+  'AWSCognitoIdentityProviderService.DeleteUserPool',
+  'AWSCognitoIdentityProviderService.DeleteUserPoolClient',
+  'AWSCognitoIdentityProviderService.ListUsers',
+]);
 
 const useCases = {
   'AWSCognitoIdentityProviderService.SignUp': signUpUseCase.signUp,
@@ -92,6 +111,10 @@ export const { GET, POST } = createRoute({
     const key = headers['x-amz-target'];
 
     if (!(key in useCases)) return { status: 403, body: { message: 'NotImplementedError' } };
+
+    if (iamAuthTargets.has(key) && !validateSignature(headers.authorization)) {
+      return { status: 403, body: { message: 'UnrecognizedClientException' } };
+    }
 
     // oxlint-disable-next-line no-explicit-any
     return useCases[key as keyof typeof useCases](body as any)

@@ -9,7 +9,7 @@ export const frourioSpec = {
     },
   },
   post: {
-    headers: z.object({ 'x-amz-target': z.string() }),
+    headers: z.object({ 'x-amz-target': z.string(), authorization: z.string().optional() }),
     body: z.record(z.string(), z.any()),
     res: {
       200: {

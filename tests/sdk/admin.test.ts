@@ -11,9 +11,15 @@ import {
   GetUserCommand,
   UserStatusType,
 } from '@aws-sdk/client-cognito-identity-provider';
+import { CognitoIdentityProviderClient } from '@aws-sdk/client-cognito-identity-provider';
 import { cognitoClient } from 'server/service/cognito';
 import { prismaClient } from 'server/service/prismaClient';
-import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'server/service/serverEnvs';
+import {
+  DEFAULT_USER_POOL_CLIENT_ID,
+  DEFAULT_USER_POOL_ID,
+  PORT,
+  REGION,
+} from 'server/service/serverEnvs';
 import { createUserClient, testPassword, testUserName } from 'tests/api/apiClient';
 import {
   createCognitoUserAndToken,
@@ -295,4 +301,18 @@ test('expired access token is rejected', async () => {
       new GetUserCommand({ AccessToken: tokens.AuthenticationResult.AccessToken }),
     ),
   ).rejects.toThrow('Access Token has expired');
+});
+
+test('Admin API rejects invalid credentials', async () => {
+  const invalidClient = new CognitoIdentityProviderClient({
+    endpoint: `http://localhost:${PORT}`,
+    region: REGION,
+    credentials: { accessKeyId: 'INVALID_KEY', secretAccessKey: 'INVALID_SECRET' },
+  });
+
+  await expect(
+    invalidClient.send(
+      new AdminGetUserCommand({ UserPoolId: DEFAULT_USER_POOL_ID, Username: testUserName }),
+    ),
+  ).rejects.toThrow();
 });
