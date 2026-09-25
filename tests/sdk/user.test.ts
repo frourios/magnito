@@ -6,15 +6,15 @@ import {
   UpdateUserAttributesCommand,
   VerifyUserAttributeCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import { cognitoClient } from 'server/service/cognito';
-import { DEFAULT_USER_POOL_ID } from 'server/service/serverEnvs';
+import { ulid } from 'ulid';
+import { expect, test } from 'vitest';
+import { cognitoClient } from '../../server/service/cognito';
+import { DEFAULT_USER_POOL_ID } from '../../server/service/serverEnvs';
 import {
   createCognitoUserAndToken,
   createSocialUserAndToken,
   fetchMailBodyAndTrash,
-} from 'tests/api/utils';
-import { ulid } from 'ulid';
-import { expect, test } from 'vitest';
+} from '../api/utils';
 
 test(`${UpdateUserAttributesCommand.name} - cognito`, async () => {
   const token = await createCognitoUserAndToken();

@@ -1,9 +1,9 @@
 import { ListDevicesCommand, ListUsersCommand } from '@aws-sdk/client-cognito-identity-provider';
-import { cognitoClient } from 'server/service/cognito';
-import { DEFAULT_USER_POOL_ID } from 'server/service/serverEnvs';
-import { testUserName } from 'tests/api/apiClient';
-import { createCognitoUserAndToken } from 'tests/api/utils';
 import { expect, test } from 'vitest';
+import { cognitoClient } from '../../server/service/cognito';
+import { DEFAULT_USER_POOL_ID } from '../../server/service/serverEnvs';
+import { testUserName } from '../api/apiClient';
+import { createCognitoUserAndToken } from '../api/utils';
 
 test('NotImplementedError', async () => {
   const { AccessToken } = await createCognitoUserAndToken();

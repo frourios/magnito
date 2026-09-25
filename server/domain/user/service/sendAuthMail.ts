@@ -1,5 +1,5 @@
-import { sendMail } from 'server/service/sendMail';
-import type { CognitoUserDto } from 'src/schemas/user';
+import type { CognitoUserDto } from '../../../../src/schemas/user';
+import { sendMail } from '../../../service/sendMail';
 import type { CognitoUserEntity } from '../model/userType';
 
 export const sendConfirmationCode = (user: CognitoUserEntity | CognitoUserDto): Promise<void> =>

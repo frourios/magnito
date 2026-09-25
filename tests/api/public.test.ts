@@ -1,7 +1,7 @@
 import { createSigner } from 'fast-jwt';
-import { COOKIE_NAME, EXPIRES_SEC } from 'server/service/constants';
-import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'server/service/serverEnvs';
 import { expect, test } from 'vitest';
+import { COOKIE_NAME, EXPIRES_SEC } from '../../server/service/constants';
+import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from '../../server/service/serverEnvs';
 import { lowLevelNoCookieClient, noCookieClient } from './apiClient';
 import { testName } from './utils';
 

@@ -1,6 +1,6 @@
 import { createDecoder } from 'fast-jwt';
-import { COOKIE_NAME, COOKIE_OPTIONS } from 'server/service/constants';
 import z from 'zod';
+import { COOKIE_NAME, COOKIE_OPTIONS } from '../../../../server/service/constants';
 import { frourioSpec } from './frourio';
 import { createMiddleware } from './frourio.middleware';
 

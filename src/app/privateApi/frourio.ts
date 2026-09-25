@@ -1,6 +1,6 @@
 import type { FrourioSpec } from '@frourio/next';
-import { UserDtoSchema } from 'src/schemas/user';
 import { z } from 'zod';
+import { UserDtoSchema } from '../../schemas/user';
 
 export const frourioSpec = {
   middleware: {

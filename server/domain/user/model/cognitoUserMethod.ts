@@ -1,12 +1,12 @@
 import assert from 'assert';
 import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
-import { cognitoAssert } from 'server/service/cognitoAssert';
-import type { ChangePasswordTarget, VerifyUserAttributeTarget } from 'src/schemas/auth';
-import type { DtoId } from 'src/schemas/brandedId';
-import { brandedId } from 'src/schemas/brandedId';
-import type { CognitoUserDto, UserDto } from 'src/schemas/user';
 import { ulid } from 'ulid';
 import { z } from 'zod';
+import type { ChangePasswordTarget, VerifyUserAttributeTarget } from '../../../../src/schemas/auth';
+import type { DtoId } from '../../../../src/schemas/brandedId';
+import { brandedId } from '../../../../src/schemas/brandedId';
+import type { CognitoUserDto, UserDto } from '../../../../src/schemas/user';
+import { cognitoAssert } from '../../../service/cognitoAssert';
 import { attributeDtoToEntity, createAttributes } from '../service/createAttributes';
 import { genConfirmationCode } from '../service/genConfirmationCode';
 import { genCredentials } from '../service/genCredentials';

@@ -1,8 +1,8 @@
 import type { PropsWithChildren } from 'react';
 import React from 'react';
-import { Btn } from 'src/components/Btn/Btn';
-import { Portal } from 'src/components/Portal';
-import { Spacer } from 'src/components/Spacer';
+import { Btn } from '../Btn/Btn';
+import { Portal } from '../Portal';
+import { Spacer } from '../Spacer';
 import styles from './Modal.module.css';
 
 export const ModalHeader = (props: { text: string }) => {

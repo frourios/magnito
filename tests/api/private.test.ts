@@ -1,5 +1,5 @@
-import { EXPIRES_SEC } from 'server/service/constants';
 import { expect, test, vi } from 'vitest';
+import { EXPIRES_SEC } from '../../server/service/constants';
 import { createUserClient, lowLevelNoCookieClient, noCookieClient } from './apiClient';
 import { createCognitoUserAndToken, testName } from './utils';
 

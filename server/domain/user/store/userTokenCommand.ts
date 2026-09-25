@@ -1,8 +1,8 @@
-import type { Prisma } from 'server/prisma/client';
-import { EXPIRES_SEC, REFRESH_TOKEN_EXPIRES_SEC, type TokenKind } from 'server/service/constants';
-import type { EntityId } from 'src/schemas/brandedId';
-import { brandedId } from 'src/schemas/brandedId';
 import { ulid } from 'ulid';
+import type { EntityId } from '../../../../src/schemas/brandedId';
+import { brandedId } from '../../../../src/schemas/brandedId';
+import type { Prisma } from '../../../prisma/client';
+import { EXPIRES_SEC, REFRESH_TOKEN_EXPIRES_SEC, type TokenKind } from '../../../service/constants';
 
 export const userTokenCommand = {
   create: async (

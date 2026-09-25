@@ -6,9 +6,9 @@ import {
   AdminSetUserPasswordCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { InbucketAPIClient } from 'inbucket-js-client';
-import { cognitoClient } from 'server/service/cognito';
-import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'server/service/serverEnvs';
 import { ulid } from 'ulid';
+import { cognitoClient } from '../../server/service/cognito';
+import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from '../../server/service/serverEnvs';
 import { noCookieClient, testPassword, testUserName } from './apiClient';
 
 export const testName = {

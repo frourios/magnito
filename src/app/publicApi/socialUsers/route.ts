@@ -1,6 +1,6 @@
-import { userQuery } from 'server/domain/user/store/userQuery';
-import { socialUseCase } from 'server/domain/user/useCase/socialUseCase';
-import { prismaClient } from 'server/service/prismaClient';
+import { userQuery } from '../../../../server/domain/user/store/userQuery';
+import { socialUseCase } from '../../../../server/domain/user/useCase/socialUseCase';
+import { prismaClient } from '../../../../server/service/prismaClient';
 import { createRoute } from './frourio.server';
 
 export const { GET, POST, PATCH } = createRoute({

@@ -1,13 +1,13 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { useAlert } from 'src/components/Alert/useAlert';
-import { useUser } from 'src/components/Auth/useUser';
-import { useConfirm } from 'src/components/Confirm/useConfirm';
-import { Loading } from 'src/components/Loading/Loading';
-import { useLoading } from 'src/components/Loading/useLoading';
-import { BasicHeader } from 'src/layouts/BasicHeader/BasicHeader';
-import type { UserDto } from 'src/schemas/user';
-import { pagesPath } from 'src/utils/$path';
+import { useAlert } from '../components/Alert/useAlert';
+import { useUser } from '../components/Auth/useUser';
+import { useConfirm } from '../components/Confirm/useConfirm';
+import { Loading } from '../components/Loading/Loading';
+import { useLoading } from '../components/Loading/useLoading';
+import { BasicHeader } from '../layouts/BasicHeader/BasicHeader';
+import type { UserDto } from '../schemas/user';
+import { pagesPath } from '../utils/$path';
 
 export const Layout = (props: { render: (user: UserDto) => React.ReactNode }) => {
   const router = useRouter();

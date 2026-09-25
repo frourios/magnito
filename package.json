@@ -54,6 +54,7 @@
     "local-ssl-proxy": "^2.0.5",
     "next": "^16.1.6",
     "node-jose": "^2.2.0",
+    "nodemailer": "^10.0.10",
     "otplib": "^13.3.0",
     "prisma": "^7.6.0",
     "qrcode": "^1.5.4",
@@ -75,7 +76,6 @@
     "happy-css-modules": "^3.1.1",
     "inbucket-js-client": "^2.0.0",
     "msw": "^2.12.10",
-    "nodemailer": "^8.0.2",
     "npm-run-all": "^4.1.5",
     "oxfmt": "^0.36.0",
     "oxlint": "^1.51.0",
@@ -83,7 +83,7 @@
     "stylelint": "^17.4.0",
     "stylelint-config-recess-order": "^7.6.1",
     "stylelint-config-standard": "^40.0.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.0"
   },
   "engines": {

@@ -7,10 +7,10 @@ import {
   VerifySoftwareTokenResponseType,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { generate } from 'otplib';
-import { cognitoClient } from 'server/service/cognito';
-import { MFA_SETTING_LIST } from 'src/schemas/constants';
-import { createCognitoUserAndToken } from 'tests/api/utils';
 import { expect, test } from 'vitest';
+import { cognitoClient } from '../../server/service/cognito';
+import { MFA_SETTING_LIST } from '../../src/schemas/constants';
+import { createCognitoUserAndToken } from '../api/utils';
 
 test(AssociateSoftwareTokenCommand.name, async () => {
   const token = await createCognitoUserAndToken();

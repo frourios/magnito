@@ -1,13 +1,13 @@
 import { VerifySoftwareTokenResponseType } from '@aws-sdk/client-cognito-identity-provider';
 import { createDecoder } from 'fast-jwt';
-import { customAssert } from 'server/service/customAssert';
-import { transaction } from 'server/service/transaction';
 import type {
   AssociateSoftwareTokenTarget,
   SetUserMFAPreferenceTarget,
   VerifySoftwareTokenTarget,
-} from 'src/schemas/auth';
-import { TokenJwtSchema } from 'src/schemas/jwt';
+} from '../../../../src/schemas/auth';
+import { TokenJwtSchema } from '../../../../src/schemas/jwt';
+import { customAssert } from '../../../service/customAssert';
+import { transaction } from '../../../service/transaction';
 import { mfaMethod } from '../model/mfaMethod';
 import { userCommand } from '../store/userCommand';
 import { userQuery } from '../store/userQuery';

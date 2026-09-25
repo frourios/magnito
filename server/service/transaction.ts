@@ -1,5 +1,5 @@
 import { setTimeout } from 'timers/promises';
-import { Prisma } from 'server/prisma/client';
+import { Prisma } from '../prisma/client';
 import { prismaClient } from './prismaClient';
 
 export function transaction<U>(

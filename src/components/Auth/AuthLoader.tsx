@@ -1,10 +1,10 @@
 import { fetchAuthSession, signOut } from 'aws-amplify/auth';
 import { Hub } from 'aws-amplify/utils';
 import { useCallback, useEffect } from 'react';
-import { useAlert } from 'src/components/Alert/useAlert';
-import { useLoading } from 'src/components/Loading/useLoading';
-import { apiClient } from 'src/utils/apiClient';
-import { catchApiErr } from 'src/utils/catchApiErr';
+import { apiClient } from '../../utils/apiClient';
+import { catchApiErr } from '../../utils/catchApiErr';
+import { useAlert } from '../Alert/useAlert';
+import { useLoading } from '../Loading/useLoading';
 import { useUser } from './useUser';
 
 export function AuthLoader(): React.ReactElement {

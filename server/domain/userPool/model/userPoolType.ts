@@ -1,4 +1,4 @@
-import type { EntityId } from 'src/schemas/brandedId';
+import type { EntityId } from '../../../../src/schemas/brandedId';
 
 export type UserPoolEntity = {
   id: EntityId['userPool'];

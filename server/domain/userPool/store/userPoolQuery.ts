@@ -1,8 +1,8 @@
-import type { Prisma } from 'server/prisma/client';
-import { genJwks } from 'server/service/privateKey';
-import type { DtoId, MaybeId } from 'src/schemas/brandedId';
-import { brandedId } from 'src/schemas/brandedId';
-import type { JwksDto, UserPoolClientDto, UserPoolDto } from 'src/schemas/userPool';
+import type { DtoId, MaybeId } from '../../../../src/schemas/brandedId';
+import { brandedId } from '../../../../src/schemas/brandedId';
+import type { JwksDto, UserPoolClientDto, UserPoolDto } from '../../../../src/schemas/userPool';
+import type { Prisma } from '../../../prisma/client';
+import { genJwks } from '../../../service/privateKey';
 import { toUserPoolClientDto, toUserPoolDto } from './userPoolDto';
 
 export const userPoolQuery = {

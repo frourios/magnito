@@ -1,8 +1,8 @@
 import assert from 'assert';
 import { createTransport } from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
-import { APP_NAME } from 'src/schemas/constants';
 import { ulid } from 'ulid';
+import { APP_NAME } from '../../src/schemas/constants';
 import { SMTP_HOST, SMTP_PASS, SMTP_PORT, SMTP_USER } from './serverEnvs';
 
 const transport = createTransport({

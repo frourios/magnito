@@ -1,6 +1,6 @@
 import { createHash, createPublicKey, generateKeyPairSync } from 'crypto';
 import { JWK } from 'node-jose';
-import { JwksDtoSchema, type JwksDto } from 'src/schemas/userPool';
+import { JwksDtoSchema, type JwksDto } from '../../src/schemas/userPool';
 
 export const genPrivatekey = (): string => {
   const { privateKey } = generateKeyPairSync('rsa', {

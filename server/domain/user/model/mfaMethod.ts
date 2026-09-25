@@ -1,8 +1,8 @@
 import { generateSecret, verifySync } from 'otplib';
-import { cognitoAssert } from 'server/service/cognitoAssert';
-import type { SetUserMFAPreferenceTarget } from 'src/schemas/auth';
-import { brandedId } from 'src/schemas/brandedId';
-import type { CognitoUserDto } from 'src/schemas/user';
+import type { SetUserMFAPreferenceTarget } from '../../../../src/schemas/auth';
+import { brandedId } from '../../../../src/schemas/brandedId';
+import type { CognitoUserDto } from '../../../../src/schemas/user';
+import { cognitoAssert } from '../../../service/cognitoAssert';
 import { attributeDtoToEntity } from '../service/createAttributes';
 import type { CognitoUserEntity } from './userType';
 

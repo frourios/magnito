@@ -7,8 +7,8 @@ import {
   ListUserPoolClientsCommand,
   ListUserPoolsCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import { cognitoClient } from 'server/service/cognito';
 import { expect, test } from 'vitest';
+import { cognitoClient } from '../../server/service/cognito';
 
 test(CreateUserPoolCommand.name, async () => {
   const pool = await cognitoClient.send(new CreateUserPoolCommand({ PoolName: 'testPool' }));

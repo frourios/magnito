@@ -1,10 +1,10 @@
 import assert from 'assert';
 import { createHash } from 'crypto';
-import type { Prisma } from 'server/prisma/client';
-import { prismaClient } from 'server/service/prismaClient';
-import { transaction } from 'server/service/transaction';
-import { USER_KINDS } from 'src/schemas/constants';
 import { ulid } from 'ulid';
+import type { Prisma } from '../server/prisma/client';
+import { prismaClient } from '../server/service/prismaClient';
+import { transaction } from '../server/service/transaction';
+import { USER_KINDS } from '../src/schemas/constants';
 
 const migrateUser = async (tx: Prisma.TransactionClient): Promise<void> => {
   const users = await tx.user.findMany({ where: { kind: null } });

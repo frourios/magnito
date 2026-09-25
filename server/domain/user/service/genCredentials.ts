@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import type { DtoId } from 'src/schemas/brandedId';
+import type { DtoId } from '../../../../src/schemas/brandedId';
 import { g, N, Nbytes } from './srp/constants';
 import { calculatePrivateKey, getPoolName, toBufferWithLength } from './srp/util';
 

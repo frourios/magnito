@@ -2,8 +2,6 @@
   "compilerOptions": {
     "target": "ES2023",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "baseUrl": ".",
-    "rootDir": ".",
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -26,6 +24,5 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-  ],
-  "exclude": ["node_modules"]
+  ]
 }

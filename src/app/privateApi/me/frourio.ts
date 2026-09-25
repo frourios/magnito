@@ -1,5 +1,5 @@
 import type { FrourioSpec } from '@frourio/next';
-import { UserDtoSchema } from 'src/schemas/user';
+import { UserDtoSchema } from '../../../schemas/user';
 
 export const frourioSpec = {
   get: {

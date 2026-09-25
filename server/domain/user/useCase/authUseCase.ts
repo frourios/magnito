@@ -1,9 +1,5 @@
 import type { UserType } from '@aws-sdk/client-cognito-identity-provider';
 import { createDecoder } from 'fast-jwt';
-import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
-import { customAssert } from 'server/service/customAssert';
-import { pretendAsDate } from 'server/service/pretendAsDate';
-import { transaction } from 'server/service/transaction';
 import type {
   ChangePasswordTarget,
   ConfirmForgotPasswordTarget,
@@ -14,8 +10,12 @@ import type {
   RevokeTokenTarget,
   UpdateUserAttributesTarget,
   VerifyUserAttributeTarget,
-} from 'src/schemas/auth';
-import { TokenJwtSchema } from 'src/schemas/jwt';
+} from '../../../../src/schemas/auth';
+import { TokenJwtSchema } from '../../../../src/schemas/jwt';
+import { userPoolQuery } from '../../../domain/userPool/store/userPoolQuery';
+import { customAssert } from '../../../service/customAssert';
+import { pretendAsDate } from '../../../service/pretendAsDate';
+import { transaction } from '../../../service/transaction';
 import { cognitoUserMethod } from '../model/cognitoUserMethod';
 import { userMethod } from '../model/userMethod';
 import { toAttributeTypes } from '../service/createAttributes';

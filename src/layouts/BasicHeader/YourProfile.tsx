@@ -10,11 +10,11 @@ import {
 } from 'aws-amplify/auth';
 import QRCode from 'qrcode';
 import { useEffect, useState } from 'react';
-import { Btn } from 'src/components/Btn/Btn';
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'src/components/Modal/Modal';
-import { Spacer } from 'src/components/Spacer';
-import { APP_NAME } from 'src/schemas/constants';
-import type { UserDto } from 'src/schemas/user';
+import { Btn } from '../../components/Btn/Btn';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '../../components/Modal/Modal';
+import { Spacer } from '../../components/Spacer';
+import { APP_NAME } from '../../schemas/constants';
+import type { UserDto } from '../../schemas/user';
 
 export const YourProfile = (props: { user: UserDto; onClose: () => void }) => {
   const [enabledTotp, setEnabledTotp] = useState<boolean>();

@@ -1,11 +1,11 @@
 import assert from 'assert';
-import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
-import { transaction } from 'server/service/transaction';
 import type {
   ConfirmSignUpTarget,
   ResendConfirmationCodeTarget,
   SignUpTarget,
-} from 'src/schemas/auth';
+} from '../../../../src/schemas/auth';
+import { userPoolQuery } from '../../../domain/userPool/store/userPoolQuery';
+import { transaction } from '../../../service/transaction';
 import { cognitoUserMethod } from '../model/cognitoUserMethod';
 import { findEmail } from '../service/findEmail';
 import { genCodeDeliveryDetails } from '../service/genCodeDeliveryDetails';

@@ -1,5 +1,5 @@
-import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
-import { prismaClient } from 'server/service/prismaClient';
+import { userPoolQuery } from '../../../../../server/domain/userPool/store/userPoolQuery';
+import { prismaClient } from '../../../../../server/service/prismaClient';
 import { createRoute } from './frourio.server';
 
 export const { GET } = createRoute({

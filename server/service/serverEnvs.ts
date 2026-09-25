@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
-import { brandedId } from 'src/schemas/brandedId';
 import { z } from 'zod';
 import rootPackage from '../../package.json';
+import { brandedId } from '../../src/schemas/brandedId';
 
 dotenv.config();
 

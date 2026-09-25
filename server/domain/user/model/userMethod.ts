@@ -1,8 +1,8 @@
 import assert from 'assert';
 import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
-import type { EntityId } from 'src/schemas/brandedId';
-import { brandedId } from 'src/schemas/brandedId';
-import type { UserDto } from 'src/schemas/user';
+import type { EntityId } from '../../../../src/schemas/brandedId';
+import { brandedId } from '../../../../src/schemas/brandedId';
+import type { UserDto } from '../../../../src/schemas/user';
 import { createAttributes } from '../service/createAttributes';
 import { genConfirmationCode } from '../service/genConfirmationCode';
 import type { UserEntity } from './userType';

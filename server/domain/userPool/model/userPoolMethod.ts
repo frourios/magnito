@@ -1,10 +1,10 @@
 import { randomUUID } from 'crypto';
-import { createShortHash } from 'server/service/createShortHash';
-import { genPrivatekey } from 'server/service/privateKey';
-import { REGION } from 'server/service/serverEnvs';
-import type { DtoId, EntityId } from 'src/schemas/brandedId';
-import { brandedId } from 'src/schemas/brandedId';
-import type { UserPoolClientDto, UserPoolDto } from 'src/schemas/userPool';
+import type { DtoId, EntityId } from '../../../../src/schemas/brandedId';
+import { brandedId } from '../../../../src/schemas/brandedId';
+import type { UserPoolClientDto, UserPoolDto } from '../../../../src/schemas/userPool';
+import { createShortHash } from '../../../service/createShortHash';
+import { genPrivatekey } from '../../../service/privateKey';
+import { REGION } from '../../../service/serverEnvs';
 import type { UserPoolClientEntity, UserPoolEntity } from './userPoolType';
 
 export const userPoolMethod = {

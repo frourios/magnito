@@ -4,13 +4,13 @@ import type { OAuthConfig } from '@aws-amplify/core';
 import word from '@fakerjs/word';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { Spacer } from 'src/components/Spacer';
-import type { MaybeId } from 'src/schemas/brandedId';
-import { APP_NAME, PROVIDER_LIST } from 'src/schemas/constants';
-import type { SocialUserDto } from 'src/schemas/user';
-import { apiClient } from 'src/utils/apiClient';
 import useSWR from 'swr';
 import { z } from 'zod';
+import { Spacer } from '../../../components/Spacer';
+import type { MaybeId } from '../../../schemas/brandedId';
+import { APP_NAME, PROVIDER_LIST } from '../../../schemas/constants';
+import type { SocialUserDto } from '../../../schemas/user';
+import { apiClient } from '../../../utils/apiClient';
 import styles from './page.module.css';
 
 export type Query = {

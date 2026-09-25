@@ -1,4 +1,4 @@
-import { Modal, ModalBody, ModalFooter } from 'src/components/Modal/Modal';
+import { Modal, ModalBody, ModalFooter } from '../Modal/Modal';
 
 export const Confirm = (props: { text: string; ok: () => void; cancel: () => void }) => {
   return (

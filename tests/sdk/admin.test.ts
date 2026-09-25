@@ -12,23 +12,23 @@ import {
   UserStatusType,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { CognitoIdentityProviderClient } from '@aws-sdk/client-cognito-identity-provider';
-import { cognitoClient } from 'server/service/cognito';
-import { prismaClient } from 'server/service/prismaClient';
+import { ulid } from 'ulid';
+import { expect, test } from 'vitest';
+import { cognitoClient } from '../../server/service/cognito';
+import { prismaClient } from '../../server/service/prismaClient';
 import {
   DEFAULT_USER_POOL_CLIENT_ID,
   DEFAULT_USER_POOL_ID,
   PORT,
   REGION,
-} from 'server/service/serverEnvs';
-import { createUserClient, testPassword, testUserName } from 'tests/api/apiClient';
+} from '../../server/service/serverEnvs';
+import { createUserClient, testPassword, testUserName } from '../api/apiClient';
 import {
   createCognitoUserAndToken,
   createSocialUserAndToken,
   fetchMailBodyAndTrash,
   inbucketClient,
-} from 'tests/api/utils';
-import { ulid } from 'ulid';
-import { expect, test } from 'vitest';
+} from '../api/utils';
 
 test(`${AdminCreateUserCommand.name} - specify TemporaryPassword`, async () => {
   const email = `${ulid()}@example.com`;

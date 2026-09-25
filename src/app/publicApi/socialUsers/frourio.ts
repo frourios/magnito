@@ -1,7 +1,7 @@
 import type { FrourioSpec } from '@frourio/next';
-import { brandedId } from 'src/schemas/brandedId';
-import { SocialUserCreateValSchema, SocialUserDtoSchema } from 'src/schemas/user';
 import { z } from 'zod';
+import { brandedId } from '../../../schemas/brandedId';
+import { SocialUserCreateValSchema, SocialUserDtoSchema } from '../../../schemas/user';
 
 export const frourioSpec = {
   get: {

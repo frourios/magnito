@@ -1,9 +1,5 @@
 import assert from 'assert';
-import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
-import type { Prisma } from 'server/prisma/client';
-import { prismaClient } from 'server/service/prismaClient';
-import { genJwks } from 'server/service/privateKey';
-import { transaction } from 'server/service/transaction';
+import { ulid } from 'ulid';
 import type {
   AdminCreateUserTarget,
   AdminDeleteUserAttributesTarget,
@@ -13,9 +9,13 @@ import type {
   AdminSetUserPasswordTarget,
   AdminUpdateUserAttributesTarget,
   AdminUserGlobalSignOutTarget,
-} from 'src/schemas/auth';
-import { brandedId } from 'src/schemas/brandedId';
-import { ulid } from 'ulid';
+} from '../../../../src/schemas/auth';
+import { brandedId } from '../../../../src/schemas/brandedId';
+import { userPoolQuery } from '../../../domain/userPool/store/userPoolQuery';
+import type { Prisma } from '../../../prisma/client';
+import { prismaClient } from '../../../service/prismaClient';
+import { genJwks } from '../../../service/privateKey';
+import { transaction } from '../../../service/transaction';
 import { adminMethod } from '../model/adminMethod';
 import { userMethod } from '../model/userMethod';
 import type { CognitoUserEntity } from '../model/userType';

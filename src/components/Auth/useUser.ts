@@ -1,6 +1,6 @@
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
-import type { UserDto } from 'src/schemas/user';
+import type { UserDto } from '../../schemas/user';
 
 const userAtom = atom<{ inited: false; data: null } | { inited: true; data: UserDto | null }>({
   inited: false,

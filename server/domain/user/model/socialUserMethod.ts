@@ -1,17 +1,17 @@
 import assert from 'assert';
 import { createHash } from 'crypto';
-import { cognitoAssert } from 'server/service/cognitoAssert';
-import type { DtoId } from 'src/schemas/brandedId';
-import { brandedId } from 'src/schemas/brandedId';
+import { ulid } from 'ulid';
+import { z } from 'zod';
+import type { DtoId } from '../../../../src/schemas/brandedId';
+import { brandedId } from '../../../../src/schemas/brandedId';
 import type {
   SocialUserCreateVal,
   SocialUserDto,
   SocialUserResponseTokensVal,
   UserDto,
-} from 'src/schemas/user';
-import type { JwksDto, UserPoolClientDto, UserPoolDto } from 'src/schemas/userPool';
-import { ulid } from 'ulid';
-import { z } from 'zod';
+} from '../../../../src/schemas/user';
+import type { JwksDto, UserPoolClientDto, UserPoolDto } from '../../../../src/schemas/userPool';
+import { cognitoAssert } from '../../../service/cognitoAssert';
 import { attributeDtoToEntity, createAttributes } from '../service/createAttributes';
 import { genTokens } from '../service/genTokens';
 import type { SocialUserEntity } from './userType';

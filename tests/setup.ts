@@ -1,8 +1,8 @@
 import assert from 'assert';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
-import { PrismaClient } from 'server/prisma/client';
 import { ulid } from 'ulid';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
+import { PrismaClient } from '../server/prisma/client';
 
 vi.mock('server/service/prismaClient', async () => {
   assert(process.env.DATABASE_URL);
@@ -21,7 +21,7 @@ import { readdirSync, unlinkSync } from 'fs';
 import path from 'path';
 import { http, passthrough } from 'msw';
 import { setupServer, type SetupServerApi } from 'msw/node';
-import { userPoolUseCase } from 'server/domain/userPool/useCase/userPoolUseCase';
+import { userPoolUseCase } from '../server/domain/userPool/useCase/userPoolUseCase';
 import { setupMswHandlers } from './setupMswHandlers';
 
 let server: SetupServerApi;

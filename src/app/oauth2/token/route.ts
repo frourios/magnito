@@ -1,4 +1,4 @@
-import { socialUseCase } from 'server/domain/user/useCase/socialUseCase';
+import { socialUseCase } from '../../../../server/domain/user/useCase/socialUseCase';
 import { createRoute } from './frourio.server';
 
 export const { POST } = createRoute({

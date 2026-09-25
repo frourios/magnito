@@ -1,15 +1,15 @@
 import assert from 'assert';
-import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
-import { catchCognitoErr, cognitoAssert } from 'server/service/cognitoAssert';
-import { EXPIRES_SEC } from 'server/service/constants';
-import { transaction } from 'server/service/transaction';
+import { ulid } from 'ulid';
 import type {
   GetTokensFromRefreshTokenTarget,
   RefreshTokenAuthTarget,
   RespondToAuthChallengeTarget,
   UserSrpAuthTarget,
-} from 'src/schemas/signIn';
-import { ulid } from 'ulid';
+} from '../../../../src/schemas/signIn';
+import { userPoolQuery } from '../../../domain/userPool/store/userPoolQuery';
+import { catchCognitoErr, cognitoAssert } from '../../../service/cognitoAssert';
+import { EXPIRES_SEC } from '../../../service/constants';
+import { transaction } from '../../../service/transaction';
 import { mfaMethod } from '../model/mfaMethod';
 import { signInMethod } from '../model/signInMethod';
 import { genTokens } from '../service/genTokens';

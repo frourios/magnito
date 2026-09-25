@@ -5,7 +5,7 @@ import {
   REGION,
   SECRET_KEY,
   SSL_PORT,
-} from 'server/service/serverEnvs';
+} from '../../../../server/service/serverEnvs';
 import { createRoute } from './frourio.server';
 
 export const { GET } = createRoute({

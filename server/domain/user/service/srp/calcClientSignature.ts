@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { BigInteger } from 'jsbn';
-import { DEFAULT_USER_POOL_ID } from 'server/service/serverEnvs';
+import { DEFAULT_USER_POOL_ID } from '../../../../service/serverEnvs';
 import { calculateScramblingParameter } from './calcSessionKey';
 import { calculateSignature } from './calcSignature';
 import { N, Nbytes, g, multiplierParam } from './constants';

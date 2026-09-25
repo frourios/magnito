@@ -1,9 +1,9 @@
 import assert from 'assert';
-import { calcClientSignature } from 'server/domain/user/service/srp/calcClientSignature';
-import { calculateSrpA } from 'server/domain/user/service/srp/calcSrpA';
-import { fromBuffer } from 'server/domain/user/service/srp/util';
-import { DEFAULT_USER_POOL_CLIENT_ID } from 'server/service/serverEnvs';
 import { test } from 'vitest';
+import { calcClientSignature } from '../../server/domain/user/service/srp/calcClientSignature';
+import { calculateSrpA } from '../../server/domain/user/service/srp/calcSrpA';
+import { fromBuffer } from '../../server/domain/user/service/srp/util';
+import { DEFAULT_USER_POOL_CLIENT_ID } from '../../server/service/serverEnvs';
 import { noCookieClient, testPassword, testUserName } from './apiClient';
 import { createCognitoUserAndToken } from './utils';
 

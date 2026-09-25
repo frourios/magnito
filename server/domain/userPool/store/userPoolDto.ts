@@ -1,7 +1,7 @@
 import assert from 'assert';
-import type { UserPool, UserPoolClient } from 'server/prisma/client';
-import { brandedId } from 'src/schemas/brandedId';
-import type { UserPoolClientDto, UserPoolDto } from 'src/schemas/userPool';
+import { brandedId } from '../../../../src/schemas/brandedId';
+import type { UserPoolClientDto, UserPoolDto } from '../../../../src/schemas/userPool';
+import type { UserPool, UserPoolClient } from '../../../prisma/client';
 
 export const toUserPoolDto = (prismaPool: UserPool): UserPoolDto => {
   assert(prismaPool.name);

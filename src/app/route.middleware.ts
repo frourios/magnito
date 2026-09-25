@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { CustomError } from 'server/service/customAssert';
+import { CustomError } from '../../server/service/customAssert';
 import { createMiddleware } from './frourio.middleware';
 
 export const middleware = createMiddleware(({ req, next }) => {

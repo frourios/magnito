@@ -1,5 +1,5 @@
-import type { MFA_SETTING_LIST } from 'src/schemas/constants';
 import type { MaybeId } from './brandedId';
+import type { MFA_SETTING_LIST } from './constants';
 
 export type TargetBody<Req, Res> = { reqBody: Req; resBody: Res };
 

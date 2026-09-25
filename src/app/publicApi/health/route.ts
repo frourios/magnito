@@ -1,7 +1,7 @@
-import { userPoolUseCase } from 'server/domain/userPool/useCase/userPoolUseCase';
-import { cognito } from 'server/service/cognito';
-import { CustomError } from 'server/service/customAssert';
-import { checkSmtpHealth } from 'server/service/sendMail';
+import { userPoolUseCase } from '../../../../server/domain/userPool/useCase/userPoolUseCase';
+import { cognito } from '../../../../server/service/cognito';
+import { CustomError } from '../../../../server/service/customAssert';
+import { checkSmtpHealth } from '../../../../server/service/sendMail';
 import { createRoute } from './frourio.server';
 
 function throwCustomError(label: string) {

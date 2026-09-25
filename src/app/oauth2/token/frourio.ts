@@ -2,7 +2,7 @@ import type { FrourioSpec } from '@frourio/next';
 import {
   SocialUserRequestTokensValSchema,
   SocialUserResponseTokensValSchema,
-} from 'src/schemas/user';
+} from '../../../schemas/user';
 
 export const frourioSpec = {
   post: {

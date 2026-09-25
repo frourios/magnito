@@ -6,12 +6,12 @@ import { Amplify } from 'aws-amplify';
 import { I18n } from 'aws-amplify/utils';
 import type { PropsWithChildren } from 'react';
 import { useEffect, useMemo } from 'react';
-import { useCognitoClient } from 'src/hooks/useCognitoClient';
-import { RootLayoutContent } from 'src/layouts/RootLayoutContent';
-import { APP_NAME } from 'src/schemas/constants';
-import { staticPath } from 'src/utils/$path';
-import { apiClient } from 'src/utils/apiClient';
-import { catchApiErr } from 'src/utils/catchApiErr';
+import { useCognitoClient } from '../hooks/useCognitoClient';
+import { RootLayoutContent } from '../layouts/RootLayoutContent';
+import { APP_NAME } from '../schemas/constants';
+import { staticPath } from '../utils/$path';
+import { apiClient } from '../utils/apiClient';
+import { catchApiErr } from '../utils/catchApiErr';
 import '../styles/globals.css';
 
 if (typeof window !== 'undefined') {

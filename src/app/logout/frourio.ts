@@ -1,6 +1,6 @@
 import type { FrourioSpec } from '@frourio/next';
-import { brandedId } from 'src/schemas/brandedId';
 import { z } from 'zod';
+import { brandedId } from '../../schemas/brandedId';
 
 export const frourioSpec = {
   get: {

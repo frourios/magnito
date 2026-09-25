@@ -1,12 +1,12 @@
-import { userPoolQuery } from 'server/domain/userPool/store/userPoolQuery';
-import { transaction } from 'server/service/transaction';
-import type { MaybeId } from 'src/schemas/brandedId';
+import type { MaybeId } from '../../../../src/schemas/brandedId';
 import type {
   SocialUserCreateVal,
   SocialUserDto,
   SocialUserRequestTokensVal,
   SocialUserResponseTokensVal,
-} from 'src/schemas/user';
+} from '../../../../src/schemas/user';
+import { userPoolQuery } from '../../../domain/userPool/store/userPoolQuery';
+import { transaction } from '../../../service/transaction';
 import { socialUserMethod } from '../model/socialUserMethod';
 import { userCommand } from '../store/userCommand';
 import { userQuery } from '../store/userQuery';

@@ -1,6 +1,6 @@
 import { CognitoIdentityProviderClient } from '@aws-sdk/client-cognito-identity-provider';
 import { atom, useAtom, useAtomValue } from 'jotai';
-import type { DefaultsDto } from 'src/schemas/defaults';
+import type { DefaultsDto } from '../schemas/defaults';
 
 const defaultsAtom = atom<DefaultsDto | { [Key in keyof DefaultsDto]?: undefined }>({});
 const clientAtom = atom((get) => {

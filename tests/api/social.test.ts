@@ -1,7 +1,7 @@
 import { createHash } from 'crypto';
-import { DEFAULT_USER_POOL_CLIENT_ID } from 'server/service/serverEnvs';
 import { ulid } from 'ulid';
 import { expect, test } from 'vitest';
+import { DEFAULT_USER_POOL_CLIENT_ID } from '../../server/service/serverEnvs';
 import { lowLevelNoCookieClient, noCookieClient } from './apiClient';
 import { testName } from './utils';
 

@@ -1,11 +1,11 @@
 import { createSigner } from 'fast-jwt';
-import { EXPIRES_SEC } from 'server/service/constants';
-import { PORT } from 'server/service/serverEnvs';
-import type { DtoId } from 'src/schemas/brandedId';
-import type { AccessTokenJwt, IdTokenJwt } from 'src/schemas/jwt';
-import type { UserDto } from 'src/schemas/user';
-import type { JwksDto } from 'src/schemas/userPool';
 import { ulid } from 'ulid';
+import type { DtoId } from '../../../../src/schemas/brandedId';
+import type { AccessTokenJwt, IdTokenJwt } from '../../../../src/schemas/jwt';
+import type { UserDto } from '../../../../src/schemas/user';
+import type { JwksDto } from '../../../../src/schemas/userPool';
+import { EXPIRES_SEC } from '../../../service/constants';
+import { PORT } from '../../../service/serverEnvs';
 import { isEmailVerified } from './isEmailVerified';
 
 export const genTokens = (params: {

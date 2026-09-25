@@ -1,8 +1,8 @@
 import { createDecoder } from 'fast-jwt';
-import { customAssert } from 'server/service/customAssert';
-import { transaction } from 'server/service/transaction';
-import type { DeleteUserTarget } from 'src/schemas/auth';
-import { TokenJwtSchema } from 'src/schemas/jwt';
+import type { DeleteUserTarget } from '../../../../src/schemas/auth';
+import { TokenJwtSchema } from '../../../../src/schemas/jwt';
+import { customAssert } from '../../../service/customAssert';
+import { transaction } from '../../../service/transaction';
 import { userMethod } from '../model/userMethod';
 import { userCommand } from '../store/userCommand';
 import { userQuery } from '../store/userQuery';

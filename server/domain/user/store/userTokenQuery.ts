@@ -1,6 +1,6 @@
-import type { Prisma } from 'server/prisma/client';
-import { cognitoAssert } from 'server/service/cognitoAssert';
-import type { UserDto } from 'src/schemas/user';
+import type { UserDto } from '../../../../src/schemas/user';
+import type { Prisma } from '../../../prisma/client';
+import { cognitoAssert } from '../../../service/cognitoAssert';
 import { toUserDto, USER_INCLUDE } from './userDto';
 
 export const userTokenQuery = {

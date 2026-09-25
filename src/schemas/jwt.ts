@@ -1,5 +1,5 @@
-import { brandedId } from 'src/schemas/brandedId';
 import { z } from 'zod';
+import { brandedId } from './brandedId';
 
 const IdTokenJwtSchema = z.object({
   sub: brandedId.cognitoUser.maybe.or(brandedId.socialUser.maybe),

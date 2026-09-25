@@ -1,10 +1,10 @@
 import assert from 'assert';
 import crypto from 'crypto';
-import { cognitoAssert } from 'server/service/cognitoAssert';
-import { brandedId } from 'src/schemas/brandedId';
-import type { UserSrpAuthTarget } from 'src/schemas/signIn';
-import type { ChallengeVal, CognitoUserDto } from 'src/schemas/user';
-import type { JwksDto, UserPoolClientDto, UserPoolDto } from 'src/schemas/userPool';
+import { brandedId } from '../../../../src/schemas/brandedId';
+import type { UserSrpAuthTarget } from '../../../../src/schemas/signIn';
+import type { ChallengeVal, CognitoUserDto } from '../../../../src/schemas/user';
+import type { JwksDto, UserPoolClientDto, UserPoolDto } from '../../../../src/schemas/userPool';
+import { cognitoAssert } from '../../../service/cognitoAssert';
 import { attributeDtoToEntity } from '../service/createAttributes';
 import { genTokens } from '../service/genTokens';
 import { calculateScramblingParameter, calculateSessionKey } from '../service/srp/calcSessionKey';

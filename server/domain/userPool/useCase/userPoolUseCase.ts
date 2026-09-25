@@ -1,7 +1,4 @@
 import assert from 'assert';
-import { prismaClient } from 'server/service/prismaClient';
-import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from 'server/service/serverEnvs';
-import { transaction } from 'server/service/transaction';
 import type {
   CreateUserPoolClientTarget,
   CreateUserPoolTarget,
@@ -9,7 +6,10 @@ import type {
   DeleteUserPoolTarget,
   ListUserPoolClientsTarget,
   ListUserPoolsTarget,
-} from 'src/schemas/auth';
+} from '../../../../src/schemas/auth';
+import { prismaClient } from '../../../service/prismaClient';
+import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from '../../../service/serverEnvs';
+import { transaction } from '../../../service/transaction';
 import { userPoolMethod } from '../model/userPoolMethod';
 import { userPoolCommand } from '../store/userPoolCommand';
 import { userPoolQuery } from '../store/userPoolQuery';

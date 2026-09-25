@@ -3,10 +3,10 @@
 import type { ListUsersResponse } from '@aws-sdk/client-cognito-identity-provider';
 import { ListUsersCommand } from '@aws-sdk/client-cognito-identity-provider';
 import { useEffect, useState } from 'react';
-import { useCognitoClient } from 'src/hooks/useCognitoClient';
-import { Layout } from 'src/layouts/Layout';
-import type { UserDto } from 'src/schemas/user';
-import { catchApiErr } from 'src/utils/catchApiErr';
+import { useCognitoClient } from '../../hooks/useCognitoClient';
+import { Layout } from '../../layouts/Layout';
+import type { UserDto } from '../../schemas/user';
+import { catchApiErr } from '../../utils/catchApiErr';
 import styles from './page.module.css';
 
 const Main = (_: { user: UserDto }) => {

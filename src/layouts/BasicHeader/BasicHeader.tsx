@@ -2,10 +2,10 @@ import { AccountSettings } from '@aws-amplify/ui-react';
 import { signOut } from 'aws-amplify/auth';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'src/components/Modal/Modal';
-import { APP_NAME } from 'src/schemas/constants';
-import type { UserDto } from 'src/schemas/user';
-import { APP_VERSION } from 'src/utils/clientEnvs';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '../../components/Modal/Modal';
+import { APP_NAME } from '../../schemas/constants';
+import type { UserDto } from '../../schemas/user';
+import { APP_VERSION } from '../../utils/clientEnvs';
 import { YourProfile } from './YourProfile';
 import styles from './BasicHeader.module.css';
 

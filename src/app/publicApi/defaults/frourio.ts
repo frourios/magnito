@@ -1,5 +1,5 @@
 import type { FrourioSpec } from '@frourio/next';
-import { DefaultsDtoSchema } from 'src/schemas/defaults';
+import { DefaultsDtoSchema } from '../../../schemas/defaults';
 
 export const frourioSpec = {
   get: {

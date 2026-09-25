@@ -1,7 +1,7 @@
 import { UserStatusType } from '@aws-sdk/client-cognito-identity-provider';
-import { PROVIDER_LIST, USER_KINDS, MFA_SETTING_LIST } from 'src/schemas/constants';
 import { z } from 'zod';
 import { brandedId } from './brandedId';
+import { PROVIDER_LIST, USER_KINDS, MFA_SETTING_LIST } from './constants';
 
 export const ChallengeValSchema = z.object({
   secretBlock: z.string(),

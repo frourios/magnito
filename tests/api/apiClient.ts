@@ -1,6 +1,6 @@
-import { COOKIE_NAME } from 'server/service/constants';
-import { PORT } from 'server/service/serverEnvs';
-import { $fc, fc } from 'src/app/frourio.client';
+import { COOKIE_NAME } from '../../server/service/constants';
+import { PORT } from '../../server/service/serverEnvs';
+import { $fc, fc } from '../../src/app/frourio.client';
 
 const baseURL = `http://localhost:${PORT}`;
 

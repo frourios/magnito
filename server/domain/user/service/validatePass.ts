@@ -1,4 +1,4 @@
-import { cognitoAssert } from 'server/service/cognitoAssert';
+import { cognitoAssert } from '../../../service/cognitoAssert';
 
 export function validatePass(password: string): asserts password {
   cognitoAssert(

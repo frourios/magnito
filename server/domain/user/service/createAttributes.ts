@@ -1,8 +1,8 @@
 import type { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
-import { brandedId } from 'src/schemas/brandedId';
-import type { UserAttributeDto, UserDto } from 'src/schemas/user';
 import { ulid } from 'ulid';
 import { z } from 'zod';
+import { brandedId } from '../../../../src/schemas/brandedId';
+import type { UserAttributeDto, UserDto } from '../../../../src/schemas/user';
 import type { CognitoUserEntity, UserAttributeEntity } from '../model/userType';
 import { isEmailVerified } from './isEmailVerified';
 
