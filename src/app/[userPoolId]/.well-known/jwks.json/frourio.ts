@@ -1,4 +1,4 @@
-import type { FrourioSpec } from '@frourio/next';
+import type { FrourioSpec } from '@frourio/vinext';
 import { JwksDtoSchema } from '../../../../schemas/userPool';
 
 export const frourioSpec = {

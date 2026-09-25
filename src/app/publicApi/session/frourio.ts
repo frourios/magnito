@@ -1,4 +1,4 @@
-import type { FrourioSpec } from '@frourio/next';
+import type { FrourioSpec } from '@frourio/vinext';
 import { z } from 'zod';
 
 export const frourioSpec = {

@@ -1,4 +1,4 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from 'vinext';
 import packageJson from './package.json';
 
 const nextConfig: NextConfig = {

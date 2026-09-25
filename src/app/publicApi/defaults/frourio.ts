@@ -1,4 +1,4 @@
-import type { FrourioSpec } from '@frourio/next';
+import type { FrourioSpec } from '@frourio/vinext';
 import { DefaultsDtoSchema } from '../../../schemas/defaults';
 
 export const frourioSpec = {

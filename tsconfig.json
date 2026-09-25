@@ -14,15 +14,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "types": ["vitest/importMeta"],
-    "incremental": true,
-    "plugins": [{ "name": "next" }]
+    "incremental": true
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
-  ]
+  "include": ["**/*.ts", "**/*.tsx"]
 }
