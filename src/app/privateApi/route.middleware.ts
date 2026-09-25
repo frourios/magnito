@@ -2,7 +2,7 @@ import { parseCookie } from 'cookie';
 import { createDecoder } from 'fast-jwt';
 import { createVerifier } from 'fast-jwt';
 import buildGetJwks from 'get-jwks';
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'vinext/shims/server';
 import { z } from 'zod';
 import { userQuery } from '../../../server/domain/user/store/userQuery';
 import { userPoolQuery } from '../../../server/domain/userPool/store/userPoolQuery';

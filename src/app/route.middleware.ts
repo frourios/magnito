@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'vinext/shims/server';
 import { CustomError } from '../../server/service/customAssert';
 import { createMiddleware } from './frourio.middleware';
 

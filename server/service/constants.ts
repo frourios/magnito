@@ -1,4 +1,4 @@
-import type { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
+import type { NextResponse } from 'vinext/shims/server';
 
 export const COOKIE_NAME = 'session';
 
@@ -10,7 +10,7 @@ export const TOKEN_KINDS = ['id', 'access', 'refresh'] as const;
 
 export type TokenKind = (typeof TOKEN_KINDS)[number];
 
-export const COOKIE_OPTIONS: Partial<ResponseCookie> = {
+export const COOKIE_OPTIONS: Partial<NonNullable<ReturnType<NextResponse['cookies']['get']>>> = {
   httpOnly: true,
   secure: true,
   path: '/',

@@ -15,6 +15,9 @@ npm-debug.log*
 
 # app
 .next/
+.vinext/
+dist/
+next-env.d.ts
 **/*.css.d.ts
 **/*.css.d.ts.map
 frourio.*.ts

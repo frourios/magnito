@@ -39,9 +39,9 @@ export const userTokenCommand = {
     ]);
   },
   revokeByToken: async (tx: Prisma.TransactionClient, token: string): Promise<void> => {
-    const userToken = await tx.userToken.findFirstOrThrow({
-      where: { token, revoked: false },
-    });
+    const userToken = await tx.userToken.findFirst({ where: { token, revoked: false } });
+
+    if (!userToken) return;
 
     await tx.userToken.update({
       where: { id: userToken.id },

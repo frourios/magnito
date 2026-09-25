@@ -83,6 +83,16 @@ test('signIn', async () => {
   });
 
   expect(res3.ok).toBeTruthy();
+
+  const revokeAgain = await lowLevelNoCookieClient.$post({
+    headers: { 'x-amz-target': 'AWSCognitoIdentityProviderService.RevokeToken' },
+    body: {
+      Token: res2.AuthenticationResult.RefreshToken,
+      ClientId: DEFAULT_USER_POOL_CLIENT_ID,
+    },
+  });
+
+  expect(revokeAgain.ok).toBeTruthy();
 });
 
 test('GetTokensFromRefreshToken', async () => {

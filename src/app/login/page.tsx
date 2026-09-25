@@ -30,15 +30,18 @@ export default function Home(): React.ReactElement {
           signUpAttributes={['email']}
           socialProviders={['google', 'apple', 'amazon', 'facebook']}
           services={{
-            handleSignUp: (input) =>
-              signUp({
+            handleSignUp: (input) => {
+              if (!('username' in input)) throw new Error('Sign up input is missing username');
+
+              return signUp({
                 ...input,
                 options: {
                   userAttributes: { ...input.options?.userAttributes },
                   ...input.options,
                   autoSignIn: true,
                 },
-              }),
+              });
+            },
           }}
         />
         <Spacer axis="y" size={40} />

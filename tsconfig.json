@@ -14,6 +14,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
+    "types": ["vitest/importMeta"],
     "incremental": true
   },
   "include": ["**/*.ts", "**/*.tsx"]

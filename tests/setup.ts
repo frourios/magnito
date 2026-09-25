@@ -4,7 +4,7 @@ import { ulid } from 'ulid';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 import { PrismaClient } from '../server/prisma/client';
 
-vi.mock('server/service/prismaClient', async () => {
+vi.mock('../server/service/prismaClient', async () => {
   assert(process.env.DATABASE_URL);
 
   process.env.DATABASE_URL = process.env.DATABASE_URL.replace(/[^/]+$/, `test-${ulid()}`);

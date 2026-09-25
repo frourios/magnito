@@ -72,7 +72,7 @@ COPY --chown=node package.json package-lock.json ./
 
 RUN npm ci --omit=dev
 
-COPY --chown=node --from=builder /usr/src/app/.next .next/
+COPY --chown=node --from=builder /usr/src/app/dist dist/
 COPY --chown=node --from=builder /usr/src/app/certificates certificates/
 COPY --chown=node --from=builder /usr/src/app/prisma prisma/
 COPY --chown=node --from=builder /usr/src/app/data data/

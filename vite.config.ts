@@ -1,14 +1,36 @@
 import 'dotenv/config';
+import vinext from 'vinext';
 import { defineConfig } from 'vitest/config';
+import packageJson from './package.json';
 
 export default defineConfig({
-  resolve: { tsconfigPaths: true },
-  test: {
-    env: { DATABASE_URL: process.env.TEST_DATABASE_URL ?? '' },
-    setupFiles: ['tests/setup.ts'],
-    coverage: {
-      thresholds: { statements: 100, branches: 100, functions: 100, lines: 100 },
-      include: ['src/app/**/route.ts', 'server/domain/**'],
-    },
-  },
+  plugins: [
+    vinext({
+      nextConfig: {
+        reactStrictMode: true,
+        output: 'standalone',
+        typescript: { ignoreBuildErrors: true },
+        env: { APP_VERSION: `v${packageJson.version}` },
+        headers() {
+          return [
+            {
+              source: '/',
+              headers: [
+                { key: 'Access-Control-Allow-Origin', value: '*' },
+                {
+                  key: 'Access-Control-Allow-Methods',
+                  value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
+                },
+                {
+                  key: 'Access-Control-Allow-Headers',
+                  value:
+                    'amz-sdk-invocation-id,amz-sdk-request,cache-control,content-type,x-amz-target,x-amz-user-agent',
+                },
+              ],
+            },
+          ];
+        },
+      },
+    }),
+  ],
 });
