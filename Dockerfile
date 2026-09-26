@@ -71,9 +71,12 @@ ENV SMTP_PASS=$SMTP_PASS
 
 COPY --chown=node package.json package-lock.json ./
 
-RUN npm ci --omit=dev
+RUN --mount=type=cache,target=/root/.npm \
+    --mount=type=cache,target=/root/.cache/prisma \
+    npm ci --omit=dev
 
-COPY --chown=node --from=builder /usr/src/app/dist dist/
+COPY --chown=node --from=builder /usr/src/app/dist/client dist/client/
+COPY --chown=node --from=builder /usr/src/app/dist/server dist/server/
 COPY --chown=node --from=builder /usr/src/app/certificates certificates/
 COPY --chown=node --from=builder /usr/src/app/prisma prisma/
 COPY --chown=node --from=builder /usr/src/app/data data/

@@ -4,3 +4,7 @@
 node_modules
 README.md
 .env
+dist
+coverage
+.next
+.vinext
