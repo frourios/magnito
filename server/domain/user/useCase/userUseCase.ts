@@ -13,7 +13,7 @@ const decoder = createDecoder();
 
 export const userUseCase = {
   deleteUser: (req: DeleteUserTarget['reqBody']): Promise<DeleteUserTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
       const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));

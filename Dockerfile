@@ -6,13 +6,12 @@ ARG COGNITO_SECRET_KEY=magnito-secret-key
 ARG COGNITO_REGION=ap-northeast-1
 ARG COGNITO_USER_POOL_ID=ap-northeast-1_default
 ARG COGNITO_USER_POOL_CLIENT_ID=default-client-id
-ARG DATABASE_URL=file:./data/app.db
 ARG SMTP_HOST=inbucket
 ARG SMTP_PORT=2500
 ARG SMTP_USER=fake_mail_user
 ARG SMTP_PASS=fake_mail_password
 
-FROM node:24-alpine3.22 AS builder
+FROM node:26-alpine3.23 AS builder
 
 WORKDIR /usr/src/app
 
@@ -29,16 +28,18 @@ ARG COGNITO_SECRET_KEY
 ARG COGNITO_REGION
 ARG COGNITO_USER_POOL_ID
 ARG COGNITO_USER_POOL_CLIENT_ID
-ARG DATABASE_URL
 ARG SMTP_HOST
 ARG SMTP_PORT
 ARG SMTP_USER
 ARG SMTP_PASS
 
 RUN npm run batch:writeVersion -- $VERSION
+ENV DATABASE_URL=postgresql://root:root@127.0.0.1:5432/app
 RUN npm run build
 
-FROM node:24-alpine3.22
+FROM node:26-alpine3.23
+
+RUN apk add --no-cache postgresql16
 
 WORKDIR /usr/src/app
 
@@ -49,7 +50,6 @@ ARG COGNITO_SECRET_KEY
 ARG COGNITO_REGION
 ARG COGNITO_USER_POOL_ID
 ARG COGNITO_USER_POOL_CLIENT_ID
-ARG DATABASE_URL
 ARG SMTP_HOST
 ARG SMTP_PORT
 ARG SMTP_USER
@@ -62,7 +62,8 @@ ENV COGNITO_SECRET_KEY=$COGNITO_SECRET_KEY
 ENV COGNITO_REGION=$COGNITO_REGION
 ENV COGNITO_USER_POOL_ID=$COGNITO_USER_POOL_ID
 ENV COGNITO_USER_POOL_CLIENT_ID=$COGNITO_USER_POOL_CLIENT_ID
-ENV DATABASE_URL=$DATABASE_URL
+ENV DATABASE_URL=postgresql://root:root@127.0.0.1:5432/app
+ENV PGDATA=/usr/src/app/data/postgres
 ENV SMTP_HOST=$SMTP_HOST
 ENV SMTP_PORT=$SMTP_PORT
 ENV SMTP_USER=$SMTP_USER
@@ -80,6 +81,7 @@ COPY --chown=node --from=builder /usr/src/app/server server/
 COPY --chown=node --from=builder /usr/src/app/src src/
 COPY --chown=node prisma.config.ts ./
 COPY --chown=node tsconfig.json ./
+COPY --chown=node --chmod=755 docker-entrypoint.sh ./
 
 HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD wget --quiet --spider http://127.0.0.1:$PORT/publicApi/health && wget --quiet --spider --no-check-certificate https://127.0.0.1:$SSL_PORT || exit 1
 
@@ -87,4 +89,5 @@ EXPOSE ${PORT} ${SSL_PORT}
 VOLUME ["/usr/src/app/data"]
 
 USER node
+ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["npm", "start"]

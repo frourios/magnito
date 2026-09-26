@@ -15,7 +15,7 @@ import { userQuery } from '../store/userQuery';
 
 export const signUpUseCase = {
   signUp: (req: SignUpTarget['reqBody']): Promise<SignUpTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       assert(req.ClientId);
       assert(req.Username);
       assert(req.Password);
@@ -41,7 +41,7 @@ export const signUpUseCase = {
       };
     }),
   confirmSignUp: (req: ConfirmSignUpTarget['reqBody']): Promise<ConfirmSignUpTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       const user = await userQuery.findByName(tx, req.Username);
 
       assert(user.kind === 'cognito');
@@ -55,7 +55,7 @@ export const signUpUseCase = {
   resendConfirmationCode: (
     req: ResendConfirmationCodeTarget['reqBody'],
   ): Promise<ResendConfirmationCodeTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
       const user = await userQuery.findByName(tx, req.Username);
 

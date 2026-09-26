@@ -18,7 +18,7 @@ export const mfaUseCase = {
   associateSoftwareToken: (
     req: AssociateSoftwareTokenTarget['reqBody'],
   ): Promise<AssociateSoftwareTokenTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
       const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
@@ -38,7 +38,7 @@ export const mfaUseCase = {
   verifySoftwareToken: (
     req: VerifySoftwareTokenTarget['reqBody'],
   ): Promise<VerifySoftwareTokenTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
       const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
@@ -58,7 +58,7 @@ export const mfaUseCase = {
   setUserMFAPreference: (
     req: SetUserMFAPreferenceTarget['reqBody'],
   ): Promise<SetUserMFAPreferenceTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
       const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));

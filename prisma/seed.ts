@@ -79,7 +79,7 @@ const migrateUserPool = async (tx: Prisma.TransactionClient): Promise<void> => {
   await test();
 };
 
-transaction((tx) => Promise.all([migrateUser(tx), migrateUserPool(tx)]))
+transaction('RepeatableRead', (tx) => Promise.all([migrateUser(tx), migrateUserPool(tx)]))
   .catch((e) => {
     console.error(e);
     process.exit(1);

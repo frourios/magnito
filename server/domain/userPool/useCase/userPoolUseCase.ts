@@ -16,7 +16,7 @@ import { userPoolQuery } from '../store/userPoolQuery';
 
 export const userPoolUseCase = {
   initDefaults: (): Promise<void> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       await userPoolQuery
         .findById(tx, DEFAULT_USER_POOL_ID)
         .catch(() =>
@@ -56,7 +56,7 @@ export const userPoolUseCase = {
   createUserPool: (
     req: CreateUserPoolTarget['reqBody'],
   ): Promise<CreateUserPoolTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       assert(req.PoolName);
 
       const pool = userPoolMethod.create({ name: req.PoolName });
@@ -67,7 +67,7 @@ export const userPoolUseCase = {
   createUserPoolClient: (
     req: CreateUserPoolClientTarget['reqBody'],
   ): Promise<CreateUserPoolClientTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       assert(req.ClientName);
       assert(req.UserPoolId);
 
@@ -82,7 +82,7 @@ export const userPoolUseCase = {
   deleteUserPool: (
     req: DeleteUserPoolTarget['reqBody'],
   ): Promise<DeleteUserPoolTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       assert(req.UserPoolId);
 
       const pool = await userPoolQuery.findById(tx, req.UserPoolId);
@@ -94,7 +94,7 @@ export const userPoolUseCase = {
   deleteUserPoolClient: (
     req: DeleteUserPoolClientTarget['reqBody'],
   ): Promise<DeleteUserPoolClientTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       assert(req.ClientId);
 
       const client = await userPoolQuery.findClientById(tx, req.ClientId);

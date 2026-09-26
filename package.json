@@ -41,7 +41,7 @@
     "@aws-amplify/ui-react": "^6.15.6",
     "@aws-sdk/client-cognito-identity-provider": "^3.1009.0",
     "@fakerjs/word": "^1.0.1",
-    "@prisma/adapter-better-sqlite3": "^7.10.0",
+    "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "aws-amplify": "^6.22.0",
     "cookie": "^1.1.1",
@@ -88,6 +88,6 @@
     "vitest": "^4.1.0"
   },
   "engines": {
-    "node": ">=24.0.0"
+    "node": ">=26.0.0"
   }
 }

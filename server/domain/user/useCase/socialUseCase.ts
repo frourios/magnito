@@ -14,14 +14,14 @@ import { userTokenCommand } from '../store/userTokenCommand';
 
 export const socialUseCase = {
   createUser: (val: SocialUserCreateVal): Promise<SocialUserDto> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       const userPoolClient = await userPoolQuery.findClientById(tx, val.userPoolClientId);
       const user = socialUserMethod.create(userPoolClient.userPoolId, val);
 
       return await userCommand.save(tx, user);
     }),
   getTokens: (val: SocialUserRequestTokensVal): Promise<SocialUserResponseTokensVal> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       const user = await userQuery.findByAuthorizationCode(tx, val.code);
       const pool = await userPoolQuery.findById(tx, user.userPoolId);
       const poolClient = await userPoolQuery.findClientById(tx, val.client_id);
@@ -41,7 +41,7 @@ export const socialUseCase = {
     id: MaybeId['socialUser'];
     codeChallenge: string;
   }): Promise<SocialUserDto> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       const user = await userQuery.findById(tx, val.id);
       const updated = socialUserMethod.updateCodeChallenge(user, val.codeChallenge);
 

@@ -51,7 +51,7 @@ export const adminUseCase = {
     return { Username: user.name, UserAttributes: toAttributeTypes(user), UserStatus: user.status };
   },
   createUser: (req: AdminCreateUserTarget['reqBody']): Promise<AdminCreateUserTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       assert(req.Username);
 
       const user = await (req.MessageAction === 'RESEND'
@@ -67,7 +67,7 @@ export const adminUseCase = {
       };
     }),
   deleteUser: (req: AdminDeleteUserTarget['reqBody']): Promise<AdminDeleteUserTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       assert(req.Username);
       assert(req.UserPoolId);
 
@@ -82,7 +82,7 @@ export const adminUseCase = {
   initiateAuth: (
     req: AdminInitiateAuthTarget['reqBody'],
   ): Promise<AdminInitiateAuthTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       assert(req.UserPoolId);
       assert(req.AuthParameters);
 
@@ -116,7 +116,7 @@ export const adminUseCase = {
   setUserPassword: (
     req: AdminSetUserPasswordTarget['reqBody'],
   ): Promise<AdminSetUserPasswordTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       assert(req.Username);
 
       const user = await userQuery.findByName(tx, req.Username);
@@ -130,7 +130,7 @@ export const adminUseCase = {
   updateUserAttributes: (
     req: AdminUpdateUserAttributesTarget['reqBody'],
   ): Promise<AdminUpdateUserAttributesTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       assert(req.Username);
 
       const user = await userQuery.findByName(tx, req.Username);
@@ -144,7 +144,7 @@ export const adminUseCase = {
   deleteUserAttributes: (
     req: AdminDeleteUserAttributesTarget['reqBody'],
   ): Promise<AdminDeleteUserAttributesTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       assert(req.Username);
 
       const user = await userQuery.findByName(tx, req.Username);
@@ -156,7 +156,7 @@ export const adminUseCase = {
   userGlobalSignOut: (
     req: AdminUserGlobalSignOutTarget['reqBody'],
   ): Promise<AdminUserGlobalSignOutTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       assert(req.Username);
       assert(req.UserPoolId);
 

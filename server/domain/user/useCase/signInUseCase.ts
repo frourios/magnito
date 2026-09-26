@@ -21,7 +21,7 @@ import { userTokenQuery } from '../store/userTokenQuery';
 
 export const signInUseCase = {
   userSrpAuth: (req: UserSrpAuthTarget['reqBody']): Promise<UserSrpAuthTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       const user = await userQuery
         .findByName(tx, req.AuthParameters.USERNAME)
         .catch(catchCognitoErr('Incorrect username or password.'));
@@ -40,7 +40,7 @@ export const signInUseCase = {
   refreshTokenAuth: (
     req: RefreshTokenAuthTarget['reqBody'],
   ): Promise<RefreshTokenAuthTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       const user = await userTokenQuery.findUserByRefreshToken(
         tx,
         req.AuthParameters.REFRESH_TOKEN,
@@ -69,7 +69,7 @@ export const signInUseCase = {
   getTokensFromRefreshToken: (
     req: GetTokensFromRefreshTokenTarget['reqBody'],
   ): Promise<GetTokensFromRefreshTokenTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       const user = await userTokenQuery.findUserByRefreshToken(tx, req.RefreshToken);
       const pool = await userPoolQuery.findById(tx, user.userPoolId);
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
@@ -92,7 +92,7 @@ export const signInUseCase = {
   respondToAuthChallenge: (
     req: RespondToAuthChallengeTarget['reqBody'],
   ): Promise<RespondToAuthChallengeTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       const user = await userQuery.findByName(tx, req.ChallengeResponses.USERNAME);
       const pool = await userPoolQuery.findById(tx, user.userPoolId);
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);

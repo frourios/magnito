@@ -30,7 +30,7 @@ const decoder = createDecoder();
 
 export const authUseCase = {
   getUser: (req: GetUserTarget['reqBody']): Promise<GetUserTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
 
       customAssert(payload.success, 'Eliminate fraudulent requests');
@@ -46,7 +46,7 @@ export const authUseCase = {
       };
     }),
   listUsers: (req: ListUsersTarget['reqBody']): Promise<ListUsersTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       customAssert(req.UserPoolId, 'Eliminate fraudulent requests');
 
       const users = await userQuery.listAll(tx, req.UserPoolId, req.Limit);
@@ -65,7 +65,7 @@ export const authUseCase = {
       };
     }),
   revokeToken: (req: RevokeTokenTarget['reqBody']): Promise<RevokeTokenTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       await userTokenCommand.revokeByToken(tx, req.Token);
 
       return {};
@@ -73,7 +73,7 @@ export const authUseCase = {
   changePassword: (
     req: ChangePasswordTarget['reqBody'],
   ): Promise<ChangePasswordTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
 
       customAssert(payload.success, 'Eliminate fraudulent requests');
@@ -91,7 +91,7 @@ export const authUseCase = {
   forgotPassword: (
     req: ForgotPasswordTarget['reqBody'],
   ): Promise<ForgotPasswordTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
       const user = await userQuery.findByName(tx, req.Username);
 
@@ -107,7 +107,7 @@ export const authUseCase = {
   confirmForgotPassword: (
     req: ConfirmForgotPasswordTarget['reqBody'],
   ): Promise<ConfirmForgotPasswordTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       const user = await userQuery.findByName(tx, req.Username);
 
       customAssert(user.kind === 'cognito', 'Eliminate fraudulent requests');
@@ -126,7 +126,7 @@ export const authUseCase = {
   updateUserAttributes: (
     req: UpdateUserAttributesTarget['reqBody'],
   ): Promise<UpdateUserAttributesTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
       const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
@@ -148,7 +148,7 @@ export const authUseCase = {
   verifyUserAttribute: (
     req: VerifyUserAttributeTarget['reqBody'],
   ): Promise<VerifyUserAttributeTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
       const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));
@@ -165,7 +165,7 @@ export const authUseCase = {
   deleteUserAttributes: (
     req: DeleteUserAttributesTarget['reqBody'],
   ): Promise<DeleteUserAttributesTarget['resBody']> =>
-    transaction(async (tx) => {
+    transaction('RepeatableRead', async (tx) => {
       customAssert(req.AccessToken, 'Eliminate fraudulent requests');
 
       const payload = TokenJwtSchema.safeParse(decoder(req.AccessToken));

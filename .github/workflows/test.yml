@@ -7,12 +7,12 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
-          node-version: 24
-      - uses: actions/cache@v5
+          node-version: 26
+      - uses: actions/cache@v6
         id: npm-cache
         with:
           path: 'node_modules'
@@ -23,13 +23,14 @@ jobs:
       - run: npm run generate
       - run: npm run lint
       - run: npm run typecheck
-      - run: docker compose -p magnito-test up -d
+      - run: docker compose --profile test up -d
       - run: npm test
 
+      - run: docker compose up -d inbucket
       - run: docker build . -t magnito --build-arg VERSION=0.0.0
-      - run: docker run -d --name test --network magnito-test_default magnito
-      - run: count=0 && until [ "$(docker inspect --format='{{json .State.Health.Status}}' test)" == "\"healthy\"" ] || [ $count -eq 30 ]; do sleep 1; count=$((count + 1)); done && [ $count -ne 30 ]
+      - run: docker run -d --name debug --network magnito_default magnito
+      - run: count=0 && until [ "$(docker inspect --format='{{json .State.Health.Status}}' debug)" == "\"healthy\"" ] || [ $count -eq 30 ]; do sleep 1; count=$((count + 1)); done && [ $count -ne 30 ]
         id: healthcheck
       - if: failure() && steps.healthcheck.outcome == 'failure'
-        run: docker logs test
-      - run: docker stop test
+        run: docker logs debug
+      - run: docker stop debug

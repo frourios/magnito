@@ -1,28 +1,82 @@
 services:
-  # magnito:
-  #   build:
-  #     context: .
-  #     args:
-  #       - VERSION=0.0.0
-  #   ports:
-  #     - 5050:5050
-  #     - 5051:5051
-  #   volumes:
-  #     - magnito-data:/usr/src/app/data
-  #   depends_on:
-  #     inbucket:
-  #       condition: service_started
+  postgres-dev:
+    profiles: [dev]
+    image: postgres:16.13
+    ports:
+      - 5430:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: app
+      TZ: Asia/Tokyo
+    volumes:
+      - postgres-dev:/var/lib/postgresql/data
+
+  postgres-test:
+    profiles: [test]
+    image: postgres:16.13
+    ports:
+      - 6430:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: app
+      TZ: Asia/Tokyo
+    volumes:
+      - postgres-test:/var/lib/postgresql/data
+
+  app-debug:
+    profiles: [debug]
+    build:
+      context: .
+      args:
+        - VERSION=0.0.0
+    ports:
+      - 5050:5050
+      - 5051:5051
+    volumes:
+      - app-debug:/usr/src/app/data
+    depends_on:
+      inbucket:
+        condition: service_started
 
   inbucket:
+    profiles: [debug]
     image: inbucket/inbucket:3.0.3
     ports:
       - 2500:2500 # SMTP
-      - 9000:9000 # web interface
+      - 2501:9000 # web interface
     volumes:
-      - inbucket:/storage
+      - inbucket-debug:/storage
+
+  inbucket-test:
+    profiles: [test]
+    image: inbucket/inbucket:3.0.3
+    ports:
+      - 3500:2500 # SMTP
+      - 3501:9000 # web interface
+    volumes:
+      - inbucket-test:/storage
+
+  inbucket-dev:
+    profiles: [dev]
+    image: inbucket/inbucket:3.0.3
+    ports:
+      - 4500:2500 # SMTP
+      - 4501:9000 # web interface
+    volumes:
+      - inbucket-dev:/storage
 
 volumes:
-  # magnito-data:
-  #   driver: local
-  inbucket:
+  postgres-dev:
+    driver: local
+  postgres-test:
+    driver: local
+  app-debug:
+    driver: local
+  inbucket-debug:
+    driver: local
+  inbucket-test:
+    driver: local
+  inbucket-dev:
     driver: local

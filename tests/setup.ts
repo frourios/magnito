@@ -1,27 +1,34 @@
 import assert from 'assert';
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { ulid } from 'ulid';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 import { PrismaClient } from '../server/prisma/client';
+import 'dotenv/config';
 
 vi.mock('../server/service/prismaClient', async () => {
-  assert(process.env.DATABASE_URL);
-
-  process.env.DATABASE_URL = process.env.DATABASE_URL.replace(/[^/]+$/, `test-${ulid()}`);
+  process.env.DATABASE_URL = `postgresql://root:root@localhost:6430/test-${ulid()}`;
 
   return {
     prismaClient: new PrismaClient({
-      adapter: new PrismaBetterSqlite3({ url: process.env.DATABASE_URL }),
+      adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
     }),
   };
 });
 
+vi.mock('../server/service/serverEnvs', async (importOriginal) => {
+  const actual = await importOriginal<Record<string, string>>();
+
+  process.env.SMTP_PORT = '3500';
+  process.env.INBUCKET_URL = 'http://localhost:3501';
+
+  return { ...actual, SMTP_PORT: process.env.SMTP_PORT };
+});
+
 import { spawn } from 'child_process';
-import { readdirSync, unlinkSync } from 'fs';
-import path from 'path';
 import { http, passthrough } from 'msw';
 import { setupServer, type SetupServerApi } from 'msw/node';
 import { userPoolUseCase } from '../server/domain/userPool/useCase/userPoolUseCase';
+import { prismaClient } from '../server/service/prismaClient';
 import { setupMswHandlers } from './setupMswHandlers';
 
 let server: SetupServerApi;
@@ -70,11 +77,19 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-afterAll(() => {
+afterAll(async () => {
   server.close();
+  await prismaClient.$disconnect();
 
-  const dbFileName = readdirSync('./data').find((file) => process.env.DATABASE_URL?.endsWith(file));
+  assert(process.env.DATABASE_URL);
+  const databaseUrl = new URL(process.env.DATABASE_URL);
+  const databaseName = databaseUrl.pathname.slice(1);
 
-  assert(dbFileName);
-  unlinkSync(path.join('./data', dbFileName));
-});
+  databaseUrl.pathname = '/postgres';
+  const adminClient = new PrismaClient({
+    adapter: new PrismaPg({ connectionString: databaseUrl.toString() }),
+  });
+
+  await adminClient.$executeRawUnsafe(`DROP DATABASE IF EXISTS "${databaseName}" WITH (FORCE)`);
+  await adminClient.$disconnect();
+}, 30_000);

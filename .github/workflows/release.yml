@@ -6,18 +6,27 @@ on:
       - 'v*'
 
 jobs:
-  release:
-    name: Release
-    runs-on: ubuntu-latest
+  build:
+    name: Build ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            platform: linux/amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            platform: linux/arm64
+            runner: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v5
-      - uses: docker/setup-qemu-action@v4
+      - uses: actions/checkout@v7
       - uses: docker/setup-buildx-action@v4
       - uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+      - run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
       - uses: docker/build-push-action@v7
         with:
           sbom: true
@@ -25,8 +34,29 @@ jobs:
           provenance: mode=max
           build-args: |
             VERSION=${{ env.VERSION }}
-          tags: frourio/magnito:${{ env.VERSION }},frourio/magnito:latest
-          platforms: linux/amd64,linux/arm64
+          tags: frourio/magnito:${{ env.VERSION }}-${{ matrix.arch }}
+          platforms: ${{ matrix.platform }}
+
+  publish:
+    name: Publish
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+      - name: Publish Docker Hub manifest
+        run: |
+          image=frourio/magnito
+          docker buildx imagetools create \
+            -t "$image:$VERSION" \
+            -t "$image:latest" \
+            "$image:$VERSION-amd64" \
+            "$image:$VERSION-arm64"
+          docker buildx imagetools inspect "$image:$VERSION"
       - uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -36,9 +66,13 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
         with:
           registry-type: public
-      - env:
+      - name: Publish ECR Public manifest
+        env:
           REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-          REGISTRY_ALIAS: i9v2y6d7
-          REPOSITORY: magnito
-          IMAGE_TAG: ${{ env.VERSION }}
-        run: docker buildx build --platform linux/amd64,linux/arm64 --build-arg VERSION=$IMAGE_TAG -t $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:latest --push .
+        run: |
+          image="$REGISTRY/i9v2y6d7/magnito"
+          docker buildx imagetools create \
+            -t "$image:$VERSION" \
+            -t "$image:latest" \
+            "frourio/magnito:$VERSION"
+          docker buildx imagetools inspect "$image:$VERSION"
