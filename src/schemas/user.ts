@@ -101,8 +101,8 @@ export const SocialUserRequestTokensValSchema = z.object({
   grant_type: z.literal('authorization_code'),
   code: z.string(),
   client_id: brandedId.userPoolClient.maybe,
-  redirect_uri: z.string().url(),
-  code_verifier: z.string(),
+  redirect_uri: z.url(),
+  code_verifier: z.string().default(''),
 });
 
 export type SocialUserRequestTokensVal = z.infer<typeof SocialUserRequestTokensValSchema>;

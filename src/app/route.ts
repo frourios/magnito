@@ -5,6 +5,8 @@ import { mfaUseCase } from '../../server/domain/user/useCase/mfaUseCase';
 import { signInUseCase } from '../../server/domain/user/useCase/signInUseCase';
 import { signUpUseCase } from '../../server/domain/user/useCase/signUpUseCase';
 import { userUseCase } from '../../server/domain/user/useCase/userUseCase';
+import { userPoolConfigUpdateUseCase } from '../../server/domain/userPool/useCase/userPoolConfigUpdateUseCase';
+import { userPoolConfigUseCase } from '../../server/domain/userPool/useCase/userPoolConfigUseCase';
 import { userPoolUseCase } from '../../server/domain/userPool/useCase/userPoolUseCase';
 import { COGNITO_ERRORS, CognitoError } from '../../server/service/cognitoAssert';
 import { validateSignature } from '../../server/service/validateSignature';
@@ -23,6 +25,21 @@ const iamAuthTargets = new Set([
   'AWSCognitoIdentityProviderService.AdminDeleteUserAttributes',
   'AWSCognitoIdentityProviderService.AdminUserGlobalSignOut',
   'AWSCognitoIdentityProviderService.ListUserPools',
+  'AWSCognitoIdentityProviderService.DescribeUserPool',
+  'AWSCognitoIdentityProviderService.DescribeUserPoolClient',
+  'AWSCognitoIdentityProviderService.CreateIdentityProvider',
+  'AWSCognitoIdentityProviderService.ListIdentityProviders',
+  'AWSCognitoIdentityProviderService.DescribeIdentityProvider',
+  'AWSCognitoIdentityProviderService.UpdateUserPoolClient',
+  'AWSCognitoIdentityProviderService.UpdateUserPool',
+  'AWSCognitoIdentityProviderService.UpdateUserPoolDomain',
+  'AWSCognitoIdentityProviderService.CreateUserPoolDomain',
+  'AWSCognitoIdentityProviderService.DescribeUserPoolDomain',
+  'AWSCognitoIdentityProviderService.CreateManagedLoginBranding',
+  'AWSCognitoIdentityProviderService.DescribeManagedLoginBrandingByClient',
+  'AWSCognitoIdentityProviderService.DescribeManagedLoginBranding',
+  'AWSCognitoIdentityProviderService.UpdateManagedLoginBranding',
+  'AWSCognitoIdentityProviderService.DeleteManagedLoginBranding',
   'AWSCognitoIdentityProviderService.ListUserPoolClients',
   'AWSCognitoIdentityProviderService.CreateUserPool',
   'AWSCognitoIdentityProviderService.CreateUserPoolClient',
@@ -51,6 +68,34 @@ const useCases = {
   'AWSCognitoIdentityProviderService.RevokeToken': authUseCase.revokeToken,
   'AWSCognitoIdentityProviderService.ResendConfirmationCode': signUpUseCase.resendConfirmationCode,
   'AWSCognitoIdentityProviderService.ListUserPools': userPoolUseCase.listUserPools,
+  'AWSCognitoIdentityProviderService.DescribeUserPool': userPoolConfigUseCase.describeUserPool,
+  'AWSCognitoIdentityProviderService.DescribeUserPoolClient':
+    userPoolConfigUseCase.describeUserPoolClient,
+  'AWSCognitoIdentityProviderService.CreateIdentityProvider':
+    userPoolConfigUseCase.createIdentityProvider,
+  'AWSCognitoIdentityProviderService.ListIdentityProviders':
+    userPoolConfigUseCase.listIdentityProviders,
+  'AWSCognitoIdentityProviderService.DescribeIdentityProvider':
+    userPoolConfigUseCase.describeIdentityProvider,
+  'AWSCognitoIdentityProviderService.UpdateUserPoolClient':
+    userPoolConfigUpdateUseCase.updateUserPoolClient,
+  'AWSCognitoIdentityProviderService.UpdateUserPool': userPoolConfigUpdateUseCase.updateUserPool,
+  'AWSCognitoIdentityProviderService.UpdateUserPoolDomain':
+    userPoolConfigUpdateUseCase.updateUserPoolDomain,
+  'AWSCognitoIdentityProviderService.CreateUserPoolDomain':
+    userPoolConfigUseCase.createUserPoolDomain,
+  'AWSCognitoIdentityProviderService.DescribeUserPoolDomain':
+    userPoolConfigUseCase.describeUserPoolDomain,
+  'AWSCognitoIdentityProviderService.CreateManagedLoginBranding':
+    userPoolConfigUseCase.createManagedLoginBranding,
+  'AWSCognitoIdentityProviderService.DescribeManagedLoginBrandingByClient':
+    userPoolConfigUseCase.describeManagedLoginBrandingByClient,
+  'AWSCognitoIdentityProviderService.DescribeManagedLoginBranding':
+    userPoolConfigUseCase.describeManagedLoginBranding,
+  'AWSCognitoIdentityProviderService.UpdateManagedLoginBranding':
+    userPoolConfigUpdateUseCase.updateManagedLoginBranding,
+  'AWSCognitoIdentityProviderService.DeleteManagedLoginBranding':
+    userPoolConfigUpdateUseCase.deleteManagedLoginBranding,
   'AWSCognitoIdentityProviderService.ListUserPoolClients': userPoolUseCase.listUserPoolClients,
   'AWSCognitoIdentityProviderService.CreateUserPool': userPoolUseCase.createUserPool,
   'AWSCognitoIdentityProviderService.CreateUserPoolClient': userPoolUseCase.createUserPoolClient,

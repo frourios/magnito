@@ -4,6 +4,10 @@ export const COOKIE_NAME = 'session';
 
 export const SOCIAL_FLOW_COOKIE_NAME = 'social_oauth_flow';
 
+export const MANAGED_LOGIN_FLOW_COOKIE_NAME = 'csrf-state';
+
+export const MANAGED_LOGIN_XSRF_COOKIE_NAME = 'XSRF-TOKEN';
+
 export const EXPIRES_SEC = 3600;
 
 export const SHORT_LIVED_SEC = 300;
@@ -38,4 +42,15 @@ export const SOCIAL_FLOW_COOKIE_OPTIONS: CookieOptions = {
   sameSite: 'lax',
   path: '/oauth2/server',
   maxAge: 300,
+};
+
+export const MANAGED_LOGIN_FLOW_COOKIE_OPTIONS: CookieOptions = {
+  ...COOKIE_OPTIONS,
+  sameSite: 'lax',
+  maxAge: SHORT_LIVED_SEC,
+};
+
+export const MANAGED_LOGIN_XSRF_COOKIE_OPTIONS: CookieOptions = {
+  ...MANAGED_LOGIN_FLOW_COOKIE_OPTIONS,
+  httpOnly: false,
 };

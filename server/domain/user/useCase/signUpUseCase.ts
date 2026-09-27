@@ -21,6 +21,7 @@ export const signUpUseCase = {
       assert(req.Password);
 
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
+      const policy = await tx.userPool.findUniqueOrThrow({ where: { id: poolClient.userPoolId } });
       const idCount = await userQuery.countUsername(tx, req.Username, poolClient.userPoolId);
       const email = findEmail(req.UserAttributes);
       const user = cognitoUserMethod.create(idCount, {
@@ -29,6 +30,7 @@ export const signUpUseCase = {
         password: req.Password,
         userPoolId: poolClient.userPoolId,
         attributes: req.UserAttributes,
+        policy,
       });
 
       await userCommand.save(tx, user);
@@ -42,7 +44,8 @@ export const signUpUseCase = {
     }),
   confirmSignUp: (req: ConfirmSignUpTarget['reqBody']): Promise<ConfirmSignUpTarget['resBody']> =>
     transaction('RepeatableRead', async (tx) => {
-      const user = await userQuery.findByName(tx, req.Username);
+      const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
+      const user = await userQuery.findByNameInPool(tx, req.Username, poolClient.userPoolId);
 
       assert(user.kind === 'cognito');
 

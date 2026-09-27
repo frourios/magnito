@@ -58,6 +58,22 @@ beforeAll(() => {
   server.listen({ onUnhandledRequest: 'error' });
 });
 
+// Codex runs Prisma reset against a fresh random database that the CLI doesn't create itself.
+async function createTestDatabaseForPrismaResetInCodex(): Promise<void> {
+  assert(process.env.DATABASE_URL);
+  const databaseUrl = new URL(process.env.DATABASE_URL);
+  const databaseName = databaseUrl.pathname.slice(1);
+  databaseUrl.pathname = '/postgres';
+  const adminClient = new PrismaClient({
+    adapter: new PrismaPg({ connectionString: databaseUrl.toString() }),
+  });
+
+  await adminClient.$executeRawUnsafe(`CREATE DATABASE "${databaseName}"`);
+  await adminClient.$disconnect();
+}
+
+beforeAll(createTestDatabaseForPrismaResetInCodex);
+
 beforeEach(async () => {
   await new Promise((resolve, reject) => {
     const { CLAUDECODE: _, ...envWithoutClaude } = process.env;

@@ -1,24 +1,29 @@
 import { cognitoAssert } from '../../../service/cognitoAssert';
+import type { PoolPolicy } from '../../userPool/service/poolPolicy';
 
-export function validatePass(password: string): asserts password {
+// oxlint-disable-next-line complexity
+export function validatePass(password: string, policy: PoolPolicy): asserts password {
   cognitoAssert(
-    password.length >= 8,
+    password.length >= policy.passwordMinimumLength,
     'Password did not conform with policy: Password not long enough',
   );
+  cognitoAssert(password.length <= 256, 'Password did not conform with policy: Password too long');
   cognitoAssert(
-    /[a-z]/.test(password),
+    !policy.passwordRequireLowercase || /[a-z]/.test(password),
     'Password did not conform with policy: Password must have lowercase characters',
   );
   cognitoAssert(
-    /[A-Z]/.test(password),
+    !policy.passwordRequireUppercase || /[A-Z]/.test(password),
     'Password did not conform with policy: Password must have uppercase characters',
   );
   cognitoAssert(
-    /[0-9]/.test(password),
+    !policy.passwordRequireNumbers || /[0-9]/.test(password),
     'Password did not conform with policy: Password must have numeric characters',
   );
   cognitoAssert(
-    /[!-/:-@[-`{-~]/.test(password),
+    !policy.passwordRequireSymbols ||
+      /[!-/:-@[-`{-~]/.test(password) ||
+      password.slice(1, -1).includes(' '),
     'Password did not conform with policy: Password must have symbol characters',
   );
 }

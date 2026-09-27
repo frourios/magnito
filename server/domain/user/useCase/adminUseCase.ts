@@ -30,8 +30,9 @@ const createUser = async (
   assert(req.UserPoolId);
 
   const userPool = await userPoolQuery.findById(tx, req.UserPoolId);
+  const policy = await tx.userPool.findUniqueOrThrow({ where: { id: userPool.id } });
   const idCount = await userQuery.countUsername(tx, req.Username, userPool.id);
-  const user = adminMethod.createVerifiedUser(idCount, req, userPool.id);
+  const user = adminMethod.createVerifiedUser(idCount, req, userPool.id, policy);
 
   await userCommand.save(tx, user);
 
@@ -55,6 +56,19 @@ export const adminUseCase = {
         : createUser(tx, req));
 
       assert(user.kind === 'cognito');
+
+      if (req.MessageAction === 'RESEND') {
+        assert(user.userPoolId === req.UserPoolId);
+        const policy = await tx.userPool.findUniqueOrThrow({ where: { id: user.userPoolId } });
+        await tx.user.update({
+          where: { id: user.id },
+          data: {
+            temporaryPasswordExpiresAt: new Date(
+              Date.now() + policy.temporaryPasswordValidityDays * 24 * 60 * 60 * 1000,
+            ),
+          },
+        });
+      }
 
       if (req.MessageAction !== 'SUPPRESS') await sendTemporaryPassword(user);
 
@@ -88,7 +102,8 @@ export const adminUseCase = {
 
       assert(user.kind === 'cognito');
 
-      await userCommand.save(tx, adminMethod.setUserPassword(user, req));
+      const policy = await tx.userPool.findUniqueOrThrow({ where: { id: user.userPoolId } });
+      await userCommand.save(tx, adminMethod.setUserPassword(user, req, policy));
 
       return {};
     }),

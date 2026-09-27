@@ -6,6 +6,7 @@ import type {
 } from '../../../../src/schemas/signIn';
 import type { CognitoUserDto } from '../../../../src/schemas/user';
 import type { JwksDto, UserPoolClientDto, UserPoolDto } from '../../../../src/schemas/userPool';
+import { requirePasswordAuth } from '../../../domain/userPool/service/poolPolicy';
 import { userPoolQuery } from '../../../domain/userPool/store/userPoolQuery';
 import type { Prisma } from '../../../prisma/client';
 import { catchCognitoErr, cognitoAssert } from '../../../service/cognitoAssert';
@@ -30,6 +31,7 @@ export const passwordAuthUseCase = {
       );
 
       const pool = await userPoolQuery.findById(tx, user.userPoolId);
+      requirePasswordAuth(await tx.userPool.findUniqueOrThrow({ where: { id: pool.id } }));
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
 
       assert(pool.id === poolClient.userPoolId);

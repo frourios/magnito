@@ -7,6 +7,7 @@ import type { DtoId } from '../../../../src/schemas/brandedId';
 import { brandedId } from '../../../../src/schemas/brandedId';
 import type { CognitoUserDto, UserDto } from '../../../../src/schemas/user';
 import { cognitoAssert } from '../../../service/cognitoAssert';
+import type { PoolPolicy } from '../../userPool/service/poolPolicy';
 import { attributeDtoToEntity, createAttributes } from '../service/createAttributes';
 import { genConfirmationCode } from '../service/genConfirmationCode';
 import { genCredentials } from '../service/genCredentials';
@@ -22,6 +23,7 @@ export const cognitoUserMethod = {
       email: string;
       userPoolId: DtoId['userPool'];
       attributes: AttributeType[] | undefined;
+      policy: PoolPolicy;
     },
   ): CognitoUserEntity => {
     assert(params.attributes);
@@ -30,7 +32,7 @@ export const cognitoUserMethod = {
       /^[a-z][a-z\d_-]/.test(params.name),
       "1 validation error detected: Value at 'username' failed to satisfy constraint: Member must satisfy regular expression pattern: [\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]+",
     );
-    validatePass(params.password);
+    validatePass(params.password, params.policy);
     cognitoAssert(z.string().email().parse(params.email), 'Invalid email address format.');
 
     const now = Date.now();
@@ -73,12 +75,13 @@ export const cognitoUserMethod = {
   changePassword: (params: {
     user: CognitoUserDto;
     req: ChangePasswordTarget['reqBody'];
+    policy: PoolPolicy;
   }): CognitoUserEntity => {
     cognitoAssert(
       params.user.password === params.req.PreviousPassword,
       'Incorrect username or password.',
     );
-    validatePass(params.req.ProposedPassword);
+    validatePass(params.req.ProposedPassword, params.policy);
 
     return {
       ...params.user,
@@ -112,13 +115,14 @@ export const cognitoUserMethod = {
     user: CognitoUserDto;
     confirmationCode: string;
     password: string;
+    policy: PoolPolicy;
   }): CognitoUserEntity => {
-    const { user, confirmationCode, password } = params;
+    const { user, confirmationCode, password, policy } = params;
     cognitoAssert(
       user.confirmationCode === confirmationCode,
       'Invalid verification code provided, please try again.',
     );
-    validatePass(password);
+    validatePass(password, policy);
 
     return {
       ...user,
@@ -126,6 +130,7 @@ export const cognitoUserMethod = {
       attributes: user.attributes.map(attributeDtoToEntity),
       userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
       ...genCredentials({ poolId: user.userPoolId, username: user.name, password }),
+      password,
       status: 'CONFIRMED',
       confirmationCode: '',
       updatedTime: Date.now(),

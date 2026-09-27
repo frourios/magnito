@@ -1,3 +1,4 @@
+/* oxlint-disable max-lines */
 import { ulid } from 'ulid';
 import type {
   AdminInitiateAuthTarget,
@@ -5,6 +6,7 @@ import type {
 } from '../../../../src/schemas/auth';
 import type { CognitoUserDto } from '../../../../src/schemas/user';
 import type { UserPoolClientDto, UserPoolDto } from '../../../../src/schemas/userPool';
+import { requirePasswordAuth } from '../../../domain/userPool/service/poolPolicy';
 import { userPoolQuery } from '../../../domain/userPool/store/userPoolQuery';
 import type { Prisma } from '../../../prisma/client';
 import { catchCognitoErr, cognitoAssert } from '../../../service/cognitoAssert';
@@ -85,10 +87,22 @@ const findUserAndClient = async (
   return { user, pool, client };
 };
 
+const assertTemporaryPasswordValid = async (
+  tx: Prisma.TransactionClient,
+  userId: string,
+): Promise<void> => {
+  const storedUser = await tx.user.findUniqueOrThrow({ where: { id: userId } });
+  cognitoAssert(
+    storedUser.temporaryPasswordExpiresAt && storedUser.temporaryPasswordExpiresAt > new Date(),
+    'Temporary password has expired.',
+  );
+};
+
 export const adminAuthUseCase = {
   initiate: (
     req: AdminInitiateAuthTarget['reqBody'],
   ): Promise<AdminInitiateAuthTarget['resBody']> =>
+    // oxlint-disable-next-line complexity
     transaction('RepeatableRead', async (tx) => {
       cognitoAssert(
         req.AuthFlow === 'ADMIN_USER_PASSWORD_AUTH' || req.AuthFlow === 'ADMIN_NO_SRP_AUTH',
@@ -106,9 +120,11 @@ export const adminAuthUseCase = {
         req.UserPoolId,
         req.ClientId,
       );
+      requirePasswordAuth(await tx.userPool.findUniqueOrThrow({ where: { id: pool.id } }));
       cognitoAssert(user.password === password, 'Incorrect username or password.');
 
       if (user.status === 'FORCE_CHANGE_PASSWORD') {
+        await assertTemporaryPasswordValid(tx, user.id);
         return createChallenge(tx, user, client, 'admin_new_password');
       }
 
@@ -123,6 +139,7 @@ export const adminAuthUseCase = {
   respond: (
     req: AdminRespondToAuthChallengeTarget['reqBody'],
   ): Promise<AdminRespondToAuthChallengeTarget['resBody']> =>
+    // oxlint-disable-next-line complexity
     transaction('RepeatableRead', async (tx) => {
       cognitoAssert(
         req.ChallengeName === 'NEW_PASSWORD_REQUIRED' || req.ChallengeName === 'SOFTWARE_TOKEN_MFA',
@@ -152,17 +169,23 @@ export const adminAuthUseCase = {
         );
 
         cognitoAssert(user.status === 'FORCE_CHANGE_PASSWORD', 'User is not confirmed.');
+        await assertTemporaryPasswordValid(tx, user.id);
         const newPassword = responses.NEW_PASSWORD;
         cognitoAssert(newPassword, 'Incorrect username or password.');
+        const policy = await tx.userPool.findUniqueOrThrow({ where: { id: pool.id } });
 
         const updated = await userCommand.save(
           tx,
-          adminMethod.setUserPassword(user, {
-            UserPoolId: pool.id,
-            Username: user.name,
-            Password: newPassword,
-            Permanent: true,
-          }),
+          adminMethod.setUserPassword(
+            user,
+            {
+              UserPoolId: pool.id,
+              Username: user.name,
+              Password: newPassword,
+              Permanent: true,
+            },
+            policy,
+          ),
         );
 
         await userTokenCommand.revokeByToken(tx, `${client.id}:${req.Session}`);

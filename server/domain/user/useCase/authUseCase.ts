@@ -83,7 +83,8 @@ export const authUseCase = {
 
       customAssert(user.kind === 'cognito', 'Eliminate fraudulent requests');
 
-      await userCommand.save(tx, cognitoUserMethod.changePassword({ user, req }));
+      const policy = await tx.userPool.findUniqueOrThrow({ where: { id: user.userPoolId } });
+      await userCommand.save(tx, cognitoUserMethod.changePassword({ user, req, policy }));
       await userTokenCommand.revokeAllByUserId(tx, user.id);
 
       return {};
@@ -108,16 +109,19 @@ export const authUseCase = {
     req: ConfirmForgotPasswordTarget['reqBody'],
   ): Promise<ConfirmForgotPasswordTarget['resBody']> =>
     transaction('RepeatableRead', async (tx) => {
-      const user = await userQuery.findByName(tx, req.Username);
+      const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
+      const user = await userQuery.findByNameInPool(tx, req.Username, poolClient.userPoolId);
 
       customAssert(user.kind === 'cognito', 'Eliminate fraudulent requests');
 
+      const policy = await tx.userPool.findUniqueOrThrow({ where: { id: user.userPoolId } });
       await userCommand.save(
         tx,
         cognitoUserMethod.confirmForgotPassword({
           user,
           confirmationCode: req.ConfirmationCode,
           password: req.Password,
+          policy,
         }),
       );
 

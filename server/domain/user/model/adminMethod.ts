@@ -6,6 +6,7 @@ import type {
 } from '../../../../src/schemas/auth';
 import { brandedId, type DtoId, type EntityId } from '../../../../src/schemas/brandedId';
 import type { CognitoUserDto, UserDto } from '../../../../src/schemas/user';
+import type { PoolPolicy } from '../../userPool/service/poolPolicy';
 import { attributeDtoToEntity, createAttributes } from '../service/createAttributes';
 import { findEmail } from '../service/findEmail';
 import { genCredentials } from '../service/genCredentials';
@@ -18,6 +19,7 @@ export const adminMethod = {
     idCount: number,
     req: AdminCreateUserTarget['reqBody'],
     userPoolId: DtoId['userPool'],
+    policy: PoolPolicy,
   ): CognitoUserEntity => {
     assert(req.Username);
 
@@ -31,6 +33,7 @@ export const adminMethod = {
         email,
         userPoolId,
         attributes: req.UserAttributes,
+        policy,
       }),
       status: 'FORCE_CHANGE_PASSWORD',
     };
@@ -43,10 +46,11 @@ export const adminMethod = {
   setUserPassword: (
     user: CognitoUserDto,
     req: AdminSetUserPasswordTarget['reqBody'],
+    policy: PoolPolicy,
   ): CognitoUserEntity => {
     assert(req.UserPoolId);
     assert(req.Password);
-    validatePass(req.Password);
+    validatePass(req.Password, policy);
 
     return {
       ...user,

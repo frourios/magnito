@@ -6,6 +6,7 @@ import type {
   RespondToAuthChallengeTarget,
   UserSrpAuthTarget,
 } from '../../../../src/schemas/signIn';
+import { requirePasswordAuth } from '../../../domain/userPool/service/poolPolicy';
 import { userPoolQuery } from '../../../domain/userPool/store/userPoolQuery';
 import { catchCognitoErr, cognitoAssert } from '../../../service/cognitoAssert';
 import { EXPIRES_SEC } from '../../../service/constants';
@@ -28,6 +29,8 @@ export const signInUseCase = {
         .catch(catchCognitoErr('Incorrect username or password.'));
 
       assert(user.kind === 'cognito');
+
+      requirePasswordAuth(await tx.userPool.findUniqueOrThrow({ where: { id: user.userPoolId } }));
 
       const { userWithChallenge, ChallengeParameters } = signInMethod.createChallenge(
         user,

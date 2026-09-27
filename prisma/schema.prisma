@@ -8,34 +8,37 @@ generator client {
 }
 
 model User {
-  id                     String          @id
-  kind                   String?
-  name                   String
-  email                  String
-  enabled                Boolean
-  status                 String
-  password               String?
-  confirmationCode       String?
-  salt                   String?
-  verifier               String?
-  createdAt              DateTime
-  updatedAt              DateTime
-  provider               String?
-  authorizationCode      String?
-  codeChallenge          String?
-  secretBlock            String?
-  pubA                   String?
-  pubB                   String?
-  secB                   String?
-  srpAuthTimestamp       String?
-  srpAuthClientSignature String?
-  preferredMfaSetting    String?
-  enabledTotp            Boolean?
-  totpSecretCode         String?
-  tokens                 UserToken[]
-  attributes             UserAttribute[]
-  UserPool               UserPool        @relation(fields: [userPoolId], references: [id])
-  userPoolId             String
+  id                         String                   @id
+  kind                       String?
+  name                       String
+  email                      String
+  enabled                    Boolean
+  status                     String
+  password                   String?
+  passwordHistory            String[]                 @default([])
+  temporaryPasswordExpiresAt DateTime?
+  confirmationCode           String?
+  salt                       String?
+  verifier                   String?
+  createdAt                  DateTime
+  updatedAt                  DateTime
+  provider                   String?
+  authorizationCode          String?
+  codeChallenge              String?
+  secretBlock                String?
+  pubA                       String?
+  pubB                       String?
+  secB                       String?
+  srpAuthTimestamp           String?
+  srpAuthClientSignature     String?
+  preferredMfaSetting        String?
+  enabledTotp                Boolean?
+  totpSecretCode             String?
+  tokens                     UserToken[]
+  authorizationCodes         OAuthAuthorizationCode[]
+  attributes                 UserAttribute[]
+  UserPool                   UserPool                 @relation(fields: [userPoolId], references: [id])
+  userPoolId                 String
 }
 
 model UserAttribute {
@@ -47,20 +50,110 @@ model UserAttribute {
 }
 
 model UserPool {
-  id              String           @id
-  name            String?
-  privateKey      String
-  createdAt       DateTime
-  users           User[]
-  userPoolClients UserPoolClient[]
+  id                            String                 @id
+  name                          String?
+  privateKey                    String
+  mfaConfiguration              String                 @default("OFF")
+  usernameAttributes            String[]               @default([])
+  aliasAttributes               String[]               @default([])
+  autoVerifiedAttributes        String[]               @default([])
+  passwordMinimumLength         Int                    @default(8)
+  passwordRequireLowercase      Boolean                @default(true)
+  passwordRequireUppercase      Boolean                @default(true)
+  passwordRequireNumbers        Boolean                @default(true)
+  passwordRequireSymbols        Boolean                @default(true)
+  passwordHistorySize           Int                    @default(0)
+  temporaryPasswordValidityDays Int                    @default(7)
+  allowedFirstAuthFactors       String[]               @default(["PASSWORD"])
+  adminCreateUserOnly           Boolean                @default(false)
+  createdAt                     DateTime
+  users                         User[]
+  userPoolClients               UserPoolClient[]
+  domains                       UserPoolDomain[]
+  identityProviders             IdentityProvider[]
+  managedLoginBrandings         ManagedLoginBranding[]
 }
 
 model UserPoolClient {
-  id         String   @id
-  name       String?
-  createdAt  DateTime
-  UserPool   UserPool @relation(fields: [userPoolId], references: [id])
-  userPoolId String
+  id                              String                   @id
+  name                            String?
+  explicitAuthFlows               String[]                 @default([])
+  supportedIdentityProviders      String[]                 @default(["COGNITO"])
+  allowedOAuthFlows               String[]                 @default([])
+  allowedOAuthScopes              String[]                 @default([])
+  callbackUrls                    String[]                 @default([])
+  logoutUrls                      String[]                 @default([])
+  allowedOAuthFlowsUserPoolClient Boolean                  @default(false)
+  defaultRedirectUri              String?
+  clientSecret                    String?
+  createdAt                       DateTime
+  UserPool                        UserPool                 @relation(fields: [userPoolId], references: [id])
+  userPoolId                      String
+  managedLoginBranding            ManagedLoginBranding?
+  authorizationCodes              OAuthAuthorizationCode[]
+}
+
+model OAuthAuthorizationCode {
+  code                String         @id
+  userId              String
+  clientId            String
+  redirectUri         String
+  codeChallenge       String?
+  codeChallengeMethod String?
+  scope               String
+  expiresAt           DateTime
+  User                User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  UserPoolClient      UserPoolClient @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
+model UserPoolDomain {
+  domain              String   @id
+  managedLoginVersion Int      @default(1)
+  certificateArn      String?
+  securityPolicy      String?
+  createdAt           DateTime
+  UserPool            UserPool @relation(fields: [userPoolId], references: [id], onDelete: Cascade)
+  userPoolId          String
+}
+
+model IdentityProvider {
+  userPoolId       String
+  providerName     String
+  providerType     String
+  providerDetails  Json
+  attributeMapping Json?
+  idpIdentifiers   String[] @default([])
+  createdAt        DateTime
+  updatedAt        DateTime
+  UserPool         UserPool @relation(fields: [userPoolId], references: [id], onDelete: Cascade)
+
+  @@id([userPoolId, providerName])
+}
+
+model ManagedLoginBranding {
+  id                       String                      @id
+  userPoolId               String
+  clientId                 String                      @unique
+  useCognitoProvidedValues Boolean                     @default(true)
+  settings                 Json?
+  assets                   ManagedLoginBrandingAsset[]
+  createdAt                DateTime
+  updatedAt                DateTime
+  UserPool                 UserPool                    @relation(fields: [userPoolId], references: [id], onDelete: Cascade)
+  UserPoolClient           UserPoolClient              @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
+model ManagedLoginBrandingAsset {
+  id         String               @id
+  brandingId String
+  category   String
+  colorMode  String
+  extension  String
+  bytes      Bytes?
+  position   Int
+  Branding   ManagedLoginBranding @relation(fields: [brandingId], references: [id], onDelete: Cascade)
+
+  @@index([brandingId, position])
 }
 
 model UserToken {

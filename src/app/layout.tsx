@@ -5,7 +5,7 @@ import '@aws-amplify/ui-react/styles.css';
 import { Amplify } from 'aws-amplify';
 import { I18n } from 'aws-amplify/utils';
 import type { PropsWithChildren } from 'react';
-import { useEffect, useMemo } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useCognitoClient } from '../hooks/useCognitoClient';
 import { RootLayoutContent } from '../layouts/RootLayoutContent';
 import { APP_NAME } from '../schemas/constants';
@@ -24,6 +24,16 @@ if (typeof window !== 'undefined') {
 
 export default function RootLayout({ children }: PropsWithChildren): React.ReactElement {
   const { defaults, setDefaults } = useCognitoClient();
+  const [hostedLogin, setHostedLogin] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const path = location.pathname;
+    setHostedLogin(
+      path.startsWith('/oauth2/') ||
+        ['/signup', '/confirm', '/forgotPassword', '/confirmforgotPassword'].includes(path) ||
+        (path === '/login' && new URLSearchParams(location.search).has('client_id')),
+    );
+  }, []);
 
   useMemo(() => {
     if (defaults.userPoolId === undefined) return;
@@ -49,8 +59,9 @@ export default function RootLayout({ children }: PropsWithChildren): React.React
   }, [defaults]);
 
   useEffect(() => {
+    if (hostedLogin !== false) return;
     apiClient['publicApi/defaults'].$get().then(setDefaults).catch(catchApiErr);
-  }, [setDefaults]);
+  }, [hostedLogin, setDefaults]);
 
   return (
     <html lang="ja">
@@ -60,7 +71,13 @@ export default function RootLayout({ children }: PropsWithChildren): React.React
         <meta name="description" content={APP_NAME} />
         <link rel="icon" href={staticPath.images.favicon_png} />
       </head>
-      <body>{defaults.userPoolId && <RootLayoutContent>{children}</RootLayoutContent>}</body>
+      <body>
+        {hostedLogin ? (
+          <Suspense>{children}</Suspense>
+        ) : (
+          defaults.userPoolId && <RootLayoutContent>{children}</RootLayoutContent>
+        )}
+      </body>
     </html>
   );
 }

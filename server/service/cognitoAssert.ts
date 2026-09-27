@@ -1,6 +1,10 @@
 import assert from 'assert';
 
 export const COGNITO_ERRORS = {
+  'Invalid user pool policy.': 'InvalidParameterException',
+  'Password cannot be reused.': 'PasswordHistoryPolicyViolationException',
+  'Temporary password has expired.': 'NotAuthorizedException',
+  'Password sign-in is disabled.': 'InvalidParameterException',
   'Incorrect username or password.': 'NotAuthorizedException',
   'Invalid email address format.': 'InvalidParameterException',
   "1 validation error detected: Value at 'username' failed to satisfy constraint: Member must satisfy regular expression pattern: [\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]+":
@@ -14,6 +18,7 @@ export const COGNITO_ERRORS = {
   'Password did not conform with policy: Password must have symbol characters':
     'InvalidPasswordException',
   'Password did not conform with policy: Password not long enough': 'InvalidPasswordException',
+  'Password did not conform with policy: Password too long': 'InvalidPasswordException',
   'User already exists': 'UsernameExistsException',
   'Invalid verification code provided, please try again.': 'CodeMismatchException',
   'User is not confirmed.': 'UserNotConfirmedException',

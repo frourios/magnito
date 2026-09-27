@@ -1,4 +1,5 @@
 import assert from 'assert';
+import { randomBytes } from 'crypto';
 import type {
   CreateUserPoolClientTarget,
   CreateUserPoolTarget,
@@ -11,6 +12,7 @@ import { prismaClient } from '../../../service/prismaClient';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from '../../../service/serverEnvs';
 import { transaction } from '../../../service/transaction';
 import { userPoolMethod } from '../model/userPoolMethod';
+import { poolPolicyData, toCognitoPolicies } from '../service/poolPolicy';
 import { userPoolCommand } from '../store/userPoolCommand';
 import { userPoolQuery } from '../store/userPoolQuery';
 
@@ -56,17 +58,46 @@ export const userPoolUseCase = {
   createUserPool: (
     req: CreateUserPoolTarget['reqBody'],
   ): Promise<CreateUserPoolTarget['resBody']> =>
+    // oxlint-disable-next-line complexity
     transaction('RepeatableRead', async (tx) => {
       assert(req.PoolName);
+
+      const policy = poolPolicyData(req.Policies);
 
       const pool = userPoolMethod.create({ name: req.PoolName });
       await userPoolCommand.save(tx, pool);
 
-      return { UserPool: { Id: pool.id, Name: pool.name } };
+      const resUserPool = {
+        Id: pool.id,
+        Name: pool.name,
+        Policies: toCognitoPolicies(policy),
+        MfaConfiguration: req.MfaConfiguration ?? 'OFF',
+        UsernameAttributes: req.UsernameAttributes ?? [],
+        AliasAttributes: req.AliasAttributes ?? [],
+        AutoVerifiedAttributes: req.AutoVerifiedAttributes ?? [],
+        AdminCreateUserConfig: {
+          AllowAdminCreateUserOnly: !!req.AdminCreateUserConfig?.AllowAdminCreateUserOnly,
+        },
+      } satisfies CreateUserPoolTarget['resBody']['UserPool'];
+
+      await tx.userPool.update({
+        where: { id: pool.id },
+        data: {
+          ...policy,
+          mfaConfiguration: resUserPool.MfaConfiguration,
+          usernameAttributes: resUserPool.UsernameAttributes,
+          aliasAttributes: resUserPool.AliasAttributes,
+          autoVerifiedAttributes: resUserPool.AutoVerifiedAttributes,
+          adminCreateUserOnly: resUserPool.AdminCreateUserConfig.AllowAdminCreateUserOnly,
+        },
+      });
+
+      return { UserPool: resUserPool };
     }),
   createUserPoolClient: (
     req: CreateUserPoolClientTarget['reqBody'],
   ): Promise<CreateUserPoolClientTarget['resBody']> =>
+    // oxlint-disable-next-line complexity
     transaction('RepeatableRead', async (tx) => {
       assert(req.ClientName);
       assert(req.UserPoolId);
@@ -75,9 +106,40 @@ export const userPoolUseCase = {
       const client = userPoolMethod.createClient({ name: req.ClientName, userPoolId: pool.id });
       await userPoolCommand.saveClient(tx, client);
 
-      return {
-        UserPoolClient: { ClientId: client.id, UserPoolId: pool.id, ClientName: client.name },
-      };
+      const clientSecret = req.GenerateSecret
+        ? randomBytes(32).toString('base64url')
+        : req.ClientSecret;
+      const resUserPoolClient = {
+        ClientId: client.id,
+        UserPoolId: pool.id,
+        ClientName: client.name,
+        ClientSecret: clientSecret,
+        ExplicitAuthFlows: req.ExplicitAuthFlows ?? [],
+        SupportedIdentityProviders: req.SupportedIdentityProviders ?? ['COGNITO'],
+        AllowedOAuthFlows: req.AllowedOAuthFlows ?? [],
+        AllowedOAuthScopes: req.AllowedOAuthScopes ?? [],
+        CallbackURLs: req.CallbackURLs ?? [],
+        LogoutURLs: req.LogoutURLs ?? [],
+        AllowedOAuthFlowsUserPoolClient: !!req.AllowedOAuthFlowsUserPoolClient,
+        DefaultRedirectURI: req.DefaultRedirectURI,
+      } satisfies CreateUserPoolClientTarget['resBody']['UserPoolClient'];
+
+      await tx.userPoolClient.update({
+        where: { id: client.id },
+        data: {
+          clientSecret,
+          explicitAuthFlows: resUserPoolClient.ExplicitAuthFlows,
+          supportedIdentityProviders: resUserPoolClient.SupportedIdentityProviders,
+          allowedOAuthFlows: resUserPoolClient.AllowedOAuthFlows,
+          allowedOAuthScopes: resUserPoolClient.AllowedOAuthScopes,
+          callbackUrls: resUserPoolClient.CallbackURLs,
+          logoutUrls: resUserPoolClient.LogoutURLs,
+          allowedOAuthFlowsUserPoolClient: resUserPoolClient.AllowedOAuthFlowsUserPoolClient,
+          defaultRedirectUri: resUserPoolClient.DefaultRedirectURI,
+        },
+      });
+
+      return { UserPoolClient: resUserPoolClient };
     }),
   deleteUserPool: (
     req: DeleteUserPoolTarget['reqBody'],

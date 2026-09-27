@@ -3,6 +3,9 @@ import type { NextResponse } from 'vinext/shims/server';
 import * as route_ztntfp from '../src/app/route';
 import * as route_1l9bsp from '../src/app/[userPoolId]/.well-known/jwks.json/route';
 import * as route_1vt2ad4 from '../src/app/logout/route';
+import * as route_3v1fgz from '../src/app/oauth2/managed/route';
+import * as route_1dtufb1 from '../src/app/oauth2/server/callback/route';
+import * as route_bclkxu from '../src/app/oauth2/server/start/route';
 import * as route_ifpnvn from '../src/app/oauth2/token/route';
 import * as route_16atxom from '../src/app/privateApi/me/route';
 import * as route_5i3cig from '../src/app/publicApi/defaults/route';
@@ -42,6 +45,18 @@ export function setupMswHandlers(option?: { baseURL: string }): RequestHandler[]
     }),
     http.get(`${baseURL}/logout`, ({ request }) => {
       return route_1vt2ad4.GET(patchDuplicateCookie(request)).then(toMswResponseForCookie);
+    }),
+    http.get(`${baseURL}/oauth2/managed`, ({ request }) => {
+      return route_3v1fgz.GET(patchDuplicateCookie(request)).then(toMswResponseForCookie);
+    }),
+    http.post(`${baseURL}/oauth2/managed`, ({ request }) => {
+      return route_3v1fgz.POST(patchDuplicateCookie(request)).then(toMswResponseForCookie);
+    }),
+    http.get(`${baseURL}/oauth2/server/callback`, ({ request }) => {
+      return route_1dtufb1.GET(patchDuplicateCookie(request)).then(toMswResponseForCookie);
+    }),
+    http.get(`${baseURL}/oauth2/server/start`, ({ request }) => {
+      return route_bclkxu.GET(patchDuplicateCookie(request)).then(toMswResponseForCookie);
     }),
     http.post(`${baseURL}/oauth2/token`, ({ request }) => {
       return route_ifpnvn.POST(patchDuplicateCookie(request)).then(toMswResponseForCookie);

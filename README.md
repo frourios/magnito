@@ -10,9 +10,9 @@
 ![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/frourio/magnito)
 ![Docker Image Version (latest by date)](https://img.shields.io/docker/v/frourio/magnito)
 
-Free, and open Amazon Cognito emulator for Amplify UI
+Free and open Amazon Cognito emulator for Amplify UI, Hosted UI, and Managed Login.
 
-Running your Amplify UI locally without AWS Cognito.
+Run user pool APIs, Amplify UI authentication, and browser-based OAuth sign-in locally without AWS Cognito. Hosted UI-style redirects use Magnito's Managed Login pages; the classic Hosted UI appearance and DOM/CSS are not reproduced.
 
 ## Images
 
@@ -65,7 +65,19 @@ volumes:
 
 ### Web UI
 
-You can access the Magnito web interface at <http://localhost:5051>.
+You can access the Magnito web interface at <https://localhost:5051>.
+
+### Hosted UI / Managed Login
+
+Configure a user pool domain with `ManagedLoginVersion: 2`. The app client needs `AllowedOAuthFlowsUserPoolClient: true`, the `code` OAuth flow, an allowed callback URL and scopes, and its assigned identity providers. You can set these through Magnito's Cognito-compatible user pool APIs.
+
+Open the authorization URL in a browser, using your configured app client and callback URL:
+
+```text
+https://localhost:5051/oauth2/authorize?response_type=code&client_id=<client-id>&redirect_uri=<encoded-callback-url>&scope=openid&state=<opaque-state>
+```
+
+Magnito displays its Managed Login UI for password sign-in, sign-up, confirmation, and password recovery. It supports English and Japanese. After sign-in, Magnito redirects to the callback URL with an authorization code that the app can exchange at `/oauth2/token`. A Hosted UI integration can use the same OAuth endpoints and redirect flow.
 
 ### SMTP Server UI
 
@@ -75,15 +87,29 @@ You can check the emails sent by Magnito with Inbucket.
 
 ## Screenshots
 
-| Sign Up                                                                                | Sign In                                                                                |
-| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| ![Sign Up](https://frourios.github.io/magnito/screenshots/sign-up.png)                 | ![Sign In](https://frourios.github.io/magnito/screenshots/sign-in.png)                 |
-| Forgot Password                                                                        | Admin                                                                                  |
-| ![Forgot Password](https://frourios.github.io/magnito/screenshots/forgot-password.png) | ![Admin](https://frourios.github.io/magnito/screenshots/admin.png)                     |
-| Profile                                                                                | Change Password                                                                        |
-| ![Profile](https://frourios.github.io/magnito/screenshots/profile.png)                 | ![Change Password](https://frourios.github.io/magnito/screenshots/change-password.png) |
+### Managed Login
+
+![Managed Login sign in](docs/screenshots/managed-login.png)
+
+### Amplify UI and admin
+
+| Sign Up                                                  | Sign In                                                  |
+| -------------------------------------------------------- | -------------------------------------------------------- |
+| ![Sign Up](docs/screenshots/sign-up.png)                 | ![Sign In](docs/screenshots/sign-in.png)                 |
+| Forgot Password                                          | Admin                                                    |
+| ![Forgot Password](docs/screenshots/forgot-password.png) | ![Admin](docs/screenshots/admin.png)                     |
+| Profile                                                  | Change Password                                          |
+| ![Profile](docs/screenshots/profile.png)                 | ![Change Password](docs/screenshots/change-password.png) |
 
 ## Features
+
+### Hosted UI / Managed Login
+
+- OAuth authorization code sign-in with a browser redirect and `/oauth2/token` exchange.
+- Password sign-in, sign-up, account confirmation, and password recovery.
+- Configurable branding and assigned identity providers, with English and Japanese UI.
+
+### Amplify UI and admin
 
 - Sign Up
   - Create a new user account by entering an email address and password.
@@ -109,9 +135,10 @@ You can check the emails sent by Magnito with Inbucket.
 ## Implementation Coverage List
 
 <details>
-<summary> 30% implemented  </summary>
+<summary> 49/129 implemented  </summary>
 
 - [ ] AddCustomAttributes
+- [ ] AddUserPoolClientSecret
 - [ ] AdminAddUserToGroup
 - [ ] AdminConfirmSignUp
 - [x] AdminCreateUser
@@ -123,6 +150,7 @@ You can check the emails sent by Magnito with Inbucket.
 - [ ] AdminForgetDevice
 - [ ] AdminGetDevice
 - [x] AdminGetUser
+- [ ] AdminGetUserAuthFactors
 - [x] AdminInitiateAuth
 - [ ] AdminLinkProviderForUser
 - [ ] AdminListDevices
@@ -140,31 +168,43 @@ You can check the emails sent by Magnito with Inbucket.
 - [x] AdminUserGlobalSignOut
 - [x] AssociateSoftwareToken
 - [x] ChangePassword
+- [ ] CompleteWebAuthnRegistration
 - [ ] ConfirmDevice
 - [x] ConfirmForgotPassword
 - [x] ConfirmSignUp
 - [ ] CreateGroup
-- [ ] CreateIdentityProvider
+- [x] CreateIdentityProvider
+- [x] CreateManagedLoginBranding
 - [ ] CreateResourceServer
+- [ ] CreateTerms
 - [ ] CreateUserImportJob
 - [x] CreateUserPool
 - [x] CreateUserPoolClient
-- [ ] CreateUserPoolDomain
+- [x] CreateUserPoolDomain
+- [ ] CreateUserPoolReplica
 - [ ] DeleteGroup
 - [ ] DeleteIdentityProvider
+- [x] DeleteManagedLoginBranding
 - [ ] DeleteResourceServer
+- [ ] DeleteTerms
 - [x] DeleteUser
 - [x] DeleteUserAttributes
 - [x] DeleteUserPool
 - [x] DeleteUserPoolClient
+- [ ] DeleteUserPoolClientSecret
 - [ ] DeleteUserPoolDomain
-- [ ] DescribeIdentityProvider
+- [ ] DeleteUserPoolReplica
+- [ ] DeleteWebAuthnCredential
+- [x] DescribeIdentityProvider
+- [x] DescribeManagedLoginBranding
+- [x] DescribeManagedLoginBrandingByClient
 - [ ] DescribeResourceServer
 - [ ] DescribeRiskConfiguration
+- [ ] DescribeTerms
 - [ ] DescribeUserImportJob
-- [ ] DescribeUserPool
-- [ ] DescribeUserPoolClient
-- [ ] DescribeUserPoolDomain
+- [x] DescribeUserPool
+- [x] DescribeUserPoolClient
+- [x] DescribeUserPoolDomain
 - [ ] ForgetDevice
 - [x] ForgotPassword
 - [ ] GetCsvHeader
@@ -172,24 +212,30 @@ You can check the emails sent by Magnito with Inbucket.
 - [ ] GetGroup
 - [ ] GetIdentityProviderByIdentifier
 - [ ] GetLogDeliveryConfiguration
-- [x] GetTokensFromRefreshToken
+- [ ] GetProvisionedLimit
 - [ ] GetSigningCertificate
+- [x] GetTokensFromRefreshToken
 - [ ] GetUiCustomization
 - [x] GetUser
 - [ ] GetUserAttributeVerificationCode
+- [ ] GetUserAuthFactors
 - [ ] GetUserPoolMfaConfig
 - [ ] GlobalSignOut
 - [x] InitiateAuth
 - [ ] ListDevices
 - [ ] ListGroups
-- [ ] ListIdentityProviders
+- [x] ListIdentityProviders
 - [ ] ListResourceServers
 - [ ] ListTagsForResource
+- [ ] ListTerms
 - [ ] ListUserImportJobs
+- [ ] ListUserPoolClientSecrets
 - [x] ListUserPoolClients
+- [ ] ListUserPoolReplicas
 - [x] ListUserPools
 - [x] ListUsers
 - [ ] ListUsersInGroup
+- [ ] ListWebAuthnCredentials
 - [x] ResendConfirmationCode
 - [x] RespondToAuthChallenge
 - [x] RevokeToken
@@ -201,6 +247,7 @@ You can check the emails sent by Magnito with Inbucket.
 - [ ] SetUserSettings
 - [x] SignUp
 - [ ] StartUserImportJob
+- [ ] StartWebAuthnRegistration
 - [ ] StopUserImportJob
 - [ ] TagResource
 - [ ] UntagResource
@@ -208,11 +255,15 @@ You can check the emails sent by Magnito with Inbucket.
 - [ ] UpdateDeviceStatus
 - [ ] UpdateGroup
 - [ ] UpdateIdentityProvider
+- [x] UpdateManagedLoginBranding
+- [ ] UpdateProvisionedLimit
 - [ ] UpdateResourceServer
+- [ ] UpdateTerms
 - [x] UpdateUserAttributes
-- [ ] UpdateUserPool
-- [ ] UpdateUserPoolClient
-- [ ] UpdateUserPoolDomain
+- [x] UpdateUserPool
+- [x] UpdateUserPoolClient
+- [x] UpdateUserPoolDomain
+- [ ] UpdateUserPoolReplica
 - [x] VerifySoftwareToken
 - [x] VerifyUserAttribute
 

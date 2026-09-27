@@ -3,9 +3,10 @@
 import { Authenticator } from '@aws-amplify/ui-react';
 import { signUp } from 'aws-amplify/auth';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useUser } from '../../components/Auth/useUser';
 import { Loading } from '../../components/Loading/Loading';
+import { ManagedLogin } from '../../components/ManagedLogin/ManagedLogin';
 import { Spacer } from '../../components/Spacer';
 import { APP_NAME } from '../../schemas/constants';
 import { pagesPath } from '../../utils/$path';
@@ -14,12 +15,20 @@ import styles from './page.module.css';
 export type OptionalQuery = { code: string; state: string };
 
 export default function Home(): React.ReactElement {
+  const [hosted, setHosted] = useState<boolean | null>(null);
   const { user } = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    if (user.data !== null) router.replace(pagesPath.console.$url().path);
-  }, [user, router]);
+    setHosted(new URLSearchParams(location.search).has('client_id'));
+  }, []);
+
+  useEffect(() => {
+    if (hosted === false && user.data !== null) router.replace(pagesPath.console.$url().path);
+  }, [hosted, user, router]);
+
+  if (hosted) return <ManagedLogin />;
+  if (hosted === null) return <Loading visible />;
 
   return user.inited && user.data === null ? (
     <div className={styles.container}>

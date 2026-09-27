@@ -2,10 +2,11 @@
 
 import type { OAuthConfig } from '@aws-amplify/core';
 import word from '@fakerjs/word';
-import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import useSWR from 'swr';
 import { z } from 'zod';
+import { ManagedLogin } from '../../../components/ManagedLogin/ManagedLogin';
 import { Spacer } from '../../../components/Spacer';
 import type { MaybeId } from '../../../schemas/brandedId';
 import { APP_NAME, PROVIDER_LIST } from '../../../schemas/constants';
@@ -116,18 +117,15 @@ const AddAccount = (props: {
 };
 
 // oxlint-disable-next-line complexity
-const Authorize = () => {
-  const router = useRouter();
-  const userPoolClientId = router.query.client_id as MaybeId['userPoolClient'];
-  const codeChallenge = router.query.code_challenge as string;
-  const state = router.query.state as string;
-  const redirectUri = router.query.redirect_uri as string;
+const SocialAuthorize = () => {
+  const query = useSearchParams();
+  const userPoolClientId = query.get('client_id') as MaybeId['userPoolClient'];
+  const codeChallenge = query.get('code_challenge') ?? '';
+  const state = query.get('state') ?? '';
+  const redirectUri = query.get('redirect_uri') ?? '';
   const provider = z
     .enum(PROVIDER_LIST)
-    .parse(
-      (router.query.identity_provider as string | undefined)?.replace(/^.+([A-Z][a-z]+)$/, '$1') ??
-        'Google',
-    );
+    .parse(query.get('identity_provider')?.replace(/^.+([A-Z][a-z]+)$/, '$1') ?? 'Google');
   const { data: users } = useSWR(
     ...apiClient['publicApi/socialUsers'].$build({ query: { userPoolClientId } }),
   );
@@ -190,4 +188,7 @@ const Authorize = () => {
   );
 };
 
-export default Authorize;
+export default function Authorize(): React.ReactElement {
+  const query = useSearchParams();
+  return query.has('identity_provider') ? <SocialAuthorize /> : <ManagedLogin />;
+}
