@@ -18,6 +18,7 @@ import { userCommand } from '../store/userCommand';
 import { userQuery } from '../store/userQuery';
 import { userTokenCommand } from '../store/userTokenCommand';
 import { userTokenQuery } from '../store/userTokenQuery';
+import { passwordAuthUseCase } from './passwordAuthUseCase';
 
 export const signInUseCase = {
   userSrpAuth: (req: UserSrpAuthTarget['reqBody']): Promise<UserSrpAuthTarget['resBody']> =>
@@ -37,6 +38,7 @@ export const signInUseCase = {
 
       return { ChallengeName: 'PASSWORD_VERIFIER', ChallengeParameters };
     }),
+  userPasswordAuth: passwordAuthUseCase.initiate,
   refreshTokenAuth: (
     req: RefreshTokenAuthTarget['reqBody'],
   ): Promise<RefreshTokenAuthTarget['resBody']> =>
@@ -144,6 +146,8 @@ export const signInUseCase = {
           },
           ChallengeParameters: {},
         };
+      } else if (req.Session !== 'magnito_dummy_session') {
+        return passwordAuthUseCase.respondToMfa(tx, user, pool, poolClient, jwks, req);
       } else {
         const updated = mfaMethod.verify(user, req.ChallengeResponses.SOFTWARE_TOKEN_MFA_CODE);
 

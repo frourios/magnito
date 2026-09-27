@@ -8,7 +8,7 @@ import { userUseCase } from '../../server/domain/user/useCase/userUseCase';
 import { userPoolUseCase } from '../../server/domain/userPool/useCase/userPoolUseCase';
 import { COGNITO_ERRORS, CognitoError } from '../../server/service/cognitoAssert';
 import { validateSignature } from '../../server/service/validateSignature';
-import type { RefreshTokenAuthTarget, UserSrpAuthTarget } from '../schemas/signIn';
+import type { InitiateAuthTarget } from '../schemas/signIn';
 import type { frourioSpec } from './frourio';
 import { createRoute } from './frourio.server';
 
@@ -34,11 +34,17 @@ const useCases = {
   'AWSCognitoIdentityProviderService.SignUp': signUpUseCase.signUp,
   'AWSCognitoIdentityProviderService.ConfirmSignUp': signUpUseCase.confirmSignUp,
   'AWSCognitoIdentityProviderService.InitiateAuth': (
-    req: UserSrpAuthTarget['reqBody'] | RefreshTokenAuthTarget['reqBody'],
-  ): Promise<UserSrpAuthTarget['resBody'] | RefreshTokenAuthTarget['resBody']> =>
-    req.AuthFlow === 'USER_SRP_AUTH'
-      ? signInUseCase.userSrpAuth(req)
-      : signInUseCase.refreshTokenAuth(req),
+    req: InitiateAuthTarget['reqBody'],
+  ): Promise<InitiateAuthTarget['resBody']> => {
+    switch (req.AuthFlow) {
+      case 'USER_SRP_AUTH':
+        return signInUseCase.userSrpAuth(req);
+      case 'USER_PASSWORD_AUTH':
+        return signInUseCase.userPasswordAuth(req);
+      case 'REFRESH_TOKEN_AUTH':
+        return signInUseCase.refreshTokenAuth(req);
+    }
+  },
   'AWSCognitoIdentityProviderService.RespondToAuthChallenge': signInUseCase.respondToAuthChallenge,
   'AWSCognitoIdentityProviderService.GetUser': authUseCase.getUser,
   'AWSCognitoIdentityProviderService.RevokeToken': authUseCase.revokeToken,

@@ -15,6 +15,24 @@ export const userTokenQuery = {
 
     return toUserDto(token.user);
   },
+  validatePasswordMfaSession: async (
+    tx: Prisma.TransactionClient,
+    userId: string,
+    clientId: string,
+    session: string,
+  ): Promise<void> => {
+    const token = await tx.userToken.findFirst({
+      where: {
+        userId,
+        kind: 'password_mfa',
+        token: `${clientId}:${session}`,
+        revoked: false,
+        expiresAt: { gt: new Date() },
+      },
+    });
+
+    cognitoAssert(token, 'Invalid verification code provided, please try again.');
+  },
   validateAccessToken: async (tx: Prisma.TransactionClient, accessToken: string): Promise<void> => {
     const token = await tx.userToken.findFirst({
       where: { token: accessToken, kind: 'access' },

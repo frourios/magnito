@@ -38,6 +38,29 @@ export type RefreshTokenAuthTarget = TargetBody<
   }
 >;
 
+export type UserPasswordAuthTarget = TargetBody<
+  {
+    AuthFlow: 'USER_PASSWORD_AUTH';
+    AuthParameters: { USERNAME: string; PASSWORD: string };
+    ClientId: MaybeId['userPoolClient'];
+  },
+  | {
+      AuthenticationResult: {
+        AccessToken: string;
+        ExpiresIn: number;
+        IdToken: string;
+        RefreshToken: string;
+        TokenType: 'Bearer';
+      };
+      ChallengeParameters: Record<string, never>;
+    }
+  | {
+      ChallengeName: 'SOFTWARE_TOKEN_MFA';
+      Session: string;
+      ChallengeParameters: Record<string, never>;
+    }
+>;
+
 export type GetTokensFromRefreshTokenTarget = TargetBody<
   {
     ClientId: MaybeId['userPoolClient'];
@@ -53,7 +76,10 @@ export type GetTokensFromRefreshTokenTarget = TargetBody<
   }
 >;
 
-export type InitiateAuthTarget = UserSrpAuthTarget | RefreshTokenAuthTarget;
+export type InitiateAuthTarget =
+  | UserSrpAuthTarget
+  | UserPasswordAuthTarget
+  | RefreshTokenAuthTarget;
 
 export type RespondToAuthChallengeTarget = TargetBody<
   | {
