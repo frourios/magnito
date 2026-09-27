@@ -1,7 +1,4 @@
-import {
-  AdminInitiateAuthCommand,
-  GetUserCommand,
-} from '@aws-sdk/client-cognito-identity-provider';
+import { AdminGetUserCommand } from '@aws-sdk/client-cognito-identity-provider';
 import { ulid } from 'ulid';
 import { expect, test } from 'vitest';
 import { cognitoClient } from '../../server/service/cognito';
@@ -32,18 +29,9 @@ test('signUp', async () => {
     body: { ClientId: DEFAULT_USER_POOL_CLIENT_ID, Username },
   });
 
-  const token = await cognitoClient
-    .send(
-      new AdminInitiateAuthCommand({
-        AuthFlow: 'ADMIN_NO_SRP_AUTH',
-        UserPoolId: DEFAULT_USER_POOL_ID,
-        ClientId: DEFAULT_USER_POOL_CLIENT_ID,
-        AuthParameters: { USERNAME: Username, PASSWORD: Password },
-      }),
-    )
-    .then((res) => res.AuthenticationResult?.IdToken);
-
-  const user = await cognitoClient.send(new GetUserCommand({ AccessToken: token ?? '' }));
+  const user = await cognitoClient.send(
+    new AdminGetUserCommand({ UserPoolId: DEFAULT_USER_POOL_ID, Username }),
+  );
 
   expect(
     user.UserAttributes?.some((attr) => attr.Name === 'email_verified' && attr.Value === 'false'),

@@ -17,6 +17,7 @@ export const COGNITO_ERRORS = {
   'User already exists': 'UsernameExistsException',
   'Invalid verification code provided, please try again.': 'CodeMismatchException',
   'User is not confirmed.': 'UserNotConfirmedException',
+  'Unsupported authentication flow.': 'InvalidParameterException',
   'Access Token has been revoked': 'NotAuthorizedException',
   'Access Token has expired': 'NotAuthorizedException',
 };

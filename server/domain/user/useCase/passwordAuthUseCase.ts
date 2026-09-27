@@ -76,7 +76,13 @@ export const passwordAuthUseCase = {
     jwks: JwksDto,
     req: Extract<RespondToAuthChallengeTarget['reqBody'], { ChallengeName: 'SOFTWARE_TOKEN_MFA' }>,
   ): Promise<RespondToAuthChallengeTarget['resBody']> => {
-    await userTokenQuery.validatePasswordMfaSession(tx, user.id, poolClient.id, req.Session);
+    await userTokenQuery.validateAuthSession(
+      tx,
+      user.id,
+      poolClient.id,
+      req.Session,
+      'password_mfa',
+    );
     mfaMethod.verify(user, req.ChallengeResponses.SOFTWARE_TOKEN_MFA_CODE);
 
     const tokens = genTokens({

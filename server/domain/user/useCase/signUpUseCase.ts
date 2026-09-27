@@ -21,7 +21,7 @@ export const signUpUseCase = {
       assert(req.Password);
 
       const poolClient = await userPoolQuery.findClientById(tx, req.ClientId);
-      const idCount = await userQuery.countUsername(tx, req.Username);
+      const idCount = await userQuery.countUsername(tx, req.Username, poolClient.userPoolId);
       const email = findEmail(req.UserAttributes);
       const user = cognitoUserMethod.create(idCount, {
         name: req.Username,

@@ -12,8 +12,15 @@ export const userTokenCommand = {
     token: string,
   ): Promise<void> => {
     const now = new Date();
-    const expiresSec =
-      kind === 'refresh' ? REFRESH_TOKEN_EXPIRES_SEC : kind === 'password_mfa' ? 300 : EXPIRES_SEC;
+    const SHORT_LIVED_SEC = 300;
+    const expiresSec = {
+      id: EXPIRES_SEC,
+      access: EXPIRES_SEC,
+      refresh: REFRESH_TOKEN_EXPIRES_SEC,
+      password_mfa: SHORT_LIVED_SEC,
+      admin_password_mfa: SHORT_LIVED_SEC,
+      admin_new_password: SHORT_LIVED_SEC,
+    }[kind];
     const expiresAt = new Date(now.getTime() + expiresSec * 1000);
 
     await tx.userToken.create({

@@ -1,6 +1,7 @@
 import type { UserDto } from '../../../../src/schemas/user';
 import type { Prisma } from '../../../prisma/client';
 import { cognitoAssert } from '../../../service/cognitoAssert';
+import type { TokenKind } from '../../../service/constants';
 import { toUserDto, USER_INCLUDE } from './userDto';
 
 export const userTokenQuery = {
@@ -15,16 +16,17 @@ export const userTokenQuery = {
 
     return toUserDto(token.user);
   },
-  validatePasswordMfaSession: async (
+  validateAuthSession: async (
     tx: Prisma.TransactionClient,
     userId: string,
     clientId: string,
     session: string,
+    kind: TokenKind,
   ): Promise<void> => {
     const token = await tx.userToken.findFirst({
       where: {
         userId,
-        kind: 'password_mfa',
+        kind,
         token: `${clientId}:${session}`,
         revoked: false,
         expiresAt: { gt: new Date() },

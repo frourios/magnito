@@ -6,8 +6,11 @@ import type { UserEntity } from '../model/userType';
 import { toSocialUserDto, toUserDto, USER_INCLUDE } from './userDto';
 
 export const userQuery = {
-  countUsername: (tx: Prisma.TransactionClient, userName: string): Promise<number> =>
-    tx.user.count({ where: { name: userName } }),
+  countUsername: (
+    tx: Prisma.TransactionClient,
+    userName: string,
+    userPoolId: string,
+  ): Promise<number> => tx.user.count({ where: { name: userName, userPoolId } }),
   listSocials: (
     tx: Prisma.TransactionClient,
     userPoolClientId: MaybeId['userPoolClient'],
@@ -38,6 +41,14 @@ export const userQuery = {
     tx.user.findUniqueOrThrow({ where: { id }, include: USER_INCLUDE }).then(toUserDto),
   findByName: (tx: Prisma.TransactionClient, name: string): Promise<UserDto> =>
     tx.user.findFirstOrThrow({ where: { name }, include: USER_INCLUDE }).then(toUserDto),
+  findByNameInPool: (
+    tx: Prisma.TransactionClient,
+    name: string,
+    userPoolId: string,
+  ): Promise<UserDto> =>
+    tx.user
+      .findFirstOrThrow({ where: { name, userPoolId }, include: USER_INCLUDE })
+      .then(toUserDto),
   findByAuthorizationCode: (
     tx: Prisma.TransactionClient,
     authorizationCode: string,

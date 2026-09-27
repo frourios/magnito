@@ -130,7 +130,7 @@ You can check the emails sent by Magnito with Inbucket.
 - [ ] AdminListUserAuthEvents
 - [ ] AdminRemoveUserFromGroup
 - [ ] AdminResetUserPassword
-- [ ] AdminRespondToAuthChallenge
+- [x] AdminRespondToAuthChallenge
 - [ ] AdminSetUserMfaPreference
 - [x] AdminSetUserPassword
 - [ ] AdminSetUserSettings

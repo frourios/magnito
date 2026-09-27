@@ -17,6 +17,7 @@ const iamAuthTargets = new Set([
   'AWSCognitoIdentityProviderService.AdminCreateUser',
   'AWSCognitoIdentityProviderService.AdminDeleteUser',
   'AWSCognitoIdentityProviderService.AdminInitiateAuth',
+  'AWSCognitoIdentityProviderService.AdminRespondToAuthChallenge',
   'AWSCognitoIdentityProviderService.AdminSetUserPassword',
   'AWSCognitoIdentityProviderService.AdminUpdateUserAttributes',
   'AWSCognitoIdentityProviderService.AdminDeleteUserAttributes',
@@ -61,6 +62,8 @@ const useCases = {
   'AWSCognitoIdentityProviderService.AdminCreateUser': adminUseCase.createUser,
   'AWSCognitoIdentityProviderService.AdminDeleteUser': adminUseCase.deleteUser,
   'AWSCognitoIdentityProviderService.AdminInitiateAuth': adminUseCase.initiateAuth,
+  'AWSCognitoIdentityProviderService.AdminRespondToAuthChallenge':
+    adminUseCase.respondToAuthChallenge,
   'AWSCognitoIdentityProviderService.AdminSetUserPassword': adminUseCase.setUserPassword,
   'AWSCognitoIdentityProviderService.AdminUpdateUserAttributes': adminUseCase.updateUserAttributes,
   'AWSCognitoIdentityProviderService.AdminDeleteUserAttributes': adminUseCase.deleteUserAttributes,

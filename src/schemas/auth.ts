@@ -72,6 +72,11 @@ export type AdminInitiateAuthTarget = TargetBody<
   AmzType.AdminInitiateAuthResponse
 >;
 
+export type AdminRespondToAuthChallengeTarget = TargetBody<
+  AmzType.AdminRespondToAuthChallengeRequest,
+  AmzType.AdminRespondToAuthChallengeResponse
+>;
+
 export type AdminSetUserPasswordTarget = TargetBody<
   AmzType.AdminSetUserPasswordRequest,
   AmzType.AdminSetUserPasswordResponse
