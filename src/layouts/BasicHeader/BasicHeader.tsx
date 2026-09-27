@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '../../components/Modal/Modal';
 import { APP_NAME } from '../../schemas/constants';
 import type { UserDto } from '../../schemas/user';
+import { apiClient } from '../../utils/apiClient';
 import { APP_VERSION } from '../../utils/clientEnvs';
 import { YourProfile } from './YourProfile';
 import styles from './BasicHeader.module.css';
@@ -40,6 +41,16 @@ export const BasicHeader = (props: { user: UserDto }) => {
   const [openProfile, setOpenProfile] = useState(false);
   const [openPassword, setOpenPassword] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
+  const logout = async () => {
+    if (props.user.kind === 'cognito') {
+      await signOut();
+
+      return;
+    }
+
+    await apiClient['publicApi/session'].$delete();
+    location.href = '/login';
+  };
 
   return (
     <div className={styles.container}>
@@ -55,7 +66,7 @@ export const BasicHeader = (props: { user: UserDto }) => {
           {props.user.kind === 'cognito' && (
             <MenuItem onClick={() => setOpenPassword(true)}>パスワードを変更</MenuItem>
           )}
-          <MenuItem onClick={signOut}>ログアウト</MenuItem>
+          <MenuItem onClick={logout}>ログアウト</MenuItem>
         </Menu>
       </div>
       {openProfile && <YourProfile user={props.user} onClose={() => setOpenProfile(false)} />}

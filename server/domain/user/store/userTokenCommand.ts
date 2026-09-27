@@ -1,8 +1,12 @@
 import { ulid } from 'ulid';
-import type { EntityId } from '../../../../src/schemas/brandedId';
-import { brandedId } from '../../../../src/schemas/brandedId';
+import { brandedId, type EntityId } from '../../../../src/schemas/brandedId';
 import type { Prisma } from '../../../prisma/client';
-import { EXPIRES_SEC, REFRESH_TOKEN_EXPIRES_SEC, type TokenKind } from '../../../service/constants';
+import {
+  EXPIRES_SEC,
+  SHORT_LIVED_SEC,
+  REFRESH_TOKEN_EXPIRES_SEC,
+  type TokenKind,
+} from '../../../service/constants';
 
 export const userTokenCommand = {
   create: async (
@@ -12,7 +16,6 @@ export const userTokenCommand = {
     token: string,
   ): Promise<void> => {
     const now = new Date();
-    const SHORT_LIVED_SEC = 300;
     const expiresSec = {
       id: EXPIRES_SEC,
       access: EXPIRES_SEC,

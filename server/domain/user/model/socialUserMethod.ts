@@ -78,6 +78,14 @@ export const socialUserMethod = {
       userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
       attributes: user.attributes.map(attributeDtoToEntity),
       codeChallenge,
+      authorizationCode: ulid(),
     };
   },
+  rotateAuthorizationCode: (user: SocialUserDto): SocialUserEntity => ({
+    ...user,
+    id: brandedId.socialUser.entity.parse(user.id),
+    userPoolId: brandedId.userPool.entity.parse(user.userPoolId),
+    attributes: user.attributes.map(attributeDtoToEntity),
+    authorizationCode: ulid(),
+  }),
 };

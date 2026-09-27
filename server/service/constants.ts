@@ -2,7 +2,11 @@ import type { NextResponse } from 'vinext/shims/server';
 
 export const COOKIE_NAME = 'session';
 
+export const SOCIAL_FLOW_COOKIE_NAME = 'social_oauth_flow';
+
 export const EXPIRES_SEC = 3600;
+
+export const SHORT_LIVED_SEC = 300;
 
 export const REFRESH_TOKEN_EXPIRES_SEC = 30 * 24 * 3600; // 30 days
 
@@ -20,9 +24,18 @@ export type AdminChallengeTokenKind = (typeof ADMIN_CHALLENGE_TOKEN_KINDS)[numbe
 
 export type TokenKind = (typeof TOKEN_KINDS)[number];
 
-export const COOKIE_OPTIONS: Partial<NonNullable<ReturnType<NextResponse['cookies']['get']>>> = {
+type CookieOptions = Partial<NonNullable<ReturnType<NextResponse['cookies']['get']>>>;
+
+export const COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   secure: true,
   path: '/',
   sameSite: 'strict',
+};
+
+export const SOCIAL_FLOW_COOKIE_OPTIONS: CookieOptions = {
+  ...COOKIE_OPTIONS,
+  sameSite: 'lax',
+  path: '/oauth2/server',
+  maxAge: 300,
 };

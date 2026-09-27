@@ -1,8 +1,12 @@
 import { createHash } from 'crypto';
+import { parseCookie } from 'cookie';
 import { ulid } from 'ulid';
 import { expect, test } from 'vitest';
+import { COOKIE_NAME, SOCIAL_FLOW_COOKIE_NAME } from '../../server/service/constants';
 import { DEFAULT_USER_POOL_CLIENT_ID } from '../../server/service/serverEnvs';
-import { lowLevelNoCookieClient, noCookieClient } from './apiClient';
+import { GET as callback } from '../../src/app/oauth2/server/callback/route';
+import { GET as start } from '../../src/app/oauth2/server/start/route';
+import { createUserClient, lowLevelNoCookieClient, noCookieClient } from './apiClient';
 import { testName } from './utils';
 
 test(testName.POST(noCookieClient['publicApi/socialUsers']), async () => {
@@ -59,6 +63,7 @@ test(testName.PATCH(noCookieClient['publicApi/socialUsers']), async () => {
   });
 
   expect(updated.codeChallenge).toBe(codeChallenge2);
+  expect(updated.authorizationCode).not.toBe(user.authorizationCode);
 });
 
 test(testName.POST(noCookieClient['oauth2/token']), async () => {
@@ -84,6 +89,77 @@ test(testName.POST(noCookieClient['oauth2/token']), async () => {
   });
 
   expect(res.ok).toBeTruthy();
+});
+
+// oxlint-disable-next-line complexity
+test('server exchanges a mock social authorization code into an HttpOnly session', async () => {
+  const startRes = await start(
+    new Request('https://localhost:5051/oauth2/server/start?provider=Google'),
+  );
+  expect(startRes.status).toBe(302);
+  const authorizeUrl = new URL(startRes.headers.get('location') ?? '');
+  const flowCookie = startRes.cookies.get(SOCIAL_FLOW_COOKIE_NAME)?.value;
+  expect(flowCookie).toBeTruthy();
+  expect(startRes.headers.getSetCookie().join(';')).toContain('HttpOnly');
+  expect(authorizeUrl.searchParams.get('code_challenge_method')).toBe('S256');
+  expect(authorizeUrl.searchParams.get('redirect_uri')).toBe(
+    'https://localhost:5051/oauth2/server/callback',
+  );
+
+  const user = await noCookieClient['publicApi/socialUsers'].$post({
+    body: {
+      provider: 'Google',
+      name: 'server-user',
+      email: `${ulid()}@example.com`,
+      codeChallenge: authorizeUrl.searchParams.get('code_challenge') ?? '',
+      userPoolClientId: DEFAULT_USER_POOL_CLIENT_ID,
+    },
+  });
+  const callbackUrl = new URL(authorizeUrl.searchParams.get('redirect_uri') ?? '');
+  callbackUrl.searchParams.set('code', user.authorizationCode);
+  callbackUrl.searchParams.set('state', authorizeUrl.searchParams.get('state') ?? '');
+  const callbackReq = () =>
+    new Request(callbackUrl, { headers: { cookie: `${SOCIAL_FLOW_COOKIE_NAME}=${flowCookie}` } });
+
+  const callbackRes = await callback(callbackReq());
+  expect(callbackRes.status).toBe(302);
+  expect(callbackRes.headers.get('location')).toBe('https://localhost:5051/console');
+  const sessionCookie = callbackRes.headers
+    .getSetCookie()
+    .find((cookie) => cookie.startsWith(`${COOKIE_NAME}=`));
+  expect(sessionCookie).toContain('HttpOnly');
+  const token = parseCookie(sessionCookie ?? '')[COOKIE_NAME];
+  expect(token).toBeTruthy();
+  const privateClient = await createUserClient({ AccessToken: token ?? '' });
+  expect((await privateClient['privateApi/me'].$get()).id).toBe(user.id);
+
+  expect((await callback(callbackReq())).status).toBe(400);
+});
+
+test('server social callback rejects missing, mismatched, and invalid flows', async () => {
+  expect(
+    (await start(new Request('https://localhost:5051/oauth2/server/start?provider=Invalid')))
+      .status,
+  ).toBe(400);
+
+  const url = new URL('https://localhost:5051/oauth2/server/callback');
+  url.searchParams.set('code', ulid());
+  url.searchParams.set('state', ulid());
+  expect((await callback(new Request(url))).status).toBe(400);
+
+  const startRes = await start(
+    new Request('https://localhost:5051/oauth2/server/start?provider=Apple'),
+  );
+  const flowCookie = startRes.cookies.get(SOCIAL_FLOW_COOKIE_NAME)?.value;
+  const withCookie = () =>
+    new Request(url, { headers: { cookie: `${SOCIAL_FLOW_COOKIE_NAME}=${flowCookie}` } });
+  expect((await callback(withCookie())).status).toBe(400);
+
+  url.searchParams.set(
+    'state',
+    new URL(startRes.headers.get('location') ?? '').searchParams.get('state') ?? '',
+  );
+  expect((await callback(withCookie())).status).toBe(400);
 });
 
 const logoutUri = noCookieClient['publicApi/defaults'].$url.get();

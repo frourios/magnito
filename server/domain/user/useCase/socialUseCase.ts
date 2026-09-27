@@ -1,3 +1,4 @@
+import assert from 'assert';
 import type { MaybeId } from '../../../../src/schemas/brandedId';
 import type {
   SocialUserCreateVal,
@@ -27,7 +28,12 @@ export const socialUseCase = {
       const poolClient = await userPoolQuery.findClientById(tx, val.client_id);
       const jwks = await userPoolQuery.findJwks(tx, user.userPoolId);
 
+      assert(user.enabled);
+      assert(poolClient.userPoolId === user.userPoolId);
+
       const tokens = socialUserMethod.createToken(user, val.code_verifier, pool, poolClient, jwks);
+
+      await userCommand.save(tx, socialUserMethod.rotateAuthorizationCode(user));
 
       await userTokenCommand.createTokens(tx, user.id, {
         AccessToken: tokens.access_token,

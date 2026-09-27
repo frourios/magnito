@@ -24,7 +24,8 @@ export function AuthLoader(): React.ReactElement {
 
   useEffect(() => {
     void fetchAuthSession()
-      .then((e) => (e.tokens?.idToken ? fetchUser() : setUser(null)))
+      .catch(() => null)
+      .then(fetchUser)
       .catch(catchApiErr);
   }, [fetchUser, setUser]);
 
