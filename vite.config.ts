@@ -9,6 +9,7 @@ export default defineConfig({
       nextConfig: {
         reactStrictMode: true,
         output: 'standalone',
+        serverExternalPackages: ['fast-jwt'],
         typescript: { ignoreBuildErrors: true },
         env: { APP_VERSION: `v${packageJson.version}` },
         headers() {
