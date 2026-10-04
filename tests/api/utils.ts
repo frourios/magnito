@@ -76,6 +76,7 @@ export const createSocialUserAndToken = async (): Promise<{ AccessToken: string 
   });
 
   const res = await noCookieClient['oauth2/token'].$post({
+    headers: undefined,
     body: {
       grant_type: 'authorization_code',
       code: user.authorizationCode,

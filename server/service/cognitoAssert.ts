@@ -25,6 +25,15 @@ export const COGNITO_ERRORS = {
   'Unsupported authentication flow.': 'InvalidParameterException',
   'Access Token has been revoked': 'NotAuthorizedException',
   'Access Token has expired': 'NotAuthorizedException',
+  'Client secret hash was not received.': 'NotAuthorizedException',
+  'Unable to verify client secret hash.': 'NotAuthorizedException',
+  'Invalid client secret.': 'NotAuthorizedException',
+  'Invalid client secret value.': 'InvalidParameterException',
+  'Client secret cannot be specified when GenerateSecret is true.': 'InvalidParameterException',
+  'Cannot add a secret to a public app client.': 'InvalidParameterException',
+  'Maximum number of client secrets reached.': 'LimitExceededException',
+  'Cannot delete the last client secret.': 'InvalidParameterException',
+  'Client secret not found.': 'ResourceNotFoundException',
 };
 
 export class CognitoError extends Error {}

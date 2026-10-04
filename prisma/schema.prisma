@@ -85,12 +85,22 @@ model UserPoolClient {
   logoutUrls                      String[]                 @default([])
   allowedOAuthFlowsUserPoolClient Boolean                  @default(false)
   defaultRedirectUri              String?
-  clientSecret                    String?
+  clientSecrets                   UserPoolClientSecret[]
   createdAt                       DateTime
   UserPool                        UserPool                 @relation(fields: [userPoolId], references: [id])
   userPoolId                      String
   managedLoginBranding            ManagedLoginBranding?
   authorizationCodes              OAuthAuthorizationCode[]
+}
+
+model UserPoolClientSecret {
+  id             String         @id
+  clientId       String
+  value          String
+  createdAt      DateTime
+  UserPoolClient UserPoolClient @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId, createdAt])
 }
 
 model OAuthAuthorizationCode {

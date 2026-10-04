@@ -6,7 +6,7 @@ export type TargetBody<Req, Res> = { reqBody: Req; resBody: Res };
 export type UserSrpAuthTarget = TargetBody<
   {
     AuthFlow: 'USER_SRP_AUTH';
-    AuthParameters: { USERNAME: string; SRP_A: string };
+    AuthParameters: { USERNAME: string; SRP_A: string; SECRET_HASH?: string };
     ClientId: MaybeId['userPoolClient'];
   },
   {
@@ -24,7 +24,7 @@ export type UserSrpAuthTarget = TargetBody<
 export type RefreshTokenAuthTarget = TargetBody<
   {
     AuthFlow: 'REFRESH_TOKEN_AUTH';
-    AuthParameters: { REFRESH_TOKEN: string };
+    AuthParameters: { REFRESH_TOKEN: string; SECRET_HASH?: string };
     ClientId: MaybeId['userPoolClient'];
   },
   {
@@ -41,7 +41,7 @@ export type RefreshTokenAuthTarget = TargetBody<
 export type UserPasswordAuthTarget = TargetBody<
   {
     AuthFlow: 'USER_PASSWORD_AUTH';
-    AuthParameters: { USERNAME: string; PASSWORD: string };
+    AuthParameters: { USERNAME: string; PASSWORD: string; SECRET_HASH?: string };
     ClientId: MaybeId['userPoolClient'];
   },
   | {
@@ -65,6 +65,7 @@ export type GetTokensFromRefreshTokenTarget = TargetBody<
   {
     ClientId: MaybeId['userPoolClient'];
     RefreshToken: string;
+    ClientSecret?: string;
   },
   {
     AuthenticationResult: {
@@ -89,13 +90,18 @@ export type RespondToAuthChallengeTarget = TargetBody<
         PASSWORD_CLAIM_SIGNATURE: string;
         TIMESTAMP: string;
         USERNAME: string;
+        SECRET_HASH?: string;
       };
       ClientId: MaybeId['userPoolClient'];
       Session?: undefined;
     }
   | {
       ChallengeName: 'SOFTWARE_TOKEN_MFA';
-      ChallengeResponses: { SOFTWARE_TOKEN_MFA_CODE: string; USERNAME: string };
+      ChallengeResponses: {
+        SOFTWARE_TOKEN_MFA_CODE: string;
+        USERNAME: string;
+        SECRET_HASH?: string;
+      };
       ClientId: MaybeId['userPoolClient'];
       Session: string;
     },

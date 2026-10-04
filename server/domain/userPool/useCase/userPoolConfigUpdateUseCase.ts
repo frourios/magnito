@@ -27,6 +27,7 @@ export const userPoolConfigUpdateUseCase = {
     assert(req.UserPoolId && req.ClientId);
     const client = await prismaClient.userPoolClient.update({
       where: { id: req.ClientId, userPoolId: req.UserPoolId },
+      include: { clientSecrets: { orderBy: [{ createdAt: 'asc' }, { id: 'asc' }] } },
       data: {
         name: req.ClientName,
         explicitAuthFlows: req.ExplicitAuthFlows,

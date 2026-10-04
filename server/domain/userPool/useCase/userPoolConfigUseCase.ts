@@ -2,7 +2,7 @@
 import assert from 'assert';
 import { randomUUID } from 'crypto';
 import type * as Cognito from '@aws-sdk/client-cognito-identity-provider';
-import type { Prisma, UserPoolClient } from '../../../prisma/client';
+import type { Prisma, UserPoolClient, UserPoolClientSecret } from '../../../prisma/client';
 import { prismaClient } from '../../../service/prismaClient';
 import { transaction } from '../../../service/transaction';
 import { toCognitoPolicies } from '../service/poolPolicy';
@@ -20,13 +20,15 @@ export type CustomDomainConfigWithSecurityPolicy = Cognito.CustomDomainConfigTyp
   SecurityPolicy?: string;
 };
 
-export const toCognitoUserPoolClient = (client: UserPoolClient): Cognito.UserPoolClientType => {
+export const toCognitoUserPoolClient = (
+  client: UserPoolClient & { clientSecrets: UserPoolClientSecret[] },
+): Cognito.UserPoolClientType => {
   assert(client.name);
   return {
     ClientId: client.id,
     UserPoolId: client.userPoolId,
     ClientName: client.name,
-    ClientSecret: client.clientSecret ?? undefined,
+    ClientSecret: client.clientSecrets[0]?.value,
     ExplicitAuthFlows: client.explicitAuthFlows as Cognito.ExplicitAuthFlowsType[],
     SupportedIdentityProviders: client.supportedIdentityProviders,
     AllowedOAuthFlows: client.allowedOAuthFlows as Cognito.OAuthFlowType[],
@@ -74,6 +76,7 @@ export const userPoolConfigUseCase = {
     assert(req.ClientId);
     const client = await prismaClient.userPoolClient.findFirstOrThrow({
       where: { id: req.ClientId, userPoolId: req.UserPoolId },
+      include: { clientSecrets: { orderBy: [{ createdAt: 'asc' }, { id: 'asc' }] } },
     });
     return { UserPoolClient: toCognitoUserPoolClient(client) };
   },

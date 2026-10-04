@@ -5,10 +5,12 @@ import { mfaUseCase } from '../../server/domain/user/useCase/mfaUseCase';
 import { signInUseCase } from '../../server/domain/user/useCase/signInUseCase';
 import { signUpUseCase } from '../../server/domain/user/useCase/signUpUseCase';
 import { userUseCase } from '../../server/domain/user/useCase/userUseCase';
+import { userPoolClientSecretUseCase } from '../../server/domain/userPool/useCase/userPoolClientSecretUseCase';
 import { userPoolConfigUpdateUseCase } from '../../server/domain/userPool/useCase/userPoolConfigUpdateUseCase';
 import { userPoolConfigUseCase } from '../../server/domain/userPool/useCase/userPoolConfigUseCase';
 import { userPoolUseCase } from '../../server/domain/userPool/useCase/userPoolUseCase';
 import { COGNITO_ERRORS, CognitoError } from '../../server/service/cognitoAssert';
+import { validateClientSecretRequest } from '../../server/service/validateClientSecretRequest';
 import { validateSignature } from '../../server/service/validateSignature';
 import type { InitiateAuthTarget } from '../schemas/signIn';
 import type { frourioSpec } from './frourio';
@@ -45,6 +47,9 @@ const iamAuthTargets = new Set([
   'AWSCognitoIdentityProviderService.CreateUserPoolClient',
   'AWSCognitoIdentityProviderService.DeleteUserPool',
   'AWSCognitoIdentityProviderService.DeleteUserPoolClient',
+  'AWSCognitoIdentityProviderService.AddUserPoolClientSecret',
+  'AWSCognitoIdentityProviderService.DeleteUserPoolClientSecret',
+  'AWSCognitoIdentityProviderService.ListUserPoolClientSecrets',
   'AWSCognitoIdentityProviderService.ListUsers',
 ]);
 
@@ -102,6 +107,10 @@ const useCases = {
   'AWSCognitoIdentityProviderService.DeleteUser': userUseCase.deleteUser,
   'AWSCognitoIdentityProviderService.DeleteUserPool': userPoolUseCase.deleteUserPool,
   'AWSCognitoIdentityProviderService.DeleteUserPoolClient': userPoolUseCase.deleteUserPoolClient,
+  'AWSCognitoIdentityProviderService.AddUserPoolClientSecret': userPoolClientSecretUseCase.add,
+  'AWSCognitoIdentityProviderService.DeleteUserPoolClientSecret':
+    userPoolClientSecretUseCase.delete,
+  'AWSCognitoIdentityProviderService.ListUserPoolClientSecrets': userPoolClientSecretUseCase.list,
   'AWSCognitoIdentityProviderService.ListUsers': authUseCase.listUsers,
   'AWSCognitoIdentityProviderService.AdminGetUser': adminUseCase.getUser,
   'AWSCognitoIdentityProviderService.AdminCreateUser': adminUseCase.createUser,
@@ -170,13 +179,16 @@ export const { GET, POST } = createRoute({
       return { status: 403, body: { message: 'UnrecognizedClientException' } };
     }
 
-    // oxlint-disable-next-line no-explicit-any
-    return useCases[key as keyof typeof useCases](body as any)
-      .then((body) => ({
-        status: 200 as const,
-        headers: { 'content-type': 'application/x-amz-json-1.1' } as const,
-        body,
-      }))
-      .catch(returnPostError);
+    return (
+      validateClientSecretRequest(key, body)
+        // oxlint-disable-next-line no-explicit-any
+        .then(() => useCases[key as keyof typeof useCases](body as any))
+        .then((body) => ({
+          status: 200 as const,
+          headers: { 'content-type': 'application/x-amz-json-1.1' } as const,
+          body,
+        }))
+        .catch(returnPostError)
+    );
   },
 });

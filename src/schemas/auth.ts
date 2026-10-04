@@ -5,19 +5,24 @@ import type { TargetBody } from './signIn';
 export type SignUpTarget = TargetBody<AmzType.SignUpRequest, AmzType.SignUpResponse>;
 
 export type ConfirmSignUpTarget = TargetBody<
-  { ClientId: MaybeId['userPoolClient']; ConfirmationCode: string; Username: string },
+  {
+    ClientId: MaybeId['userPoolClient'];
+    ConfirmationCode: string;
+    Username: string;
+    SecretHash?: string;
+  },
   Record<string, never>
 >;
 
 export type GetUserTarget = TargetBody<{ AccessToken: string }, AmzType.GetUserResponse>;
 
 export type RevokeTokenTarget = TargetBody<
-  { ClientId: MaybeId['userPoolClient']; Token: string },
+  { ClientId: MaybeId['userPoolClient']; Token: string; ClientSecret?: string },
   Record<string, never>
 >;
 
 export type ResendConfirmationCodeTarget = TargetBody<
-  { ClientId: MaybeId['userPoolClient']; Username: string },
+  { ClientId: MaybeId['userPoolClient']; Username: string; SecretHash?: string },
   { CodeDeliveryDetails: AmzType.CodeDeliveryDetailsType }
 >;
 
@@ -103,7 +108,7 @@ export type ChangePasswordTarget = TargetBody<
 >;
 
 export type ForgotPasswordTarget = TargetBody<
-  { ClientId: MaybeId['userPoolClient']; Username: string },
+  { ClientId: MaybeId['userPoolClient']; Username: string; SecretHash?: string },
   { CodeDeliveryDetails: AmzType.CodeDeliveryDetailsType }
 >;
 
@@ -113,6 +118,7 @@ export type ConfirmForgotPasswordTarget = TargetBody<
     ConfirmationCode: string;
     Password: string;
     Username: string;
+    SecretHash?: string;
   },
   Record<string, never>
 >;

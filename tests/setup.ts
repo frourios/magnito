@@ -75,14 +75,19 @@ async function createTestDatabaseForPrismaResetInCodex(): Promise<void> {
 beforeAll(createTestDatabaseForPrismaResetInCodex);
 
 beforeEach(async () => {
-  await new Promise((resolve, reject) => {
+  await new Promise<void>((resolve, reject) => {
     const { CLAUDECODE: _, ...envWithoutClaude } = process.env;
     const proc = spawn('npx', ['prisma', 'migrate', 'reset', '--force'], {
-      // stdio: 'inherit',
       env: envWithoutClaude,
     });
 
-    proc.once('close', resolve);
+    let stderr = '';
+    proc.stderr.on('data', (chunk: Buffer) => {
+      stderr += chunk.toString();
+    });
+    proc.once('close', (code) =>
+      code === 0 ? resolve() : reject(new Error(`Prisma reset failed (${code}): ${stderr}`)),
+    );
     proc.once('error', reject);
   });
 

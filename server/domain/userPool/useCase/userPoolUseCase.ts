@@ -1,5 +1,4 @@
 import assert from 'assert';
-import { randomBytes } from 'crypto';
 import type {
   CreateUserPoolClientTarget,
   CreateUserPoolTarget,
@@ -8,9 +7,14 @@ import type {
   ListUserPoolClientsTarget,
   ListUserPoolsTarget,
 } from '../../../../src/schemas/auth';
+import { cognitoAssert } from '../../../service/cognitoAssert';
 import { prismaClient } from '../../../service/prismaClient';
 import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from '../../../service/serverEnvs';
 import { transaction } from '../../../service/transaction';
+import {
+  createClientSecret,
+  validateCustomClientSecret,
+} from '../../../service/userPoolClientSecret';
 import { userPoolMethod } from '../model/userPoolMethod';
 import { poolPolicyData, toCognitoPolicies } from '../service/poolPolicy';
 import { userPoolCommand } from '../store/userPoolCommand';
@@ -101,14 +105,20 @@ export const userPoolUseCase = {
     transaction('RepeatableRead', async (tx) => {
       assert(req.ClientName);
       assert(req.UserPoolId);
+      cognitoAssert(
+        !(req.GenerateSecret && req.ClientSecret !== undefined),
+        'Client secret cannot be specified when GenerateSecret is true.',
+      );
+      validateCustomClientSecret(req.ClientSecret);
 
       const pool = await userPoolQuery.findById(tx, req.UserPoolId);
       const client = userPoolMethod.createClient({ name: req.ClientName, userPoolId: pool.id });
       await userPoolCommand.saveClient(tx, client);
 
-      const clientSecret = req.GenerateSecret
-        ? randomBytes(32).toString('base64url')
-        : req.ClientSecret;
+      const clientSecret =
+        req.GenerateSecret || req.ClientSecret !== undefined
+          ? (await createClientSecret(tx, client.id, req.ClientSecret)).value
+          : undefined;
       const resUserPoolClient = {
         ClientId: client.id,
         UserPoolId: pool.id,
@@ -127,7 +137,6 @@ export const userPoolUseCase = {
       await tx.userPoolClient.update({
         where: { id: client.id },
         data: {
-          clientSecret,
           explicitAuthFlows: resUserPoolClient.ExplicitAuthFlows,
           supportedIdentityProviders: resUserPoolClient.SupportedIdentityProviders,
           allowedOAuthFlows: resUserPoolClient.AllowedOAuthFlows,

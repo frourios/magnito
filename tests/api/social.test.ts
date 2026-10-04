@@ -79,6 +79,7 @@ test(testName.POST(noCookieClient['oauth2/token']), async () => {
   });
 
   const res = await lowLevelNoCookieClient['oauth2/token'].$post({
+    headers: undefined,
     body: {
       grant_type: 'authorization_code',
       code: user.authorizationCode,

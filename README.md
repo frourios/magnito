@@ -135,10 +135,10 @@ You can check the emails sent by Magnito with Inbucket.
 ## Implementation Coverage List
 
 <details>
-<summary> 49/129 implemented  </summary>
+<summary> 52/129 implemented  </summary>
 
 - [ ] AddCustomAttributes
-- [ ] AddUserPoolClientSecret
+- [x] AddUserPoolClientSecret
 - [ ] AdminAddUserToGroup
 - [ ] AdminConfirmSignUp
 - [x] AdminCreateUser
@@ -191,7 +191,7 @@ You can check the emails sent by Magnito with Inbucket.
 - [x] DeleteUserAttributes
 - [x] DeleteUserPool
 - [x] DeleteUserPoolClient
-- [ ] DeleteUserPoolClientSecret
+- [x] DeleteUserPoolClientSecret
 - [ ] DeleteUserPoolDomain
 - [ ] DeleteUserPoolReplica
 - [ ] DeleteWebAuthnCredential
@@ -229,7 +229,7 @@ You can check the emails sent by Magnito with Inbucket.
 - [ ] ListTagsForResource
 - [ ] ListTerms
 - [ ] ListUserImportJobs
-- [ ] ListUserPoolClientSecrets
+- [x] ListUserPoolClientSecrets
 - [x] ListUserPoolClients
 - [ ] ListUserPoolReplicas
 - [x] ListUserPools
