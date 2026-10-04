@@ -135,7 +135,7 @@ You can check the emails sent by Magnito with Inbucket.
 ## Implementation Coverage List
 
 <details>
-<summary> 52/129 implemented  </summary>
+<summary> 57/129 implemented  </summary>
 
 - [ ] AddCustomAttributes
 - [x] AddUserPoolClientSecret
@@ -176,7 +176,7 @@ You can check the emails sent by Magnito with Inbucket.
 - [x] CreateIdentityProvider
 - [x] CreateManagedLoginBranding
 - [ ] CreateResourceServer
-- [ ] CreateTerms
+- [x] CreateTerms
 - [ ] CreateUserImportJob
 - [x] CreateUserPool
 - [x] CreateUserPoolClient
@@ -186,7 +186,7 @@ You can check the emails sent by Magnito with Inbucket.
 - [ ] DeleteIdentityProvider
 - [x] DeleteManagedLoginBranding
 - [ ] DeleteResourceServer
-- [ ] DeleteTerms
+- [x] DeleteTerms
 - [x] DeleteUser
 - [x] DeleteUserAttributes
 - [x] DeleteUserPool
@@ -200,7 +200,7 @@ You can check the emails sent by Magnito with Inbucket.
 - [x] DescribeManagedLoginBrandingByClient
 - [ ] DescribeResourceServer
 - [ ] DescribeRiskConfiguration
-- [ ] DescribeTerms
+- [x] DescribeTerms
 - [ ] DescribeUserImportJob
 - [x] DescribeUserPool
 - [x] DescribeUserPoolClient
@@ -227,7 +227,7 @@ You can check the emails sent by Magnito with Inbucket.
 - [x] ListIdentityProviders
 - [ ] ListResourceServers
 - [ ] ListTagsForResource
-- [ ] ListTerms
+- [x] ListTerms
 - [ ] ListUserImportJobs
 - [x] ListUserPoolClientSecrets
 - [x] ListUserPoolClients
@@ -258,7 +258,7 @@ You can check the emails sent by Magnito with Inbucket.
 - [x] UpdateManagedLoginBranding
 - [ ] UpdateProvisionedLimit
 - [ ] UpdateResourceServer
-- [ ] UpdateTerms
+- [x] UpdateTerms
 - [x] UpdateUserAttributes
 - [x] UpdateUserPool
 - [x] UpdateUserPoolClient

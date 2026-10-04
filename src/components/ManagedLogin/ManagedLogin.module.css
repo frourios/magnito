@@ -131,6 +131,16 @@
   border: 1px solid var(--ml-primary);
 }
 
+.terms {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.terms a {
+  color: var(--ml-link);
+}
+
 .primary:disabled {
   cursor: wait;
   opacity: 0.65;

@@ -34,6 +34,10 @@ export const COGNITO_ERRORS = {
   'Maximum number of client secrets reached.': 'LimitExceededException',
   'Cannot delete the last client secret.': 'InvalidParameterException',
   'Client secret not found.': 'ResourceNotFoundException',
+  'Invalid terms document.': 'InvalidParameterException',
+  'Terms already exist.': 'TermsExistsException',
+  'Terms not found.': 'ResourceNotFoundException',
+  'Invalid terms pagination token.': 'InvalidParameterException',
 };
 
 export class CognitoError extends Error {}

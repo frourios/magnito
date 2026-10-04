@@ -1,3 +1,4 @@
+/* oxlint-disable max-lines */
 import type z from 'zod';
 import { adminUseCase } from '../../server/domain/user/useCase/adminUseCase';
 import { authUseCase } from '../../server/domain/user/useCase/authUseCase';
@@ -5,6 +6,7 @@ import { mfaUseCase } from '../../server/domain/user/useCase/mfaUseCase';
 import { signInUseCase } from '../../server/domain/user/useCase/signInUseCase';
 import { signUpUseCase } from '../../server/domain/user/useCase/signUpUseCase';
 import { userUseCase } from '../../server/domain/user/useCase/userUseCase';
+import { termsUseCase } from '../../server/domain/userPool/useCase/termsUseCase';
 import { userPoolClientSecretUseCase } from '../../server/domain/userPool/useCase/userPoolClientSecretUseCase';
 import { userPoolConfigUpdateUseCase } from '../../server/domain/userPool/useCase/userPoolConfigUpdateUseCase';
 import { userPoolConfigUseCase } from '../../server/domain/userPool/useCase/userPoolConfigUseCase';
@@ -50,6 +52,11 @@ const iamAuthTargets = new Set([
   'AWSCognitoIdentityProviderService.AddUserPoolClientSecret',
   'AWSCognitoIdentityProviderService.DeleteUserPoolClientSecret',
   'AWSCognitoIdentityProviderService.ListUserPoolClientSecrets',
+  'AWSCognitoIdentityProviderService.CreateTerms',
+  'AWSCognitoIdentityProviderService.DescribeTerms',
+  'AWSCognitoIdentityProviderService.ListTerms',
+  'AWSCognitoIdentityProviderService.UpdateTerms',
+  'AWSCognitoIdentityProviderService.DeleteTerms',
   'AWSCognitoIdentityProviderService.ListUsers',
 ]);
 
@@ -111,6 +118,11 @@ const useCases = {
   'AWSCognitoIdentityProviderService.DeleteUserPoolClientSecret':
     userPoolClientSecretUseCase.delete,
   'AWSCognitoIdentityProviderService.ListUserPoolClientSecrets': userPoolClientSecretUseCase.list,
+  'AWSCognitoIdentityProviderService.CreateTerms': termsUseCase.create,
+  'AWSCognitoIdentityProviderService.DescribeTerms': termsUseCase.describe,
+  'AWSCognitoIdentityProviderService.ListTerms': termsUseCase.list,
+  'AWSCognitoIdentityProviderService.UpdateTerms': termsUseCase.update,
+  'AWSCognitoIdentityProviderService.DeleteTerms': termsUseCase.delete,
   'AWSCognitoIdentityProviderService.ListUsers': authUseCase.listUsers,
   'AWSCognitoIdentityProviderService.AdminGetUser': adminUseCase.getUser,
   'AWSCognitoIdentityProviderService.AdminCreateUser': adminUseCase.createUser,

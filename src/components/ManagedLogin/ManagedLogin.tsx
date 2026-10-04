@@ -53,6 +53,38 @@ const formStyle = (config: ManagedLoginConfig): CSSProperties => {
   } as CSSProperties;
 };
 
+const termsUrl = (
+  links: Record<string, string>,
+  language: ManagedLoginLanguage,
+): string | undefined =>
+  links[language === 'ja' ? 'cognito:japanese' : 'cognito:english'] ?? links['cognito:default'];
+
+export function ManagedLoginTerms({
+  terms,
+  language,
+}: {
+  terms: NonNullable<ManagedLoginConfig['terms']>;
+  language: ManagedLoginLanguage;
+}): React.ReactElement | null {
+  const termsOfUse = termsUrl(terms.termsOfUse, language);
+  const privacyPolicy = termsUrl(terms.privacyPolicy, language);
+  if (!termsOfUse || !privacyPolicy) return null;
+  const t = managedLoginText[language];
+  return (
+    <p className={styles.terms}>
+      {t.termsPrefix}{' '}
+      <a href={termsOfUse} target="_blank" rel="noopener noreferrer">
+        {t.termsOfUse}
+      </a>{' '}
+      {t.termsAnd}{' '}
+      <a href={privacyPolicy} target="_blank" rel="noopener noreferrer">
+        {t.privacyPolicy}
+      </a>
+      {language === 'en' ? '.' : 'に同意したものとみなされます。'}
+    </p>
+  );
+}
+
 export function ManagedLogin({
   initialMode = 'login',
 }: {
@@ -301,6 +333,9 @@ export function ManagedLogin({
                         onChange={(event) => setPassword(event.target.value)}
                       />
                     </label>
+                  )}
+                  {mode === 'signup' && config.terms && (
+                    <ManagedLoginTerms terms={config.terms} language={language} />
                   )}
                   <button className={styles.primary} disabled={loading} type="submit">
                     {loading

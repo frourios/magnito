@@ -72,6 +72,7 @@ model UserPool {
   domains                       UserPoolDomain[]
   identityProviders             IdentityProvider[]
   managedLoginBrandings         ManagedLoginBranding[]
+  terms                         Terms[]
 }
 
 model UserPoolClient {
@@ -91,6 +92,33 @@ model UserPoolClient {
   userPoolId                      String
   managedLoginBranding            ManagedLoginBranding?
   authorizationCodes              OAuthAuthorizationCode[]
+  terms                           Terms[]
+}
+
+model Terms {
+  id             String         @id
+  userPoolId     String
+  clientId       String
+  name           String
+  source         String
+  enforcement    String
+  createdAt      DateTime
+  updatedAt      DateTime
+  UserPool       UserPool       @relation(fields: [userPoolId], references: [id], onDelete: Cascade)
+  UserPoolClient UserPoolClient @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  links          TermsLink[]
+
+  @@unique([clientId, name])
+  @@index([userPoolId, createdAt, id])
+}
+
+model TermsLink {
+  termsId  String
+  language String
+  url      String
+  Terms    Terms  @relation(fields: [termsId], references: [id], onDelete: Cascade)
+
+  @@id([termsId, language])
 }
 
 model UserPoolClientSecret {

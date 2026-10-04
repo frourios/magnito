@@ -12,6 +12,7 @@ export type ManagedLoginConfig = {
   providers: string[];
   settings: typeof defaultSettings;
   assets: { category: string; url: string }[];
+  terms: { termsOfUse: Record<string, string>; privacyPolicy: Record<string, string> } | null;
 };
 
 // oxlint-disable-next-line complexity
@@ -24,6 +25,7 @@ export const loadManagedLoginConfig = async (
     include: {
       UserPool: { include: { identityProviders: true, domains: true } },
       managedLoginBranding: { include: { assets: { orderBy: { position: 'asc' } } } },
+      terms: { include: { links: true } },
     },
   });
   if (!client?.allowedOAuthFlowsUserPoolClient || !client.allowedOAuthFlows.includes('code')) {
@@ -51,6 +53,8 @@ export const loadManagedLoginConfig = async (
         PROVIDER_LIST.includes(provider.providerName as (typeof PROVIDER_LIST)[number]),
     )
     .map((provider) => provider.providerName);
+  const termsOfUse = client.terms.find((item) => item.name === 'terms-of-use');
+  const privacyPolicy = client.terms.find((item) => item.name === 'privacy-policy');
 
   return {
     clientId,
@@ -60,6 +64,17 @@ export const loadManagedLoginConfig = async (
       client.UserPool.allowedFirstAuthFactors.includes('PASSWORD'),
     allowSignUp: !client.UserPool.adminCreateUserOnly,
     providers,
+    terms:
+      termsOfUse && privacyPolicy
+        ? {
+            termsOfUse: Object.fromEntries(
+              termsOfUse.links.map((link) => [link.language, link.url]),
+            ),
+            privacyPolicy: Object.fromEntries(
+              privacyPolicy.links.map((link) => [link.language, link.url]),
+            ),
+          }
+        : null,
     settings,
     assets: (branding?.assets ?? [])
       .filter(

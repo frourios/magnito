@@ -67,6 +67,10 @@ export const managedLoginText = {
     newCodeSent: 'A new code has been sent.',
     loading: 'Loading sign in…',
     somethingWentWrong: 'Something went wrong',
+    termsPrefix: 'By signing up, you agree to our',
+    termsOfUse: 'Terms of use',
+    termsAnd: 'and',
+    privacyPolicy: 'Privacy policy',
   },
   ja: {
     titles: {
@@ -105,6 +109,10 @@ export const managedLoginText = {
     newCodeSent: '新しい確認コードを送信しました。',
     loading: 'サインイン画面を読み込んでいます…',
     somethingWentWrong: 'エラーが発生しました',
+    termsPrefix: 'アカウントを作成すると、',
+    termsOfUse: '利用規約',
+    termsAnd: 'と',
+    privacyPolicy: 'プライバシーポリシー',
   },
 } as const;
 
