@@ -19,11 +19,19 @@ const DEFAULT_USER_POOL_ID = brandedId.userPool.dto.parse(process.env.COGNITO_US
 const DEFAULT_USER_POOL_CLIENT_ID = brandedId.userPoolClient.dto.parse(
   process.env.COGNITO_USER_POOL_CLIENT_ID,
 );
+const DEFAULT_USER_POOL_CLIENT_SECRET = z
+  .string()
+  .min(24)
+  .max(64)
+  .regex(/^[\w+]+$/)
+  .optional()
+  .parse(process.env.COGNITO_USER_POOL_CLIENT_SECRET);
 
 export {
   ACCESS_KEY,
   APP_VERSION,
   DEFAULT_USER_POOL_CLIENT_ID,
+  DEFAULT_USER_POOL_CLIENT_SECRET,
   DEFAULT_USER_POOL_ID,
   PORT,
   REGION,

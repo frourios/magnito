@@ -9,7 +9,11 @@ import type {
 } from '../../../../src/schemas/auth';
 import { cognitoAssert } from '../../../service/cognitoAssert';
 import { prismaClient } from '../../../service/prismaClient';
-import { DEFAULT_USER_POOL_CLIENT_ID, DEFAULT_USER_POOL_ID } from '../../../service/serverEnvs';
+import {
+  DEFAULT_USER_POOL_CLIENT_ID,
+  DEFAULT_USER_POOL_CLIENT_SECRET,
+  DEFAULT_USER_POOL_ID,
+} from '../../../service/serverEnvs';
 import { transaction } from '../../../service/transaction';
 import {
   createClientSecret,
@@ -21,8 +25,8 @@ import { userPoolCommand } from '../store/userPoolCommand';
 import { userPoolQuery } from '../store/userPoolQuery';
 
 export const userPoolUseCase = {
-  initDefaults: (): Promise<void> =>
-    transaction('RepeatableRead', async (tx) => {
+  initDefaults: (clientSecret = DEFAULT_USER_POOL_CLIENT_SECRET): Promise<void> =>
+    transaction('Serializable', async (tx) => {
       await userPoolQuery
         .findById(tx, DEFAULT_USER_POOL_ID)
         .catch(() =>
@@ -42,6 +46,18 @@ export const userPoolUseCase = {
           }),
         ),
       );
+
+      validateCustomClientSecret(clientSecret);
+      const secrets = await tx.userPoolClientSecret.findMany({
+        where: { clientId: DEFAULT_USER_POOL_CLIENT_ID },
+        orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+      });
+      if (secrets[0]?.value !== clientSecret) {
+        await tx.userPoolClientSecret.deleteMany({
+          where: { clientId: DEFAULT_USER_POOL_CLIENT_ID },
+        });
+        if (clientSecret) await createClientSecret(tx, DEFAULT_USER_POOL_CLIENT_ID, clientSecret);
+      }
     }),
   listUserPools: async (
     req: ListUserPoolsTarget['reqBody'],

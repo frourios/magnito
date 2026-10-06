@@ -38,6 +38,7 @@ services:
       SSL_PORT: 5051
       COGNITO_USER_POOL_ID: ap-northeast-1_example
       COGNITO_USER_POOL_CLIENT_ID: example-client-name
+      # COGNITO_USER_POOL_CLIENT_SECRET: change_me_to_at_least_24_characters
       COGNITO_ACCESS_KEY: magnito-access-key
       COGNITO_SECRET_KEY: magnito-secret-key
       COGNITO_REGION: ap-northeast-1
@@ -62,6 +63,8 @@ volumes:
   inbucket:
     driver: local
 ```
+
+`COGNITO_USER_POOL_CLIENT_SECRET` is optional and applies to the default app client. Set a 24–64 character value containing letters, digits, underscores, or `+`. On startup, Magnito replaces the default client's stored secret when this value changes; removing the variable removes its secrets. An unchanged value leaves an additional rotation secret in place.
 
 ### Web UI
 
