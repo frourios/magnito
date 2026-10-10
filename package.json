@@ -65,7 +65,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@frourio/vinext": "^0.32.0",
+    "@frourio/vinext": "^0.33.0",
     "@types/jsbn": "^1.2.33",
     "@types/node-jose": "^1.1.13",
     "@types/nodemailer": "^7.0.11",
