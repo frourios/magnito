@@ -26,12 +26,12 @@ vi.mock('../server/service/serverEnvs', async (importOriginal) => {
 
 import { spawn } from 'child_process';
 import { http, passthrough } from 'msw';
-import { setupServer, type SetupServerApi } from 'msw/node';
+import { setupServer, type SetupServer } from 'msw/node';
 import { userPoolUseCase } from '../server/domain/userPool/useCase/userPoolUseCase';
 import { prismaClient } from '../server/service/prismaClient';
 import { setupMswHandlers } from './setupMswHandlers';
 
-let server: SetupServerApi;
+let server: SetupServer;
 
 const TEST_ENV_NAMES = [
   'PORT',
